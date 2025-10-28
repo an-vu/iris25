@@ -1,10 +1,8 @@
 # Iris Reader '25
 
-**Minimalist digital bookshelf with eye-tracking interaction**
-Built for distraction-free reading, accessibility, and hands-free navigation.
-**Iris 25** explores how gaze and minimal design can reshape the reading experience.
-The goal is to let users read, scroll, and interact using only their eyes—ideal for cooking, studying, or accessibility contexts.
-The app focuses on simplicity, privacy, and broad accessibility across devices.
+
+Minimalist digital bookshelf with eye-tracking control. Iris 25 lets users read and navigate books using only their eyes.
+Original prototype: https://presentation-textbook_prototype.toddle.site
 
 ---
 
