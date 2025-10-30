@@ -26,11 +26,12 @@
 
 .book-card {
   position: absolute;
-  width: 60vw;
-  height: 40vh;
+  width: clamp(520px, 62vw, 1011px);
+  aspect-ratio: 1011 / 638;
+  height: auto;
   border: 2px solid black;
   background: white;
-  border-radius: 1rem;
+  border-radius: clamp(0.8rem, 2vw, 30px);
   display: flex;
   flex-direction: column;
   justify-content: center;
