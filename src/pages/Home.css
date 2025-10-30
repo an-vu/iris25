@@ -1,0 +1,109 @@
+/* General layout */
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 100vw;
+  background: white;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-container::-webkit-scrollbar {
+  display: none;
+}
+
+.book-stack {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 80vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.book-card {
+  position: absolute;
+  width: 60vw;
+  height: 40vh;
+  border: 2px solid black;
+  background: white;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+/* Position states */
+.book-card.centered {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  z-index: 3;
+}
+.book-card.left {
+  transform: translateX(-70%) scale(0.85);
+  opacity: 0.6;
+  z-index: 2;
+}
+.book-card.right {
+  transform: translateX(70%) scale(0.85);
+  opacity: 0.6;
+  z-index: 2;
+}
+.book-card.hidden {
+  transform: translateX(0) scale(0.5);
+  opacity: 0;
+  z-index: 1;
+}
+
+.book-card button {
+  margin-top: 1rem;
+  border: 1px solid black;
+  background: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* Scroll arrows — responsive circle */
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5vw;                 /* scales with screen width */
+  height: 5vw;
+  min-width: 40px;            /* keep a minimum for small screens */
+  min-height: 40px;
+  max-width: 96px;            /* keep a limit for large screens */
+  max-height: 96px;
+  border: 0.2vw solid #000;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2vw;             /* arrow scales too */
+  line-height: 1;
+  padding: 0;
+}
+
+.scroll-btn.left  { left: 2vw; }
+.scroll-btn.right { right: 2vw; }
+
+/* Bottom dock */
+.dock {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 2px solid black;
+  padding: 0.8rem 0;
+  background: white;
+}
