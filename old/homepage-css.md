@@ -280,3 +280,7 @@
         background-position: 0% 50%;
     }
 }
+
+title: margin: 12px font: 2.2rem --font-weight-semi-bold --grey-900, #171717
+subtitle: margin: 4px font: 1.3rem --font-weight-semi-bold --grey-800, #262626
+author: margin 4px font: 1rem --font-weight-regular --grey-500, #737373

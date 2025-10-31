@@ -15,3 +15,15 @@ October 28
 - set up discord server and git repo
 - uploaded files to github
 - worked on transferring prototype elements from toddle/nordcraft to html/css
+
+
+---
+
+# Roadmap
+
+- set up new react workflow (done)
+- transfer all the shit from toddle to git
+    - homepage
+    - reader page
+- implement eye tracking
+- update readme
