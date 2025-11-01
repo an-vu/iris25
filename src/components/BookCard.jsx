@@ -16,7 +16,7 @@ export default function BookCard({ book, positionClass, index }) {
 
       <div className="button-wrapper">
         <a
-          className="button read-button"
+          className="read-button"
           onClick={() => navigate(`/reader/${index}`)}
         >
           Read

@@ -1,0 +1,67 @@
+/* Scroll arrows — responsive circular buttons */
+.nav-button.svg-button.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  /* Sizing: responsive but stays circular */
+  width: clamp(40px, 5vw, 96px);
+  height: clamp(40px, 5vw, 96px);
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.3s ease-in-out,
+    color 0.3s ease-in-out,
+    transform 0.4s ease,
+    opacity 0.4s ease,
+    filter 0.4s ease;
+}
+
+/* Positioning */
+.scroll-button.left {
+  left: 2vw;
+}
+
+.scroll-button.right {
+  right: 2vw;
+}
+
+.nav-button.svg-button.scroll-button:hover {
+  transform: translateY(-50%) scale(1.08);
+  background-color: rgba(51, 51, 51, 0.85);
+  opacity: 0.85;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button.svg-button.scroll-button svg {
+    width: 42px;
+    height: 42px;
+    display: block;
+    pointer-events: none;
+
+    transform-origin: center center;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: transform 0.3s ease;
+
+    opacity: 0.7;
+  }
+
+.nav-button.svg-button.scroll-button.left svg {
+  transform: translateX(-7%);
+}
+
+.nav-button.svg-button.scroll-button.right svg {
+  transform: translateX(7%);
+}
+
+.nav-button.svg-button.scroll-button:hover svg {
+    opacity: 0.9;
+}

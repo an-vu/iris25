@@ -3,6 +3,9 @@ import "../styles/Home.css";
 import "../styles/BookCard.css";
 import "../styles/Navbar.css";
 import "../styles/Button.css";
+import "../styles/ButtonNavbar.css";
+import "../styles/ButtonRead.css";
+import "../styles/ButtonScroll.css";
 
 import BookCard from "../components/BookCard.jsx";
 import Navbar from "../components/NavbarHome.jsx";
@@ -63,8 +66,17 @@ export default function Home() {
     <div className={`home background ${bgClass}`}>
       <div className="master-container">
         {/* Scroll Arrows */}
-        <button className="scroll-btn left" onClick={handlePrev}>←</button>
-        <button className="scroll-btn right" onClick={handleNext}>→</button>
+        <button className="nav-button svg-button scroll-button left" onClick={handlePrev}>
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <button className="nav-button svg-button scroll-button right" onClick={handleNext}>
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
 
         {/* Book Stack */}
         <div className="book-stack">

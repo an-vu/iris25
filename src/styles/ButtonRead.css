@@ -1,0 +1,62 @@
+/* READ Button wrapper and button */
+.button-wrapper {
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.read-button {
+  width: 112px;
+  height: 72px;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  pointer-events: auto;
+  z-index: 1;
+
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-decoration: none;
+  background-color: #fe2c55;
+  border: 0.5px solid #ff3b30;
+  border-radius: 10px;
+  cursor: pointer;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  opacity: 1;
+  filter: none;
+
+  transition:
+    background-color 0.4s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease,
+    transform 0.4s ease,
+    opacity 0.4s ease,
+    filter 0.4s ease;
+}
+
+.book-card.left .read-button,
+.book-card.right .read-button {
+  opacity: 0;
+  filter: blur(0.2rem);
+}
+
+.book-card.centered .read-button:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 40px #ea284e inset;
+  background-color: #fe2c55;
+  color: #fff;
+}
