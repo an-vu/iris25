@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import "../styles/BookCard.css";
-import "../styles/Button.css";
 import "../styles/Navbar.css";
+import "../styles/Button.css";
+
+import BookCard from "../components/BookCard.jsx";
 import Navbar from "../components/Navbar.jsx";
 
 export default function Home() {
-  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const totalBooks = 3;
 
@@ -55,53 +55,40 @@ export default function Home() {
 
   useEffect(() => {
     const newClass = `bg-book-${selectedIndex + 1}`;
-    const timer = setTimeout(() => setBgClass(newClass), 250); // smoother transition delay
+    const timer = setTimeout(() => setBgClass(newClass), 250); // smoother transition
     return () => clearTimeout(timer);
   }, [selectedIndex]);
 
   return (
     <div className={`home background ${bgClass}`}>
-      {/* Scroll Arrows */}
-      <button className="scroll-btn left" onClick={handlePrev}>
-        ←
-      </button>
-      <button className="scroll-btn right" onClick={handleNext}>
-        →
-      </button>
+      <div className="master-container">
+        {/* Scroll Arrows */}
+        <button className="scroll-btn left" onClick={handlePrev}>←</button>
+        <button className="scroll-btn right" onClick={handleNext}>→</button>
 
-      {/* Book Stack */}
-      <div className="book-stack">
-        {books.map((book, index) => {
-          let positionClass = "hidden";
-          if (index === selectedIndex) positionClass = "centered";
-          else if (index === selectedIndex - 1) positionClass = "left";
-          else if (index === selectedIndex + 1) positionClass = "right";
+        {/* Book Stack */}
+        <div className="book-stack">
+          {books.map((book, index) => {
+            let positionClass = "hidden";
+            if (index === selectedIndex) positionClass = "centered";
+            else if (index === selectedIndex - 1) positionClass = "left";
+            else if (index === selectedIndex + 1) positionClass = "right";
 
-          return (
-            <section key={index} className={`book-card ${positionClass}`}>
-              <img className="book-image" src={book.image} alt={book.title} />
+            return (
+              <BookCard
+                key={index}
+                book={book}
+                index={index}
+                positionClass={positionClass}
+              />
+            );
+          })}
+        </div>
 
-              <div className="textbox">
-                <h4>{book.title}</h4>
-                <h4>{book.subtitle}</h4>
-                <p>{book.author}</p>
-              </div>
-
-              <div className="button-wrapper">
-                <a
-                  className="button read-button"
-                  onClick={() => navigate(`/reader/${index}`)}
-                >
-                  Read
-                </a>
-              </div>
-            </section>
-          );
-        })}
+        {/* Bottom Navbar */}
+        <Navbar />
       </div>
-
-      {/* Bottom Navbar */}
-      <Navbar />
     </div>
   );
+
 }

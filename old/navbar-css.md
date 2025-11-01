@@ -140,3 +140,15 @@
   opacity: 0.85;
 }
 
+div (.big-gap.navbar-button-container)
+    div (.group.navbar-button-container)
+        a (.nav-button.svg-button)
+    div (.dark.group.navbar-button-container)
+        a (.nav-button.svg-button)
+        button (.nav-button)
+        button (.nav-button)
+        button (.nav-button)
+    div(.group.navbar-button-container)
+        button (.nav-button.svg-button)
+        button (.nav-button.svg-button)
+        button (.nav-button.svg-button)
