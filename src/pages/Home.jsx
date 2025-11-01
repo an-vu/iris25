@@ -5,7 +5,7 @@ import "../styles/Navbar.css";
 import "../styles/Button.css";
 
 import BookCard from "../components/BookCard.jsx";
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/NavbarHome.jsx";
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
