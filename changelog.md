@@ -1,29 +1,63 @@
+# Changelog
 
-October 29
+## November 1
 
-- Researched some new methods/workflow
-- Not need python flask for now
-- Will use React + Vite workflow
-- install node.js react vite
-- set up dev server
-- work on html css to this new workflow
-- have it functional
+* Added **Navbar (Home page)**
+* Moved all button styling to **Button.css**
+* Improved **book switching** (left/right navigation)
 
+## October 31
 
-October 28
+* Split components for cleaner structure
+* Added new files:
 
-- set up discord server and git repo
-- uploaded files to github
-- worked on transferring prototype elements from toddle/nordcraft to html/css
+  * `BookCard.css`
+  * `Button.css`
+  * `Navbar.css`
+  * `NavbarHome.jsx`
+  * `NavbarReader.jsx`
+* Started working on **Home page navbar**
+* Optimized **Home.jsx** and **Reader.jsx**
+* Finished **Home page navbar design**
 
+## October 30
+
+* Continued **Home page development**
+* Created components:
+
+  * `BookCard.jsx`
+  * `Button.jsx`
+* Cleaned up HTML/CSS/JS structure
+* Finished **Book Card design**
+
+## October 29
+
+* Researched new React workflow (no Flask needed)
+* Switched to **React + Vite** setup
+* Installed **Node.js, React, Vite**
+* Set up dev server
+* Migrated HTML/CSS to Vite
+* Functional **Home** and **Reader** pages
+* Organized and cleaned up file structure
+
+## October 28
+
+* Set up **Discord server** and **GitHub repository**
+* Uploaded project files to GitHub
+* Began transferring **Toddle/Nordcraft** prototype elements to HTML/CSS
 
 ---
 
-# Roadmap
+# Todos
 
-- set up new react workflow (done)
-- transfer all the shit from toddle to git
-    - homepage
-    - reader page
-- implement eye tracking
-- update readme
+* [x] Set up new React workflow
+* [ ] Transfer all components from Toddle to GitHub
+
+  * [x] Home page (almost done)
+  * [ ] Reader page (in progress)
+* [ ] Improve and optimize structure
+* [ ] Implement **eye tracking**
+* [ ] Update **README.md** on GitHub
+
+---
+
