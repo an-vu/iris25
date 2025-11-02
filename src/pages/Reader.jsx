@@ -26,13 +26,6 @@ export default function Reader() {
       <div className="reader-content">
         <h1>Reader Page</h1>
         <p>Currently reading book ID: {bookId}</p>
-
-        <button
-          className="nav-button svg-button"
-          onClick={() => navigate("/")}
-        >
-          Back to Home
-        </button>
       </div>
 
       {/* Bottom Navbar */}
