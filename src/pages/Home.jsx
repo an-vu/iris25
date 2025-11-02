@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { books } from "../data/books.js";
+
 import "../styles/Home.css";
 import "../styles/BookCard.css";
 import "../styles/Navbar.css";
@@ -27,31 +29,6 @@ export default function Home() {
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
-
-  const books = [
-    {
-      title: "Designing with the Mind in Mind",
-      subtitle:
-        "Simple Guide to Understanding User Interface Design Guidelines",
-      author: "by Jeff Johnson",
-      image:
-        "https://m.media-amazon.com/images/I/71i1WQlxYIL._AC_UF1000,1000_QL80_.jpg",
-    },
-    {
-      title: "The Design of Everyday Things",
-      subtitle: "Revised and Expanded Edition",
-      author: "by Don Norman",
-      image:
-        "https://m.media-amazon.com/images/I/71sF8kuMW3L._AC_UF1000,1000_QL80_.jpg",
-    },
-    {
-      title: "Add a New Book",
-      subtitle: "Import from PDF",
-      author: "",
-      image:
-        "https://litkicks.com/wp-content/uploads/2013/05/torocovers1.jpg",
-    },
-  ];
 
   // Smooth background transition
   const [bgClass, setBgClass] = useState("bg-book-1");

@@ -1,35 +1,49 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { books } from "../data/books.js";
 
 import "../styles/Home.css";
 import "../styles/BookCard.css";
 import "../styles/Navbar.css";
 import "../styles/Button.css";
 import "../styles/ButtonNavbar.css";
+import "../styles/ReaderTitle.css";
 
 import NavbarReader from "../components/NavbarReader.jsx";
 
 export default function Reader() {
   const { bookId } = useParams();
-  const navigate = useNavigate();
-
-  // Optional state placeholder for future features (page tracking, etc.)
   const [page, setPage] = useState(1);
+  const currentBook = books[bookId] || {};
 
   useEffect(() => {
-    // Example placeholder effect for future reader logic
     console.log(`Loaded Reader for book ID: ${bookId}`);
   }, [bookId]);
 
   return (
-    <div className="reader-container">
-      <div className="reader-content">
-        <h1>Reader Page</h1>
-        <p>Currently reading book ID: {bookId}</p>
-      </div>
+    <div className="reader background">
+      <div className="master-container">
 
-      {/* Bottom Navbar */}
-      <NavbarReader />
+        {/* Title Section */}
+        <div className="title-container">
+          <h4 className="title">
+            {currentBook.title}
+          </h4>
+          <h4 className="author">
+            {currentBook.author}
+          </h4>
+        </div>
+
+        {/* Reader Area (placeholder for PDF) */}
+        <div className="card-container">
+          <div className="pdf-placeholder">
+            <p>PDF Viewer Placeholder</p>
+          </div>
+        </div>
+
+        {/* Bottom Navbar */}
+        <NavbarReader />
+      </div>
     </div>
   );
 }

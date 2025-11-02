@@ -1,0 +1,58 @@
+/* Title Container */
+.title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+
+    padding: 0;
+    margin: 0;
+
+    padding: 0 3vw;
+    gap: 7px;
+
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.3px;
+    text-shadow:
+        0.5px 0.5px 1px rgba(255, 255, 255, 0.25),
+        -0.5px -0.5px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.title {
+    color: var(--grey-900, #171717);
+    font-size: clamp(.3rem, 2vw, 2rem);
+    font-weight: var(--font-weight-semi-bold, 600);
+    line-height: 1;
+}
+
+/* Author / Subtitle */
+.author {
+    color: var(--grey-500, #737373);
+    font-size: clamp(.2rem, 1.3vw, 1.3rem);
+    font-weight: var(--font-weight-regular, 400);
+    line-height: 1;
+}
+
+/* Page Animation */
+
+.title-container, .card-container {
+  transform: translateY(-100px);
+  opacity: 0;
+  animation: drop-in 0.6s ease forwards;
+}
+
+.title-container {
+  animation-delay: 0.1s;
+}
+
+.card-container {
+  animation-delay: 0.2s;
+}
+
+@keyframes drop-in {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import IrisToggle from "../components/IrisToggle.jsx";
 
+
 export default function NavbarReader() {
+  const navigate = useNavigate();
+
   return (
     <div className="big-gap navbar-button-container">
 
