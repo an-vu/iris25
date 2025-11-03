@@ -11,22 +11,6 @@
   
 }
 
-.master-container {
-  position: absolute;
-  top: 1.25rem;
-  bottom: 1.25rem;
-  /*
-  right: 1.25rem;
-  left: 1.25rem;
-  */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-
-  box-sizing: border-box;
-}
-
 .book-container::-webkit-scrollbar {
   display: none;
 }

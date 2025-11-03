@@ -3,11 +3,13 @@ import IrisToggle from "../components/IrisToggle.jsx";
 export default function NavbarHome() {
   return (
     <div className="big-gap navbar-button-container">
+      {/* Iris Toggle */}
+      <div className="group navbar-button-container">
+        <IrisToggle />
+      </div>
+
       {/* Main dark group */}
       <div className="dark group navbar-button-container">
-
-        {/* Eye Tracking Toggle */}
-        <IrisToggle />
 
         {/* Add / Import Button */}
         <button className="nav-button svg-button">

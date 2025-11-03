@@ -1,0 +1,19 @@
+/* Default (for Reader) */
+.master-container {
+  position: absolute;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+/* Override for Home only */
+.home .master-container {
+  right: 0;
+  left: 0;
+}

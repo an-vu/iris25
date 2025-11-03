@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { books } from "../data/books.js";
 
 import "../styles/Home.css";
+import "../styles/MasterContainer.css";
 import "../styles/BookCard.css";
 import "../styles/Navbar.css";
 import "../styles/Button.css";
