@@ -2,13 +2,14 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { books } from "../data/books.js";
 
-import "../styles/Home.css";
+import "../styles/Reader.css";
 import "../styles/MasterContainer.css";
 import "../styles/BookCard.css";
 import "../styles/Navbar.css";
 import "../styles/Button.css";
 import "../styles/ButtonNavbar.css";
 import "../styles/ReaderTitle.css";
+import "../styles/ReaderContainer.css";
 
 import NavbarReader from "../components/NavbarReader.jsx";
 
@@ -36,7 +37,7 @@ export default function Reader() {
         </div>
 
         {/* Reader Area (placeholder for PDF) */}
-        <div className="card-container">
+        <div className="reader-container">
           <div className="pdf-placeholder">
             <p>PDF Viewer Placeholder</p>
           </div>

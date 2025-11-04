@@ -18,6 +18,13 @@
         -0.5px -0.5px 1px rgba(0, 0, 0, 0.1);
 }
 
+.title-container h1,
+.title-container h4,
+.title-container p {
+  margin: 0;
+  padding: 0;
+}
+
 /* Title */
 .title {
     color: var(--grey-900, #171717);
