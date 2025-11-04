@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 export default function ReaderView() {
   const location = useLocation();
-  const files = location.state?.files || ["/books/test.pdf"];
+  const files = location.state?.files || ["/iris25/books/test.pdf"];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const filePath = files[currentIndex];
