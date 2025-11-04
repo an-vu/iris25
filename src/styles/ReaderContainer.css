@@ -23,20 +23,29 @@
 }
 
 .reader-view {
-  height: 100%;
-  width: 100%;
-}
-
-.pdf-placeholder {
   background-color: #f9f9f9;
   border-radius: 1.5rem;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
   width: 100%;
-
   display: flex;
-  justify-content: center;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.3);
-  font-size: 0.9rem;
+  flex-direction: column;
+}
+
+/* Keep viewer contained and scrollable */
+.pdf-placeholder {
+  flex: 1;
+  overflow-y: auto;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Prevent PDF viewer from stretching too far */
+.pdf-placeholder .rpv-core__viewer {
+  height: auto !important;
+  max-height: 100%;
 }
