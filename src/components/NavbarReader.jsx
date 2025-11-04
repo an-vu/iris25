@@ -15,8 +15,7 @@ export default function NavbarReader() {
         <button className="nav-button svg-button" onClick={() => navigate("/")}>
           <svg
             width="100%" height="100%" viewBox="0 0 24 24"
-            fill="none" xmlns="http://www.w3.org/2000/svg"
-          >
+            fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M9 21V13.6C9 13.04 9 12.76 9.11 12.546C9.205 12.358 9.358 12.205 9.546 12.109C9.76 12 10.04 12 10.6 12H13.4C13.96 12 14.24 12 14.454 12.109C14.642 12.205 14.795 12.358 14.891 12.546C15 12.76 15 13.04 15 13.6V21M2 9.5L11.04 2.72C11.384 2.462 11.556 2.333 11.745 2.283C11.912 2.239 12.088 2.239 12.255 2.283C12.444 2.333 12.616 2.462 12.96 2.72L22 9.5M4 8V17.8C4 18.92 4 19.48 4.218 19.908C4.41 20.284 4.716 20.59 5.092 20.782C5.52 21 6.08 21 7.2 21H16.8C17.92 21 18.48 21 18.908 20.782C19.284 20.59 19.59 20.284 19.782 19.908C20 19.48 20 18.92 20 17.8V8L13.92 3.44C13.231 2.924 12.887 2.665 12.509 2.566C12.175 2.478 11.825 2.478 11.491 2.566C11.113 2.665 10.769 2.924 10.08 3.44L4 8Z"
               stroke="currentColor" strokeWidth="2"
@@ -32,27 +31,20 @@ export default function NavbarReader() {
 
       {/* Main dark group */}
       <div className="dark group navbar-button-container">
-        {/* Add / Import */}
-        <button className="nav-button svg-button">
-          <svg
-            width="100%" height="100%" viewBox="0 0 24 24"
-            fill="none" xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-              stroke="currentColor" strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round"
-            />
-          </svg>
-          <span className="svg-label">Add</span>
-        </button>
-
-        {/* Open Notes */}
+        {/* Previous */}
         <button className="nav-button svg-button">
           <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 3.5V6.2C13 7.88016 13 8.72024 13.327 9.36197C13.6146 9.92646 14.0735 10.3854 14.638 10.673C15.2798 11 16.1198 11 17.8 11H20.5M21 12.9882V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H11.0118C11.7455 3 12.1124 3 12.4577 3.08289C12.7638 3.15638 13.0564 3.27759 13.3249 3.44208C13.6276 3.6276 13.887 3.88703 14.4059 4.40589L19.5941 9.59411C20.113 10.113 20.3724 10.3724 20.5579 10.6751C20.7224 10.9436 20.8436 11.2362 20.9171 11.5423C21 11.8876 21 12.2545 21 12.9882Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M5 19V5M16.4005 6.07961L10.5617 10.7506C10.0279 11.1777 9.76097 11.3912 9.66433 11.6492C9.5796 11.8754 9.5796 12.1246 9.66433 12.3508C9.76097 12.6088 10.0279 12.8223 10.5617 13.2494L16.4005 17.9204C17.2327 18.5861 17.6487 18.919 17.9989 18.9194C18.3035 18.9197 18.5916 18.7812 18.7815 18.5432C19 18.2695 19 17.7367 19 16.671V7.329C19 6.2633 19 5.73045 18.7815 5.45677C18.5916 5.21876 18.3035 5.0803 17.9989 5.08063C17.6487 5.081 17.2327 5.41387 16.4005 6.07961Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          <span className="svg-label">Notes</span>
+          <span className="svg-label">Previous</span>
+        </button>
+
+        {/* Next */}
+        <button className="nav-button svg-button">
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 5V19M7.59951 17.9204L13.4383 13.2494C13.9721 12.8223 14.239 12.6088 14.3357 12.3508C14.4204 12.1246 14.4204 11.8754 14.3357 11.6492C14.239 11.3912 13.9721 11.1777 13.4383 10.7506L7.59951 6.07961C6.76734 5.41387 6.35125 5.081 6.00108 5.08063C5.69654 5.0803 5.40845 5.21876 5.21846 5.45677C5 5.73045 5 6.2633 5 7.329V16.671C5 17.7367 5 18.2695 5.21846 18.5432C5.40845 18.7812 5.69654 18.9197 6.00108 18.9194C6.35125 18.919 6.76734 18.5861 7.59951 17.9204Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span className="svg-label">Next</span>
         </button>
       </div>
 
@@ -89,8 +81,16 @@ export default function NavbarReader() {
         </button>
       </div>
 
-      {/* Settings group */}
+      {/* Search + Settings group */}
       <div className="group navbar-button-container">
+        {/* Search */}
+        <button className="nav-button svg-button">
+          <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L17.5001 17.5M20 11.5C20 16.1944 16.1944 20 11.5 20C6.80558 20 3 16.1944 3 11.5C3 6.80558 6.80558 3 11.5 3C16.1944 3 20 6.80558 20 11.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className="svg-label">Search</span>
+        </button>
+        {/* Settings */}
         <button className="nav-button svg-button">
           <svg
             width="100%" height="100%" viewBox="0 0 24 24"
