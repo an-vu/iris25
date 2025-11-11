@@ -2,52 +2,54 @@
 
 ## November 13
 
-- Save reading progress (remember last page)
-- Add notes / highlights sidebar
-- research Context or Redux to manage app-wide settings (theme, tracking mode, background style, etc)
+- Added reading progress saving (remembers last page)
+- Added notes/highlights sidebar
+- Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
 
 ## November 12
 
-- work on "add a new book" -> open file picker
-- figure out whether to automatically store cover image from first page of pdf or have a grab link feature
-- work on lazy-load chapters (load only when needed)
-- Add service work later for offline access
+- Implemented “Add a New Book” with file picker
+- Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
+- Began lazy-loading chapters (load only when needed)
+- Planned to add service worker for offline access
 
 ## November 11
 
-- work on quality of life: polish reader page, add shy mode, toggle to disable enable colorful background, fix pdf size border in reader view
-- move all svg into src/icons/ to seperate from working files.
+- Split calibration into a separate window (accessible from Home and Reader pages)
+- Rewrote calibration tutorial for better clarity
+- Improved tracking accuracy (mouse-click alignment helps calibration)
+- Reader page polish:
+  - Added shy mode
+  - Added background toggle (colorful/neutral)
+  - Fixed PDF border sizing
+- Moved all SVG files into `src/icons/` for cleaner structure
 
 ## November 10
 
-- start working on eye tracking features
-- work on zoom in and out
-- put previous chapter next chapter to navbar
+- Started implementing eye-tracking features
+- Added zoom in/out
+- Moved Previous/Next Chapter buttons to the navbar
 
 ## November 4
 
-- pdf render works in reader page now
-- add comingsoon.jsx
-- add split chapters, remove large pdf
-- fixed bugs in bookcard.jsx, readerview.jsx, and books.js to make the book card work and reader view render pdf correctly now
-- fixed some svg, console now show zero errors
-- set up github pages deployment
-- fix browser router
-- clean up directories
+- PDF rendering now works in Reader page
+- Added `ComingSoon.jsx`
+- Split large PDFs into chapters
+- Fixed bugs in `BookCard.jsx`, `ReaderView.jsx`, and `books.js`
+- Cleaned up SVGs and eliminated console errors
+- Set up GitHub Pages deployment and fixed BrowserRouter
+- Cleaned up project directories
 
 ## November 3
 
-- Fix homepage navbar bug
-- Start working on reader page
-- Work on reader container
-- Finish reader layout
-- Work on readercontainer.css
-- fixed reader page bugs
-- Work on readerview.jsx
+- Fixed homepage navbar bug
+- Built Reader page structure and layout
+- Developed `ReaderContainer` and `ReaderView.jsx`
+- Fixed Reader page bugs and CSS issues
 
 ## November 2
 
-- Update reader page title and navbar
+- Updated Reader page title and navbar
 
 ## November 1
 
@@ -60,7 +62,6 @@
 
 - Split components for cleaner structure
 - Added new files:
-
   - `BookCard.css`
   - `Button.css`
   - `Navbar.css`
@@ -74,7 +75,6 @@
 
 - Continued **Home page development**
 - Created components:
-
   - `BookCard.jsx`
   - `Button.jsx`
 - Cleaned up HTML/CSS/JS structure
