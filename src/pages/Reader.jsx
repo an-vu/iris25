@@ -1,5 +1,7 @@
+// src/pages/Reader.jsx
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { zoomPlugin } from "@react-pdf-viewer/zoom";
 import { books } from "../data/books.js";
 
 import "../styles/Reader.css";
@@ -17,23 +19,24 @@ export default function Reader() {
   const currentBook = books[bookId] || {};
   const files = currentBook.files || ["/iris25/books/test.pdf"];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const zoomPluginInstance = zoomPlugin();
 
+  // next/previous chapter controls
   const handleNext = () => {
-    if (currentIndex < files.length - 1) setCurrentIndex(currentIndex + 1);
+    if (currentIndex < files.length - 1) setCurrentIndex((i) => i + 1);
   };
 
   const handlePrevious = () => {
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
+    if (currentIndex > 0) setCurrentIndex((i) => i - 1);
   };
 
   useEffect(() => {
-    console.log(`Loaded Reader for book ID: ${bookId}, chapter ${currentIndex + 1}`);
+    console.log(`Loaded Reader for book ID: ${bookId}, chapter ${currentIndex}`);
   }, [bookId, currentIndex]);
 
   return (
     <div className="reader background">
       <div className="master-container">
-
         {/* Title Section */}
         <div className="title-container">
           <h4 className="title">{currentBook.title}</h4>
@@ -41,7 +44,10 @@ export default function Reader() {
         </div>
 
         {/* Reader Area */}
-        <ReaderContainer filePath={files[currentIndex]} />
+        <ReaderContainer
+          filePath={files[currentIndex]}
+          zoomPluginInstance={zoomPluginInstance}
+        />
 
         {/* Bottom Navbar */}
         <NavbarReader
@@ -49,6 +55,7 @@ export default function Reader() {
           onPrevious={handlePrevious}
           disableNext={currentIndex === files.length - 1}
           disablePrevious={currentIndex === 0}
+          zoomPluginInstance={zoomPluginInstance}
         />
       </div>
     </div>
