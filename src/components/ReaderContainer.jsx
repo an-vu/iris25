@@ -1,6 +1,7 @@
 // src/components/ReaderContainer.jsx
 import { useRef, useCallback, useEffect, useState } from "react";
 import useWebGazer from "../hooks/useWebGazer";
+import { useEyeTrackingEnabled } from "../hooks/useEyeTrackingPreference";
 import ReaderView from "./ReaderView.jsx";
 import GazeControls from "./GazeControls.jsx";
 import CalibrationOverlay from "./CalibrationOverlay.jsx";
@@ -21,7 +22,8 @@ const CAL_STEP_DURATION = 10000; // ms per calibration waypoint
 
 export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const scrollContainerRef = useRef(null);
-  const { gaze, isReady, error } = useWebGazer();
+  const eyeTrackingEnabled = useEyeTrackingEnabled();
+  const { gaze, isReady, error } = useWebGazer(eyeTrackingEnabled);
   const buttonRefs = {
     up: useRef(null),
     down: useRef(null),
@@ -77,15 +79,23 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   // Log when the tracker successfully enters the ready state.
   // Kick off the calibration overlay the first time WebGazer reports ready.
   useEffect(() => {
+    if (!eyeTrackingEnabled) {
+      setIsCalibrating(false);
+      setCalibrationStep(-1);
+      hasCalibratedRef.current = false;
+      hideWebgazerVideo();
+      restoreWebgazerVideo();
+      return;
+    }
     if (!isReady || hasCalibratedRef.current) return;
     console.info("[WebGazer] gaze tracking active");
     setIsCalibrating(true);
     setCalibrationStep(0);
-  }, [isReady]);
+  }, [isReady, eyeTrackingEnabled]);
 
   // Drive each 10-second calibration waypoint (top-left, top-right, etc.).
   useEffect(() => {
-    if (!isCalibrating || calibrationStep < 0) return;
+    if (!eyeTrackingEnabled || !isCalibrating || calibrationStep < 0) return;
 
     if (calibrationStep >= CALIBRATION_POSITIONS.length) {
       hideWebgazerVideo();
@@ -97,7 +107,17 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     }
 
     const currentPoint = CALIBRATION_POSITIONS[calibrationStep];
-    showWebgazerVideo(currentPoint.id, videoMountRef.current);
+
+    let rafId = null;
+    const mountVideo = () => {
+      const mountTarget = videoMountRef.current;
+      if (!mountTarget) {
+        rafId = requestAnimationFrame(mountVideo);
+        return;
+      }
+      showWebgazerVideo(currentPoint.id, mountTarget);
+    };
+    mountVideo();
     setCalibrationCountdown(CAL_STEP_DURATION / 1000);
 
     let remaining = CAL_STEP_DURATION / 1000;
@@ -113,8 +133,9 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     return () => {
       clearInterval(countdownInterval);
       clearTimeout(stepTimeout);
+      if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [isCalibrating, calibrationStep]);
+  }, [eyeTrackingEnabled, isCalibrating, calibrationStep]);
 
   // Cache the bounding boxes of each gaze button so gaze math stays cheap.
   useEffect(() => {
@@ -131,7 +152,8 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
 
   // When gaze data updates, decide whether we should scroll up or down.
   useEffect(() => {
-    if (!gaze || gaze.x == null || gaze.y == null || isCalibrating) return;
+    if (!eyeTrackingEnabled || !gaze || gaze.x == null || gaze.y == null || isCalibrating)
+      return;
     const { up, down } = buttonRects;
     const withinRect = (rect) =>
       rect &&
@@ -176,7 +198,7 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
       clearTimeout(gazeTimeoutRef.current.down);
       gazeTimeoutRef.current.down = null;
     }
-  }, [gaze, buttonRects, isGazeScrolling, scrollViewer]);
+  }, [eyeTrackingEnabled, gaze, buttonRects, isGazeScrolling, scrollViewer]);
 
   // Cleanup: make sure timers are cleared if the component unmounts.
   useEffect(() => {
@@ -208,7 +230,7 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
         upRef={buttonRefs.up}
         downRef={buttonRefs.down}
       />
-      {isCalibrating && calibrationStep >= 0 && (
+      {eyeTrackingEnabled && isCalibrating && calibrationStep >= 0 && (
         <CalibrationOverlay
           step={Math.min(calibrationStep, CALIBRATION_POSITIONS.length - 1)}
           totalSteps={CALIBRATION_POSITIONS.length}

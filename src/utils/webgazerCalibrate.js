@@ -1,7 +1,8 @@
-// Helpers for showing/hiding/positioning the WebGazer debug video during calibration.
+// src/utils/webgazerCalibrate.js
+// Handles showing, hiding, and positioning the WebGazer debug video during calibration.
 
 const VIDEO_ID = "webgazerVideoFeed";
-const VIDEO_WRAPPER_ID = "webgazerVideoCanvas"; // WebGazer creates this element alongside the feed
+const VIDEO_WRAPPER_ID = "webgazerVideoCanvas"; // created by WebGazer internally
 let originalWrapperParent = null;
 
 const DEFAULT_STYLE = {
@@ -18,28 +19,26 @@ export const POSITION_STYLES = {
 };
 
 export const CALIBRATION_POSITIONS = [
-  { id: "top-left", label: "Look at the top-left corner" },
-  { id: "top-right", label: "Now focus on the top-right corner" },
-  { id: "bottom-right", label: "Next, look at the bottom-right corner" },
-  { id: "bottom-left", label: "Shift to the bottom-left corner" },
-  { id: "center", label: "Finally, look at the center" },
+  { id: "top-left", label: "Move your mouse to the top-left corner, click, and look at the top-left point." },
+  { id: "top-right", label: "Move your mouse to the top-right corner, click, and focus on the top-right point." },
+  { id: "bottom-right", label: "Move your mouse to the bottom-right corner, click, and look at the bottom-right point." },
+  { id: "bottom-left", label: "Move your mouse to the bottom-left corner, click, and look at the bottom-left point." },
+  { id: "center", label: "Finally, move your mouse to the center, click, and focus on the center point." },
 ];
 
+// ---------------- helpers ----------------
 function applyStyle(node, style = DEFAULT_STYLE) {
   if (!node) return;
   node.style.position = "fixed";
-  node.style.zIndex = "2147483647"; // keep above app overlay text
+  node.style.zIndex = "2147483647";
   node.style.pointerEvents = "none";
   node.style.top = "";
   node.style.bottom = "";
   node.style.left = "";
   node.style.right = "";
   node.style.transform = "";
-  if (style.top) node.style.top = style.top;
-  if (style.bottom) node.style.bottom = style.bottom;
-  if (style.left) node.style.left = style.left;
-  if (style.right) node.style.right = style.right;
-  if (style.transform) node.style.transform = style.transform;
+
+  for (const key in style) node.style[key] = style[key];
 }
 
 function ensureOriginalParent(wrapper) {
@@ -48,32 +47,46 @@ function ensureOriginalParent(wrapper) {
   }
 }
 
+function applyOverlayStyles(wrapper, video) {
+  if (!wrapper || !video) return;
+  wrapper.style.setProperty("position", "absolute", "important");
+  wrapper.style.setProperty("top", "0", "important");
+  wrapper.style.setProperty("left", "0", "important");
+  wrapper.style.setProperty("width", "100%", "important");
+  wrapper.style.setProperty("height", "100%", "important");
+  wrapper.style.borderRadius = "0.75rem";
+  wrapper.style.overflow = "hidden";
+
+  video.style.setProperty("position", "absolute", "important");
+  video.style.setProperty("top", "0", "important");
+  video.style.setProperty("left", "0", "important");
+  video.style.setProperty("width", "100%", "important");
+  video.style.setProperty("height", "100%", "important");
+  video.style.borderRadius = "inherit";
+  video.style.objectFit = "cover";
+}
+
+// ---------------- main functions ----------------
 export function showWebgazerVideo(positionId, mountNode) {
   if (!window.webgazer) return;
   window.webgazer.showVideo(true);
+  window.webgazer.showFaceOverlay(true);
+  window.webgazer.showFaceFeedbackBox(true);
   window.webgazer.showPredictionPoints(true);
+
   const video = document.getElementById(VIDEO_ID);
   const wrapper = document.getElementById(VIDEO_WRAPPER_ID);
   if (!video || !wrapper) return;
 
   ensureOriginalParent(wrapper);
 
+  // mount inside overlay if available
   if (mountNode) {
+    mountNode.style.position = "relative"; // allow absolute children
     mountNode.appendChild(wrapper);
-    wrapper.style.position = "relative";
-    wrapper.style.top = "";
-    wrapper.style.left = "";
-    wrapper.style.right = "";
-    wrapper.style.bottom = "";
-    wrapper.style.transform = "";
-    wrapper.style.width = "180px";
-    wrapper.style.height = "120px";
-    wrapper.style.borderRadius = "0.75rem";
-    video.style.position = "static";
-    video.style.width = "100%";
-    video.style.height = "100%";
-    video.style.borderRadius = "inherit";
+    applyOverlayStyles(wrapper, video);
   } else {
+    // fallback to fixed positioning
     if (originalWrapperParent && wrapper.parentElement !== originalWrapperParent) {
       originalWrapperParent.appendChild(wrapper);
     }
@@ -88,17 +101,23 @@ export function showWebgazerVideo(positionId, mountNode) {
 export function hideWebgazerVideo() {
   if (!window.webgazer) return;
   window.webgazer.showVideo(false);
+  window.webgazer.showFaceOverlay(false);
+  window.webgazer.showFaceFeedbackBox(false);
   window.webgazer.showPredictionPoints(false);
 }
 
 export function restoreWebgazerVideo() {
   const wrapper = document.getElementById(VIDEO_WRAPPER_ID);
-  if (originalWrapperParent && wrapper && wrapper.parentElement !== originalWrapperParent) {
+  const video = document.getElementById(VIDEO_ID);
+  if (!wrapper || !video) return;
+
+  if (originalWrapperParent && wrapper.parentElement !== originalWrapperParent) {
     originalWrapperParent.appendChild(wrapper);
   }
-  const video = document.getElementById(VIDEO_ID);
+
   applyStyle(video, DEFAULT_STYLE);
   applyStyle(wrapper, DEFAULT_STYLE);
-  wrapper.style.width = "";
-  wrapper.style.height = "";
+  wrapper.style.removeProperty("width");
+  wrapper.style.removeProperty("height");
+  video.style.removeProperty("position");
 }

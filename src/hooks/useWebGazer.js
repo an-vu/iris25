@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 // Lazy-load WebGazer from a CDN so end users only download it when needed.
 const WEBGAZER_CDN = "https://cdn.jsdelivr.net/npm/webgazer/dist/webgazer.min.js";
 
-export default function useWebGazer() {
+export default function useWebGazer(enabled = true) {
   const [gaze, setGaze] = useState({ x: null, y: null });
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState(null);
@@ -12,6 +12,14 @@ export default function useWebGazer() {
 
   useEffect(() => {
     let isMounted = true;
+
+    if (!enabled) {
+      setIsReady(false);
+      setGaze({ x: null, y: null });
+      return () => {
+        isMounted = false;
+      };
+    }
 
     // Inject the WebGazer script at runtime so the rest of the app stays lightweight.
     const attachScript = () =>
@@ -59,10 +67,7 @@ export default function useWebGazer() {
             }
           });
 
-        // Hide optional debug UI to keep our layout clean.
-        window.webgazer.showVideo(false);
-        window.webgazer.showFaceOverlay(false);
-        window.webgazer.showPredictionPoints(true);
+        // Debug overlays are toggled on/off by the calibration helper so leave them as-is here.
 
         console.info("[WebGazer] Initializing...");
         await window.webgazer.begin();
@@ -89,7 +94,16 @@ export default function useWebGazer() {
         scriptRef.current = null;
       }
     };
-  }, []);
+  }, [enabled]);
+
+  useEffect(() => {
+    if (enabled || typeof window === "undefined" || !window.webgazer) return;
+    window.webgazer.pause?.();
+    window.webgazer.showVideo(false);
+    window.webgazer.showFaceOverlay(false);
+    window.webgazer.showFaceFeedbackBox?.(false);
+    window.webgazer.showPredictionPoints(false);
+  }, [enabled]);
   // The component only needs the latest coordinates plus simple lifecycle flags.
   return { gaze, isReady, error };
 }

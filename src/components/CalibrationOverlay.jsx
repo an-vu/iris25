@@ -1,3 +1,4 @@
+// src/components/CalibrationOverlay.jsx
 import "../styles/CalibrationOverlay.css";
 
 export default function CalibrationOverlay({
@@ -9,6 +10,7 @@ export default function CalibrationOverlay({
   videoRef,
 }) {
   if (step < 0) return null;
+
   return (
     <div className="calibration-overlay">
       <div className="calibration-card" style={positionStyle}>
@@ -16,11 +18,13 @@ export default function CalibrationOverlay({
           <div className="calibration-video" ref={videoRef} />
           <div className="calibration-text">
             <p className="calibration-step">
-              Calibration step {step + 1} / {totalSteps}
+              CALIBRATION STEP {step + 1} / {totalSteps}
             </p>
             <h3 className="calibration-message">{message}</h3>
             <p className="calibration-countdown">{countdown}s</p>
-            <p className="calibration-note">Keep your eyes on the highlighted area.</p>
+            <p className="calibration-note">
+              Keep your eyes on the highlighted area.
+            </p>
           </div>
         </div>
       </div>

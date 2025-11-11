@@ -1,10 +1,10 @@
-import { useState } from "react";
 import "../styles/ButtonNavbar.css";
+import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference";
 
 export default function IrisToggle() {
-  const [irisOn, setIrisOn] = useState(false);
+  const [irisOn, setIrisOn] = useEyeTrackingPreference();
 
-  const toggleIris = () => setIrisOn((prev) => !prev);
+  const toggleIris = () => setIrisOn(!irisOn);
 
   return (
     <button
