@@ -13,14 +13,6 @@ export default function useWebGazer(enabled = true) {
   useEffect(() => {
     let isMounted = true;
 
-    if (!enabled) {
-      setIsReady(false);
-      setGaze({ x: null, y: null });
-      return () => {
-        isMounted = false;
-      };
-    }
-
     // Inject the WebGazer script at runtime so the rest of the app stays lightweight.
     const attachScript = () =>
       new Promise((resolve, reject) => {
@@ -48,7 +40,7 @@ export default function useWebGazer(enabled = true) {
           await attachScript();
         }
 
-        if (!window.webgazer || hasStartedRef.current || !isMounted) {
+        if (!window.webgazer || hasStartedRef.current || !isMounted || !enabled) {
           return;
         }
 
@@ -80,13 +72,17 @@ export default function useWebGazer(enabled = true) {
       }
     };
 
-    startWebGazer();
+    if (enabled) startWebGazer();
 
     return () => {
       isMounted = false;
       if (window?.webgazer) {
         window.webgazer.clearGazeListener?.();
         window.webgazer.end();
+        window.webgazer.showVideo(false);
+        window.webgazer.showFaceOverlay(false);
+        window.webgazer.showFaceFeedbackBox?.(false);
+        window.webgazer.showPredictionPoints(false);
       }
       hasStartedRef.current = false;
       if (scriptRef.current) {
