@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/iris25/",
   build: {
-    sourcemap: false,
+    // Enable sourcemaps only in development
+    sourcemap: process.env.NODE_ENV !== "production",
   },
 });
