@@ -16,6 +16,7 @@
 ## November 11
 
 - work on quality of life: polish reader page, add shy mode, toggle to disable enable colorful background, fix pdf size border in reader view
+- move all svg into src/icons/ to seperate from working files.
 
 ## November 10
 
