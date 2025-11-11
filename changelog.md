@@ -1,5 +1,36 @@
 # Changelog
 
+## November 10
+
+- start working on eye tracking features
+- work on zoom in and out
+- put previous chapter next chapter to navbar
+
+## November 4
+
+- pdf render works in reader page now
+- add comingsoon.jsx
+- add split chapters, remove large pdf
+- fixed bugs in bookcard.jsx, readerview.jsx, and books.js to make the book card work and reader view render pdf correctly now
+- fixed some svg, console now show zero errors
+- set up github pages deployment
+- fix browser router
+- clean up directories
+
+## November 3
+
+- Fix homepage navbar bug
+- Start working on reader page
+- Work on reader container
+- Finish reader layout
+- Work on readercontainer.css
+- fixed reader page bugs
+- Work on readerview.jsx
+
+## November 2
+
+- Update reader page title and navbar
+
 ## November 1
 
 - Added **Navbar (Home page)**
