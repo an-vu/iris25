@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef } from "react";
 import "../styles/ButtonGaze.css";
 
 const noop = () => {};
-const HOLD_INTERVAL_MS = 150;
+const HOLD_INTERVAL_MS = 150; // ms between repeat scroll actions while holding
 
+// Provides press-and-hold behavior for a callback by looping `handler`
+// until the pointer/touch interaction ends.
 function useHold(handler) {
   const intervalRef = useRef(null);
 
@@ -17,7 +19,7 @@ function useHold(handler) {
   const start = useCallback(
     (event) => {
       if (event) event.preventDefault();
-      handler();
+      handler(); // fire immediately so the first scroll feels responsive
       stop();
       intervalRef.current = setInterval(() => {
         handler();
@@ -30,9 +32,13 @@ function useHold(handler) {
   return { start, stop };
 }
 
+// Renders the two gaze buttons and wires them to either mouse/touch
+// presses or the gaze-to-ref logic supplied via ReaderContainer.
 export default function GazeControls({
   onScrollUp = noop,
   onScrollDown = noop,
+  upRef,
+  downRef,
 }) {
   const upHold = useHold(onScrollUp);
   const downHold = useHold(onScrollDown);
@@ -59,6 +65,7 @@ export default function GazeControls({
         className="gaze-button up"
         title="Scroll Up"
         type="button"
+        ref={upRef}
         {...buildHandlers(upHold, onScrollUp)}
       >
         <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
@@ -77,6 +84,7 @@ export default function GazeControls({
         className="gaze-button down"
         title="Scroll Down"
         type="button"
+        ref={downRef}
         {...buildHandlers(downHold, onScrollDown)}
       >
         <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
