@@ -1,5 +1,22 @@
 # Changelog
 
+## November 13
+
+- Save reading progress (remember last page)
+- Add notes / highlights sidebar
+- research Context or Redux to manage app-wide settings (theme, tracking mode, background style, etc)
+
+## November 12
+
+- work on "add a new book" -> open file picker
+- figure out whether to automatically store cover image from first page of pdf or have a grab link feature
+- work on lazy-load chapters (load only when needed)
+- Add service work later for offline access
+
+## November 11
+
+- work on quality of life: polish reader page, add shy mode, toggle to disable enable colorful background, fix pdf size border in reader view
+
 ## November 10
 
 - start working on eye tracking features
