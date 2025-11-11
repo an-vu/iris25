@@ -3,13 +3,21 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import useWebGazer from "../hooks/useWebGazer";
 import ReaderView from "./ReaderView.jsx";
 import GazeControls from "./GazeControls.jsx";
+import CalibrationOverlay from "./CalibrationOverlay.jsx";
 import "../styles/ReaderContainer.css";
-import { runWebgazerCalibration } from "../utils/webgazerCalibrate";
+import {
+  showWebgazerVideo,
+  hideWebgazerVideo,
+  restoreWebgazerVideo,
+  CALIBRATION_POSITIONS,
+  POSITION_STYLES,
+} from "../utils/webgazerCalibrate";
 
 // Tunable knobs for easing/scrolling behavior.
 const SCROLL_STEP = 200;
 const GAZE_DEBOUNCE_MS = 500;
 const GAZE_PROXIMITY = 80;
+const CAL_STEP_DURATION = 10000; // ms per calibration waypoint
 
 export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const scrollContainerRef = useRef(null);
@@ -22,6 +30,14 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const [isGazeScrolling, setIsGazeScrolling] = useState({ up: false, down: false });
   const gazeTimeoutRef = useRef({ up: null, down: null });
   const hasCalibratedRef = useRef(false); // ensures calibration modal runs once per session
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const [calibrationStep, setCalibrationStep] = useState(-1);
+  const [calibrationCountdown, setCalibrationCountdown] = useState(0);
+  const videoMountRef = useRef(null);
+  const currentCalibrationPoint =
+    calibrationStep >= 0 && calibrationStep < CALIBRATION_POSITIONS.length
+      ? CALIBRATION_POSITIONS[calibrationStep]
+      : null;
 
   // Core scrolling helper shared by gaze buttons and eye tracking.
   const scrollViewer = useCallback((offset) => {
@@ -61,12 +77,44 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   // Log when the tracker successfully enters the ready state.
   // Kick off the calibration overlay the first time WebGazer reports ready.
   useEffect(() => {
-    if (isReady && !hasCalibratedRef.current) {
-      console.info("[WebGazer] gaze tracking active");
-      runWebgazerCalibration();
-      hasCalibratedRef.current = true;
-    }
+    if (!isReady || hasCalibratedRef.current) return;
+    console.info("[WebGazer] gaze tracking active");
+    setIsCalibrating(true);
+    setCalibrationStep(0);
   }, [isReady]);
+
+  // Drive each 10-second calibration waypoint (top-left, top-right, etc.).
+  useEffect(() => {
+    if (!isCalibrating || calibrationStep < 0) return;
+
+    if (calibrationStep >= CALIBRATION_POSITIONS.length) {
+      hideWebgazerVideo();
+      restoreWebgazerVideo();
+      hasCalibratedRef.current = true;
+      setIsCalibrating(false);
+      setCalibrationCountdown(0);
+      return;
+    }
+
+    const currentPoint = CALIBRATION_POSITIONS[calibrationStep];
+    showWebgazerVideo(currentPoint.id, videoMountRef.current);
+    setCalibrationCountdown(CAL_STEP_DURATION / 1000);
+
+    let remaining = CAL_STEP_DURATION / 1000;
+    const countdownInterval = setInterval(() => {
+      remaining -= 1;
+      setCalibrationCountdown(Math.max(0, remaining));
+    }, 1000);
+
+    const stepTimeout = setTimeout(() => {
+      setCalibrationStep((prev) => prev + 1);
+    }, CAL_STEP_DURATION);
+
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(stepTimeout);
+    };
+  }, [isCalibrating, calibrationStep]);
 
   // Cache the bounding boxes of each gaze button so gaze math stays cheap.
   useEffect(() => {
@@ -83,7 +131,7 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
 
   // When gaze data updates, decide whether we should scroll up or down.
   useEffect(() => {
-    if (!gaze || gaze.x == null || gaze.y == null) return;
+    if (!gaze || gaze.x == null || gaze.y == null || isCalibrating) return;
     const { up, down } = buttonRects;
     const withinRect = (rect) =>
       rect &&
@@ -138,6 +186,13 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      hideWebgazerVideo();
+      restoreWebgazerVideo();
+    };
+  }, []);
+
   return (
     <div className="reader-container">
       {/* Reader View */}
@@ -153,6 +208,22 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
         upRef={buttonRefs.up}
         downRef={buttonRefs.down}
       />
+      {isCalibrating && calibrationStep >= 0 && (
+        <CalibrationOverlay
+          step={Math.min(calibrationStep, CALIBRATION_POSITIONS.length - 1)}
+          totalSteps={CALIBRATION_POSITIONS.length}
+          countdown={calibrationCountdown}
+          message={
+            currentCalibrationPoint?.label || "Hold steady for a moment"
+          }
+          positionStyle={
+            currentCalibrationPoint
+              ? POSITION_STYLES[currentCalibrationPoint.id]
+              : undefined
+          }
+          videoRef={videoMountRef}
+        />
+      )}
     </div>
   );
 }

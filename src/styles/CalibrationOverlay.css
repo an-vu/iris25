@@ -1,0 +1,60 @@
+.calibration-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2147483640;
+  pointer-events: none;
+  color: #fff;
+}
+
+.calibration-card {
+  position: absolute;
+  background: rgba(20, 20, 20, 0.9);
+  border-radius: 1.25rem;
+  padding: 1rem 1.5rem;
+  width: min(420px, 95vw);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.calibration-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.calibration-video {
+  width: 180px;
+  height: 120px;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.calibration-text {
+  flex: 1;
+  text-align: left;
+}
+
+.calibration-step {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.calibration-message {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.calibration-countdown {
+  font-size: 2.5rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.calibration-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
