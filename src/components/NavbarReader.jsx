@@ -8,12 +8,13 @@ export default function NavbarReader({
   onPrevious,
   disableNext,
   disablePrevious,
-  zoomPluginInstance,
+  onZoomIn,
+  onZoomOut,
+  disableZoomIn,
+  disableZoomOut,
 }) {
   const navigate = useNavigate();
   const [showComingSoon, setShowComingSoon] = useState(false);
-  const ZoomInControl = zoomPluginInstance?.ZoomIn;
-  const ZoomOutControl = zoomPluginInstance?.ZoomOut;
 
   return (
     <>
@@ -69,69 +70,39 @@ export default function NavbarReader({
 
         {/* Zoom controls */}
         <div className="dark group navbar-button-container">
-          {ZoomInControl ? (
-            <ZoomInControl>
-              {({ onClick }) => (
-                <button className="nav-button svg-button" onClick={onClick}>
-                  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M21 21L16.65 16.65M11 8V14M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="svg-label">Zoom In</span>
-                </button>
-              )}
-            </ZoomInControl>
-          ) : (
-            <button className="nav-button svg-button" disabled>
-              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M21 21L16.65 16.65M11 8V14M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="svg-label">Zoom In</span>
-            </button>
-          )}
+          <button
+            className="nav-button svg-button"
+            onClick={onZoomIn}
+            disabled={disableZoomIn}
+          >
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 21L16.65 16.65M11 8V14M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="svg-label">Zoom In</span>
+          </button>
 
-          {ZoomOutControl ? (
-            <ZoomOutControl>
-              {({ onClick }) => (
-                <button className="nav-button svg-button" onClick={onClick}>
-                  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M21 21L16.65 16.65M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="svg-label">Zoom Out</span>
-                </button>
-              )}
-            </ZoomOutControl>
-          ) : (
-            <button className="nav-button svg-button" disabled>
-              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M21 21L16.65 16.65M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="svg-label">Zoom Out</span>
-            </button>
-          )}
+          <button
+            className="nav-button svg-button"
+            onClick={onZoomOut}
+            disabled={disableZoomOut}
+          >
+            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 21L16.65 16.65M8 11H14M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="svg-label">Zoom Out</span>
+          </button>
         </div>
 
         {/* Search + Settings */}

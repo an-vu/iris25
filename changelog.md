@@ -96,17 +96,3 @@
 - Began transferring **Toddle/Nordcraft** prototype elements to HTML/CSS
 
 ---
-
-# Todos
-
-- [x] Set up new React workflow
-- [ ] Transfer all components from Toddle to GitHub
-
-  - [x] Home page (almost done)
-  - [ ] Reader page (in progress)
-- [ ] Improve and optimize structure
-- [ ] Implement **eye tracking**
-- [ ] Update **README.md** on GitHub
-
----
-
