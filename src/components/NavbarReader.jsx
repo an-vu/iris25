@@ -3,7 +3,7 @@ import { useState } from "react";
 import IrisToggle from "../components/IrisToggle.jsx";
 import ComingSoon from "../components/ComingSoon.jsx";
 
-export default function NavbarReader() {
+export default function NavbarReader({ onNext, onPrevious, disableNext, disablePrevious }) {
   const navigate = useNavigate();
   const [showComingSoon, setShowComingSoon] = useState(false);
   const handleComingSoon = () => setShowComingSoon(true);
@@ -43,7 +43,11 @@ export default function NavbarReader() {
         {/* Main dark group */}
         <div className="dark group navbar-button-container">
           {/* Previous */}
-          <button className="nav-button svg-button" onClick={handleComingSoon}>
+          <button
+            className="nav-button svg-button"
+            onClick={onPrevious}
+            disabled={disablePrevious}
+          >
             <svg
               width="100%"
               height="100%"
@@ -63,7 +67,11 @@ export default function NavbarReader() {
           </button>
 
           {/* Next */}
-          <button className="nav-button svg-button" onClick={handleComingSoon}>
+          <button
+            className="nav-button svg-button"
+            onClick={onNext}
+            disabled={disableNext}
+          >
             <span className="svg-label">Next</span>
             <svg
               width="100%"

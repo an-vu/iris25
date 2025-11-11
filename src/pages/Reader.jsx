@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { books } from "../data/books.js";
 
 import "../styles/Reader.css";
@@ -15,10 +15,20 @@ import ReaderContainer from "../components/ReaderContainer.jsx";
 export default function Reader() {
   const { bookId } = useParams();
   const currentBook = books[bookId] || {};
+  const files = currentBook.files || ["/iris25/books/test.pdf"];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleNext = () => {
+    if (currentIndex < files.length - 1) setCurrentIndex(currentIndex + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
+  };
 
   useEffect(() => {
-    console.log(`Loaded Reader for book ID: ${bookId}`);
-  }, [bookId]);
+    console.log(`Loaded Reader for book ID: ${bookId}, chapter ${currentIndex + 1}`);
+  }, [bookId, currentIndex]);
 
   return (
     <div className="reader background">
@@ -31,10 +41,15 @@ export default function Reader() {
         </div>
 
         {/* Reader Area */}
-        <ReaderContainer />
+        <ReaderContainer filePath={files[currentIndex]} />
 
         {/* Bottom Navbar */}
-        <NavbarReader />
+        <NavbarReader
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          disableNext={currentIndex === files.length - 1}
+          disablePrevious={currentIndex === 0}
+        />
       </div>
     </div>
   );
