@@ -14,12 +14,14 @@ import "../styles/ReaderContainer.css";
 import NavbarReader from "../components/NavbarReader.jsx";
 import ReaderContainer from "../components/ReaderContainer.jsx";
 
+// Zoom configuration shared by the toolbar controls and animation helpers.
 const ZOOM_LEVELS = [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 5];
 const MIN_ZOOM = ZOOM_LEVELS[0];
 const MAX_ZOOM = ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
 const ZOOM_ANIMATION_DURATION = 220;
 const FALLBACK_STEP = 0.25;
 
+// Reader renders the PDF viewer page and wires up zoom + navigation handlers.
 export default function Reader() {
   const { bookId } = useParams();
   const currentBook = books[bookId] || {};
@@ -51,6 +53,7 @@ export default function Reader() {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1);
   };
 
+  // Smoothly tween to the target zoom level so jumps feel less jarring.
   const animateZoomTo = useCallback(
     (targetScale) => {
       const zoomTo = zoomPluginInstance?.zoomTo;
@@ -97,6 +100,7 @@ export default function Reader() {
     console.log(`Loaded Reader for book ID: ${bookId}, chapter ${currentIndex}`);
   }, [bookId, currentIndex]);
 
+  // Abort any in-flight animations when the component unmounts or handlers change.
   useEffect(() => cancelZoomAnimation, [cancelZoomAnimation]);
 
   const disableZoomIn = currentScale >= MAX_ZOOM - 0.001;
@@ -154,6 +158,7 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+// Subscribes to zoom plugin scale updates and forwards them to React state.
 function ZoomScaleObserver({ pluginInstance, onScaleChange }) {
   if (!pluginInstance?.CurrentScale) return null;
   const CurrentScale = pluginInstance.CurrentScale;
@@ -166,6 +171,7 @@ function ZoomScaleObserver({ pluginInstance, onScaleChange }) {
   );
 }
 
+// Bridge component so we can run a React effect whenever the plugin scale changes.
 function ScaleEffect({ scale, onScaleChange }) {
   useEffect(() => {
     onScaleChange(scale);

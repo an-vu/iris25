@@ -1,31 +1,39 @@
 # Changelog
 
-## November 14
+## November 18
 
 - Moved all SVG files into `src/icons/` for cleaner structure
 - Reader page polish:
   - Added shy mode
   - Added background toggle (colorful/neutral)
   - Fixed PDF border sizing
+- Add Redux and Context
 
-## November 13
+## November 16
 
 - Added reading progress saving (remembers last page)
 - Added notes/highlights sidebar
 - Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
 - Planned to add service worker for offline access
 
-## November 12
+## November 14
 
 - Implemented “Add a New Book” with file picker
 - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Began lazy-loading chapters (load only when needed)
 
-## November 11
+## November 12
 
 - Split calibration into a separate window (accessible from Home and Reader pages)
 - Rewrote calibration tutorial for better clarity
 - Improved tracking accuracy (mouse-click alignment helps calibration)
+
+## November 10
+
+- Scrolling with eye tracking works now
+- Added eye tracking calibration
+- Iris toggle button works now
+- turn camera off after iris toggle to off
 
 ## November 10
 

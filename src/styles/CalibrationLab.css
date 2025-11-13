@@ -1,0 +1,149 @@
+.calibration-lab {
+  min-height: 100vh;
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+  background: radial-gradient(circle at top, #1f2230, #0d0f16 70%);
+  color: #f7f8fc;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.calibration-lab__header {
+  max-width: 720px;
+  margin-bottom: 2rem;
+}
+
+.calibration-lab__header h1 {
+  font-size: clamp(2rem, 2.5vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+
+.calibration-lab__header p {
+  margin: 0;
+  color: rgba(247, 248, 252, 0.75);
+  line-height: 1.5;
+}
+
+.calibration-lab__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.calibration-card {
+  background: rgba(13, 14, 22, 0.75);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+}
+
+.calibration-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.calibration-card p,
+.calibration-card li {
+  color: rgba(247, 248, 252, 0.8);
+  line-height: 1.6;
+}
+
+.calibration-card ul {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.calibration-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.calibration-controls label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(247, 248, 252, 0.7);
+}
+
+.calibration-controls input[type="range"] {
+  width: 100%;
+}
+
+.calibration-controls textarea {
+  width: 100%;
+  min-height: 90px;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  padding: 0.75rem;
+  resize: vertical;
+  font-size: 0.95rem;
+}
+
+.calibration-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.calibration-buttons button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.calibration-buttons button:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #5f8bff, #7a5cff);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(111, 123, 255, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-danger {
+  background: rgba(255, 99, 132, 0.2);
+  color: #ff6384;
+  border: 1px solid rgba(255, 99, 132, 0.35);
+}
+
+.calibration-status {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.status-pill {
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.status-pill h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.status-pill p {
+  margin: 0.25rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
