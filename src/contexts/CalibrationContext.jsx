@@ -22,7 +22,8 @@ const CalibrationContext = createContext(null);
 export function CalibrationProvider({ children }) {
   const [eyeTrackingEnabled, setEyeTrackingEnabled] = useEyeTrackingPreference();
   const [hasAcceptedCamera, setHasAcceptedCamera] = useState(false);
-  const { gaze, isReady, error } = useWebGazer(eyeTrackingEnabled && hasAcceptedCamera);
+  const [debugOverlays, setDebugOverlays] = useState(false);
+  const { gaze, isReady, error } = useWebGazer(eyeTrackingEnabled && hasAcceptedCamera, debugOverlays);
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationStep, setCalibrationStep] = useState(-1);
   const [calibrationCountdown, setCalibrationCountdown] = useState(0);
@@ -134,6 +135,8 @@ export function CalibrationProvider({ children }) {
       setHasAcceptedCamera(false);
       setEyeTrackingEnabled(false);
     },
+    debugOverlays,
+    setDebugOverlays,
   };
 
   return (

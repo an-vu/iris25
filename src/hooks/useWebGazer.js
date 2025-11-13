@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 // Lazy-load WebGazer from a CDN so end users only download it when needed.
 const WEBGAZER_CDN = "https://cdn.jsdelivr.net/npm/webgazer/dist/webgazer.min.js";
 
-export default function useWebGazer(enabled = true) {
+export default function useWebGazer(enabled = true, debugOverlays = false) {
   const [gaze, setGaze] = useState({ x: null, y: null });
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState(null);
@@ -61,7 +61,10 @@ export default function useWebGazer(enabled = true) {
             }
           });
 
-        // Debug overlays are toggled on/off by the calibration helper so leave them as-is here.
+        window.webgazer.showVideo(debugOverlays);
+        window.webgazer.showFaceOverlay(debugOverlays);
+        window.webgazer.showFaceFeedbackBox?.(debugOverlays);
+        window.webgazer.showPredictionPoints(debugOverlays);
 
         console.info("[WebGazer] Initializing...");
         await window.webgazer.begin();
