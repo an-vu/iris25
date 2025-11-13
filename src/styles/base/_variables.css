@@ -1,0 +1,45 @@
+:root {
+  --color-white: #fffefe;
+  --color-text-900: #171717;
+  --color-text-700: #262626;
+  --color-text-500: #737373;
+  --color-panel: #f7f8fc;
+  --color-panel-alt: #f5f5fa;
+  --color-surface: #f9f9f9;
+  --color-overlay: rgba(6, 8, 15, 0.8);
+  --color-overlay-dark: rgba(13, 14, 22, 0.8);
+  --color-iris-dark: rgba(51, 51, 51, 0.7);
+  --color-iris-dark-strong: rgba(51, 51, 51, 0.85);
+  --color-iris-panel: rgba(51, 51, 51, 0.2);
+  --color-iris-panel-strong: rgba(51, 51, 51, 0.35);
+  --color-accent: #fe2c55;
+  --color-accent-border: #ff3b30;
+  --color-danger: #ff6384;
+  --gradient-primary: linear-gradient(135deg, #5f8bff, #7a5cff);
+
+  --shadow-card: 0 20px 45px rgba(0, 0, 0, 0.35);
+  --shadow-card-strong: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 35px 90px rgba(5, 5, 10, 0.65);
+  --shadow-button: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  --blur-sm: 8px;
+  --blur-md: 18px;
+  --blur-lg: 30px;
+  --blur-xl: 40px;
+
+  --radius-card: 1.25rem;
+  --radius-panel: 1.5rem;
+  --radius-pill: 999px;
+
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --text-shadow-soft: 0.5px 0.5px 1px rgba(255, 255, 255, 0.25),
+    -0.5px -0.5px 1px rgba(0, 0, 0, 0.1);
+}

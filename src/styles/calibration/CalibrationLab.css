@@ -1,9 +1,8 @@
 .reader.background.calibration-lab {
   min-height: 100vh;
   background: radial-gradient(circle at top, #1f2230, #0d0f16 70%);
-  color: #f7f8fc;
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  color: var(--color-panel);
+  font-family: var(--font-sans);
   position: relative;
 }
 
@@ -12,7 +11,7 @@
 }
 
 .calibration-lab .title {
-  color: #f7f8fc;
+  color: var(--color-panel);
 }
 
 .calibration-lab .author {
@@ -34,13 +33,13 @@
 }
 
 .calibration-card {
-  background: rgba(13, 14, 22, 0.8);
-  border-radius: 1.25rem;
+  background: var(--color-overlay-dark);
+  border-radius: var(--radius-card);
   padding: 1.5rem;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-card);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
 }
 
 .calibration-card h2 {
@@ -64,7 +63,7 @@
 }
 
 .draggable-card.is-dragging {
-  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-card-strong);
 }
 
 .draggable-card__handle {
@@ -191,7 +190,7 @@
 
 .calibration-buttons button {
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0.6rem 1.6rem;
   font-weight: 600;
   font-size: 0.95rem;
@@ -204,19 +203,19 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #5f8bff, #7a5cff);
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--color-white);
   box-shadow: 0 12px 25px rgba(111, 123, 255, 0.4);
 }
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: var(--color-white);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-danger {
   background: rgba(255, 99, 132, 0.2);
-  color: #ff6384;
+  color: var(--color-danger);
   border: 1px solid rgba(255, 99, 132, 0.35);
 }

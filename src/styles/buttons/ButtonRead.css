@@ -24,14 +24,14 @@
 
   font-size: 1.3rem;
   letter-spacing: 0.5px;
-  color: #fff;
+  color: var(--color-white);
   text-decoration: none;
-  background-color: #fe2c55;
-  border: 0.5px solid #ff3b30;
+  background-color: var(--color-accent);
+  border: 0.5px solid var(--color-accent-border);
   border-radius: 10px;
   cursor: pointer;
 
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-button);
 
   will-change: transform, opacity, filter;
   backface-visibility: hidden;
@@ -57,6 +57,6 @@
 .book-card.centered .read-button:hover {
   transform: scale(1.15);
   box-shadow: 0 0 40px #ea284e inset;
-  background-color: #fe2c55;
-  color: #fff;
+  background-color: var(--color-accent);
+  color: var(--color-white);
 }

@@ -4,16 +4,16 @@
   background: rgba(0, 0, 0, 0.55);
   z-index: 2147483640;
   pointer-events: none;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .calibration-card {
   position: absolute;
   background: rgba(20, 20, 20, 0.9);
-  border-radius: 1.25rem;
+  border-radius: var(--radius-card);
   padding: 1rem 1.5rem;
   width: min(420px, 95vw);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-card-strong);
 }
 
 .calibration-content {
@@ -61,5 +61,5 @@
   overflow: hidden;
   z-index: 2147483650;
   pointer-events: none;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-card);
 }

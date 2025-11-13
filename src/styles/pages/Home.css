@@ -72,8 +72,8 @@
     --bg2 3s ease,
     --bg3 3s ease,
     --bg4 3s ease;
-  color: white;
-  font-family: sans-serif;
+  color: var(--color-white);
+  font-family: var(--font-sans);
   perspective: 1000px;
 }
 

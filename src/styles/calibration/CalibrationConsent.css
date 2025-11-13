@@ -1,8 +1,8 @@
 .calibration-consent {
   position: fixed;
   inset: 0;
-  background: rgba(6, 8, 15, 0.8);
-  backdrop-filter: blur(18px);
+  background: var(--color-overlay);
+  backdrop-filter: blur(var(--blur-md));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,9 +16,9 @@
   padding: clamp(1.5rem, 4vw, 3rem);
   background: rgba(18, 21, 31, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 35px 90px rgba(5, 5, 10, 0.65);
-  color: #f5f5fa;
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  box-shadow: var(--shadow-modal);
+  color: var(--color-panel-alt);
+  font-family: var(--font-sans);
 }
 
 .calibration-consent__eyebrow {
@@ -54,7 +54,7 @@
 
 .consent-btn {
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0.85rem 1.75rem;
   font-weight: 600;
   font-size: 0.95rem;
@@ -67,13 +67,13 @@
 }
 
 .consent-btn.primary {
-  background: linear-gradient(135deg, #5f8bff, #7a5cff);
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--color-white);
   box-shadow: 0 12px 24px rgba(92, 121, 255, 0.45);
 }
 
 .consent-btn.secondary {
   background: transparent;
-  color: #fff;
+  color: var(--color-white);
   border: 1px solid rgba(255, 255, 255, 0.35);
 }

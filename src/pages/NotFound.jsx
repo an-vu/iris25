@@ -16,7 +16,7 @@ export default function NotFound() {
         </div>
 
         {/* Reader Area — reuse ReaderContainer but pass test.pdf */}
-        <ReaderContainer files={["/iris25/books/test.pdf"]} />
+        <ReaderContainer filePath="/iris25/books/test.pdf" />
 
         {/* Bottom Navbar */}
         <NavbarReader onlyHome />

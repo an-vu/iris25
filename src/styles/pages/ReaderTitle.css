@@ -11,11 +11,9 @@
     padding: 0 3vw;
     gap: 7px;
 
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-display);
     letter-spacing: 0.3px;
-    text-shadow:
-        0.5px 0.5px 1px rgba(255, 255, 255, 0.25),
-        -0.5px -0.5px 1px rgba(0, 0, 0, 0.1);
+    text-shadow: var(--text-shadow-soft);
 }
 
 .title-container h1,
@@ -27,7 +25,7 @@
 
 /* Title */
 .title {
-    color: var(--grey-900, #171717);
+    color: var(--color-text-900);
     font-size: clamp(.3rem, 2vw, 2rem);
     font-weight: var(--font-weight-semi-bold, 600);
     line-height: 1;
@@ -35,7 +33,7 @@
 
 /* Author / Subtitle */
 .author {
-    color: var(--grey-500, #737373);
+    color: var(--color-text-500);
     font-size: clamp(.2rem, 1.3vw, 1.3rem);
     font-weight: var(--font-weight-regular, 400);
     line-height: 1;
