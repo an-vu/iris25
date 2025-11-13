@@ -31,6 +31,15 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const [buttonRects, setButtonRects] = useState({ up: null, down: null });
   const [isGazeScrolling, setIsGazeScrolling] = useState({ up: false, down: false });
   const gazeTimeoutRef = useRef({ up: null, down: null });
+  const [pageVisible, setPageVisible] = useState(
+    typeof document === "undefined" ? true : document.visibilityState === "visible"
+  );
+
+  useEffect(() => {
+    const handleVisibility = () => setPageVisible(document.visibilityState === "visible");
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   // Core scrolling helper shared by gaze buttons and eye tracking.
   const scrollViewer = useCallback((offset) => {
@@ -89,7 +98,8 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
       gaze.x == null ||
       gaze.y == null ||
       isCalibrating ||
-      status !== "ready"
+      status !== "ready" ||
+      !pageVisible
     )
       return;
     const { up, down } = buttonRects;
@@ -136,14 +146,31 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
       clearTimeout(gazeTimeoutRef.current.down);
       gazeTimeoutRef.current.down = null;
     }
-  }, [eyeTrackingEnabled, hasAcceptedCamera, gaze, buttonRects, isGazeScrolling, scrollViewer, isCalibrating]);
+  }, [
+    eyeTrackingEnabled,
+    hasAcceptedCamera,
+    gaze,
+    buttonRects,
+    isGazeScrolling,
+    scrollViewer,
+    isCalibrating,
+    status,
+    pageVisible,
+  ]);
 
   useEffect(() => {
     gazeRef.current = gaze;
   }, [gaze]);
 
   useEffect(() => {
-    if (status !== "ready") return undefined;
+    if (
+      !eyeTrackingEnabled ||
+      !hasAcceptedCamera ||
+      status !== "ready" ||
+      !pageVisible ||
+      typeof document === "undefined"
+    )
+      return undefined;
     const zoneHeight = window.innerHeight * SCROLL_ZONE_RATIO;
     const topZone = zoneHeight;
     const bottomZone = window.innerHeight - zoneHeight;
@@ -159,7 +186,7 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     }, AUTO_SCROLL_INTERVAL);
 
     return () => clearInterval(intervalId);
-  }, [scrollViewer, status]);
+  }, [eyeTrackingEnabled, hasAcceptedCamera, pageVisible, scrollViewer, status]);
 
   // Cleanup: make sure timers are cleared if the component unmounts.
   useEffect(() => {

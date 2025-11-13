@@ -18,6 +18,7 @@ export default function CalibrationOverlay({
   accuracyDuration = 0,
   showAccuracyPrompt = false,
   showHud = false,
+  canStart = true,
 }) {
   if (phase === "instructions") {
     return (
@@ -29,11 +30,16 @@ export default function CalibrationOverlay({
             cursor with your eyes. This teaches Iris how your gaze maps to the screen.
           </p>
           <p className="calibration-note subtle">When you finish all nine points we’ll measure overall accuracy in one last step.</p>
+          {!canStart && (
+            <p className="calibration-note subtle">
+              Warming up the camera feed… hold on a second before starting.
+            </p>
+          )}
           <div className="calibration-actions">
             <button type="button" className="debug-btn secondary" onClick={onCancel}>
               Cancel
             </button>
-            <button type="button" className="debug-btn primary" onClick={onStart}>
+            <button type="button" className="debug-btn primary" onClick={onStart} disabled={!canStart}>
               Start calibrating
             </button>
           </div>

@@ -13,6 +13,7 @@ import { showWebgazerVideo, hideWebgazerVideo, restoreWebgazerVideo } from "../u
 import { CalibrationOverlay, CalibrationConsent, AccuracyResultModal } from "../components";
 
 const CalibrationContext = createContext(null);
+const CLICK_DWELL_MS = 450;
 
 export function CalibrationProvider({ children }) {
   const [eyeTrackingEnabled, setEyeTrackingEnabled] = useEyeTrackingPreference();
@@ -20,6 +21,7 @@ export function CalibrationProvider({ children }) {
   const [debugOverlays, setDebugOverlays] = useState(false);
   const {
     gaze,
+    rawGaze,
     status: engineStatus,
     error,
     start,
@@ -27,13 +29,20 @@ export function CalibrationProvider({ children }) {
     pause,
     resume,
     clearData,
+    resetSmoothing,
     saveDataAcrossSessions,
+    hasInitialSample,
   } = useWebGazerEngine();
 
   const gazeRef = useRef(null);
   useEffect(() => {
     gazeRef.current = gaze;
   }, [gaze]);
+
+  const rawGazeRef = useRef(null);
+  useEffect(() => {
+    rawGazeRef.current = rawGaze;
+  }, [rawGaze]);
 
   const [calibrationSequence, setCalibrationSequence] = useState(CALIBRATION_POINTS);
   const [calibrationIndex, setCalibrationIndex] = useState(0);
@@ -52,6 +61,7 @@ export function CalibrationProvider({ children }) {
   const hasCalibratedRef = useRef(false);
   const autoPromptedRef = useRef(false);
   const videoMountRef = useRef(null);
+  const lastClickTimeRef = useRef(0);
 
   const currentCalibrationPoint = useMemo(() => calibrationSequence[calibrationIndex] ?? null, [
     calibrationSequence,
@@ -85,11 +95,12 @@ export function CalibrationProvider({ children }) {
     hasCalibratedRef.current = false;
     autoPromptedRef.current = false;
     clearAccuracyState();
+    resetSmoothing();
     hideWebgazerVideo();
     restoreWebgazerVideo();
     setCalibrationPhase("hidden");
     setShowAccuracyPrompt(false);
-  }, [clearAccuracyState]);
+  }, [clearAccuracyState, resetSmoothing]);
 
   const startTracking = useCallback(() => {
     setEyeTrackingEnabled(true);
@@ -123,6 +134,7 @@ export function CalibrationProvider({ children }) {
 
   const requestCalibration = useCallback(() => {
     clearAccuracyState();
+    resetSmoothing();
     setIsCalibrating(false);
     setIsAccuracyPhase(false);
     setCalibrationIndex(0);
@@ -130,11 +142,12 @@ export function CalibrationProvider({ children }) {
     setCalibrationPhase("instructions");
     autoPromptedRef.current = true;
     setShowAccuracyPrompt(false);
-  }, [clearAccuracyState]);
+  }, [clearAccuracyState, resetSmoothing]);
 
   const beginCalibration = useCallback(() => {
-    if (!eyeTrackingEnabled || !hasAcceptedCamera) return;
+    if (!eyeTrackingEnabled || !hasAcceptedCamera || !hasInitialSample) return;
     clearData();
+    resetSmoothing();
     setCalibrationSequence(buildCalibrationSequence());
     setCalibrationIndex(0);
     setClickCount(0);
@@ -146,10 +159,11 @@ export function CalibrationProvider({ children }) {
     setAccuracyQuality(null);
     setShowAccuracyPrompt(false);
     resume();
-  }, [clearData, eyeTrackingEnabled, hasAcceptedCamera, resume]);
+  }, [clearData, eyeTrackingEnabled, hasAcceptedCamera, hasInitialSample, resetSmoothing, resume]);
 
   const cancelCalibration = useCallback(() => {
     clearAccuracyState();
+    resetSmoothing();
     setIsCalibrating(false);
     setIsAccuracyPhase(false);
     setCalibrationIndex(0);
@@ -158,13 +172,15 @@ export function CalibrationProvider({ children }) {
     hideWebgazerVideo();
     restoreWebgazerVideo();
     setShowAccuracyPrompt(false);
-  }, [clearAccuracyState]);
+    autoPromptedRef.current = false;
+  }, [clearAccuracyState, resetSmoothing]);
 
   useEffect(() => {
     if (
       eyeTrackingEnabled &&
       hasAcceptedCamera &&
       engineStatus === EyeTrackingEngineStatus.running &&
+      hasInitialSample &&
       !hasCalibratedRef.current &&
       !autoPromptedRef.current &&
       calibrationPhase === "hidden"
@@ -176,6 +192,8 @@ export function CalibrationProvider({ children }) {
     eyeTrackingEnabled,
     hasAcceptedCamera,
     engineStatus,
+    hasInitialSample,
+    hasInitialSample,
     autoPromptedRef,
     calibrationPhase,
   ]);
@@ -216,7 +234,7 @@ export function CalibrationProvider({ children }) {
       const now = performance.now();
       const elapsed = now - startedAt;
       setAccuracyTimeLeft(Math.max(0, ACCURACY_DURATION_MS - elapsed));
-      const sample = gazeRef.current;
+      const sample = rawGazeRef.current;
       if (sample && sample.x != null && sample.y != null) {
         accuracySamplesRef.current.push({ x: sample.x, y: sample.y });
       }
@@ -254,6 +272,9 @@ export function CalibrationProvider({ children }) {
 
   const handleCalibrationClick = useCallback(() => {
     if (!isCalibrating || !currentCalibrationPoint) return;
+    const now = performance.now();
+    if (now - lastClickTimeRef.current < CLICK_DWELL_MS) return;
+    lastClickTimeRef.current = now;
     setClickCount((prev) => {
       const next = prev + 1;
       if (next >= REQUIRED_CLICKS_PER_POINT) {
@@ -383,6 +404,7 @@ export function CalibrationProvider({ children }) {
             onStart={beginCalibration}
             onCancel={cancelCalibration}
             onConfirmAccuracy={confirmAccuracyPrompt}
+            canStart={hasInitialSample}
             isAccuracyPhase={isAccuracyPhase}
             accuracyTimeLeft={accuracyTimeLeft}
             accuracyDuration={ACCURACY_DURATION_MS}
