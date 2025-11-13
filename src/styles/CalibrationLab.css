@@ -58,6 +58,42 @@
   margin: 0;
 }
 
+.draggable-card {
+  transition: box-shadow 120ms ease;
+}
+
+.draggable-card.is-dragging {
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
+}
+
+.draggable-card__handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: grab;
+  user-select: none;
+}
+
+.draggable-card.is-dragging .draggable-card__handle {
+  cursor: grabbing;
+}
+
+.draggable-card__handle h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.drag-hint {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .calibration-lab__overview p {
   margin-bottom: 1.25rem;
 }

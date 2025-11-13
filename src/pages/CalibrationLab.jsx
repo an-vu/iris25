@@ -132,8 +132,7 @@ export default function CalibrationLab() {
 
         <div className="reader-container calibration-lab__shell">
           <div className="calibration-lab__left">
-            <section className="calibration-card calibration-lab__overview">
-              <h2>Overlay Preview Context</h2>
+            <DraggableCard title="Overlay Preview Context" className="calibration-lab__overview">
               <p>
                 Evaluate copy, countdown pacing, and calibration placement while
                 seeing the reader chrome in place. Use the navbar to simulate
@@ -156,10 +155,9 @@ export default function CalibrationLab() {
                   <strong>{isOverlayVisible ? "Visible" : "Hidden"}</strong>
                 </div>
               </div>
-            </section>
+            </DraggableCard>
 
-            <section className="calibration-card">
-              <h2>Design Notes</h2>
+            <DraggableCard title="Design Notes">
               <p>
                 Keep the overlay copy concise so users can focus on the
                 highlighted waypoint. Each step currently runs on a{" "}
@@ -181,13 +179,11 @@ export default function CalibrationLab() {
                   breaks.
                 </li>
               </ul>
-            </section>
+            </DraggableCard>
           </div>
 
           <div className="calibration-lab__right">
-            <section className="calibration-card">
-              <h2>Playback Controls</h2>
-
+            <DraggableCard title="Playback Controls">
               <div className="calibration-status">
                 <div className="status-pill">
                   <h3>Step</h3>
@@ -245,7 +241,7 @@ export default function CalibrationLab() {
                   </button>
                 </div>
               </div>
-            </section>
+            </DraggableCard>
           </div>
         </div>
 
@@ -271,4 +267,76 @@ export default function CalibrationLab() {
       />
     </div>
   );
+}
+
+function DraggableCard({ title, className = "", children }) {
+  const { style, handlePointerDown, isDragging } = useDraggable();
+  const classes = ["calibration-card", "draggable-card", className, isDragging ? "is-dragging" : ""]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <section className={classes} style={style}>
+      <div className="draggable-card__handle" onPointerDown={handlePointerDown}>
+        <h2>{title}</h2>
+        <span className="drag-hint">Drag</span>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function useDraggable(initialPosition = { x: 0, y: 0 }) {
+  const [position, setPosition] = useState(initialPosition);
+  const [isDragging, setIsDragging] = useState(false);
+  const pointerIdRef = useRef(null);
+  const offsetRef = useRef({ x: 0, y: 0 });
+
+  const handlePointerDown = useCallback(
+    (event) => {
+      pointerIdRef.current = event.pointerId;
+      offsetRef.current = {
+        x: event.clientX - position.x,
+        y: event.clientY - position.y,
+      };
+      setIsDragging(true);
+      event.preventDefault();
+    },
+    [position.x, position.y]
+  );
+
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      if (!isDragging || event.pointerId !== pointerIdRef.current) return;
+      setPosition({
+        x: event.clientX - offsetRef.current.x,
+        y: event.clientY - offsetRef.current.y,
+      });
+    };
+
+    const stopDragging = (event) => {
+      if (event.pointerId !== pointerIdRef.current) return;
+      pointerIdRef.current = null;
+      setIsDragging(false);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopDragging);
+    window.addEventListener("pointercancel", stopDragging);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopDragging);
+      window.removeEventListener("pointercancel", stopDragging);
+    };
+  }, [isDragging]);
+
+  return {
+    style: {
+      transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+      zIndex: isDragging ? 20 : undefined,
+    },
+    handlePointerDown,
+    isDragging,
+  };
 }
