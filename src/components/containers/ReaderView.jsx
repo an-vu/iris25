@@ -9,7 +9,7 @@ export default function ReaderView({
   return (
     <div className="reader-view">
       <div className="pdf-placeholder" ref={scrollContainerRef}>
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+        <Worker workerUrl="/iris25/libs/pdf.worker.min.js">
           <Viewer
             fileUrl={filePath}
             theme="light"
