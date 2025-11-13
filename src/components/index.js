@@ -12,3 +12,5 @@ export { default as IrisToggle } from "./buttons/IrisToggle.jsx";
 
 export { default as CalibrationOverlay } from "./calibration/CalibrationOverlay.jsx";
 export { default as CalibrationConsent } from "./calibration/CalibrationConsent.jsx";
+export { default as AccuracyResultModal } from "./calibration/AccuracyResultModal.jsx";
+export { default as CalibrationHUD } from "./calibration/CalibrationHUD.jsx";

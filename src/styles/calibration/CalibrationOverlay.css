@@ -7,6 +7,40 @@
   color: var(--color-white);
 }
 
+.calibration-overlay.instructions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  pointer-events: auto;
+}
+
+.calibration-overlay .calibration-card {
+  width: min(480px, 95vw);
+  background: rgba(10, 12, 18, 0.92);
+  border-radius: var(--radius-card);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  text-align: center;
+}
+
+.calibration-card h3 {
+  margin-bottom: 0.75rem;
+}
+
+.calibration-note.subtle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.calibration-card .calibration-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
 .calibration-click {
   position: absolute;
   width: 48px;
@@ -27,10 +61,11 @@
   backdrop-filter: blur(var(--blur-md));
   -webkit-backdrop-filter: blur(var(--blur-md));
   transition: transform 150ms ease, background 150ms ease, opacity 150ms ease;
+  transform: translate(-50%, -50%);
 }
 
 .calibration-click:hover:not(:disabled) {
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
   opacity: 1;
   background-color: var(--color-iris-dark-strong);
 }

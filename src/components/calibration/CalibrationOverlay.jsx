@@ -1,6 +1,8 @@
 // src/components/calibration/CalibrationOverlay.jsx
+import CalibrationHUD from "./CalibrationHUD.jsx";
 
 export default function CalibrationOverlay({
+  phase,
   step,
   totalSteps,
   clicksRemaining,
@@ -8,13 +10,60 @@ export default function CalibrationOverlay({
   message,
   targetStyle,
   onTargetClick,
+  onStart,
+  onCancel,
+  onConfirmAccuracy,
   isAccuracyPhase = false,
   accuracyTimeLeft = 0,
   accuracyDuration = 0,
+  showAccuracyPrompt = false,
+  showHud = false,
 }) {
-  if (step < 0) return null;
-  const completed = clicksRemaining <= 0;
+  if (phase === "instructions") {
+    return (
+      <div className="calibration-overlay instructions">
+        <div className="calibration-card">
+          <h3>Iris Eye Calibration</h3>
+          <p>
+            Click each of the nine points five times while keeping your eyes on the button and following your
+            cursor with your eyes. This teaches Iris how your gaze maps to the screen.
+          </p>
+          <p className="calibration-note subtle">When you finish all nine points we’ll measure overall accuracy in one last step.</p>
+          <div className="calibration-actions">
+            <button type="button" className="debug-btn secondary" onClick={onCancel}>
+              Cancel
+            </button>
+            <button type="button" className="debug-btn primary" onClick={onStart}>
+              Start calibrating
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
+  if (phase === "preAccuracy" && showAccuracyPrompt) {
+    return (
+      <div className="calibration-overlay instructions">
+        <div className="calibration-card">
+          <h3>Calculating measurement</h3>
+          <p>
+            Please keep your mouse still and stare at the center dot for the next five seconds. This lets Iris
+            measure how accurate the prediction is.
+          </p>
+          <div className="calibration-actions">
+            <button type="button" className="debug-btn primary" onClick={onConfirmAccuracy}>
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase !== "dots" && phase !== "accuracy") return null;
+
+  const completed = clicksRemaining <= 0;
   const secondsLeft = accuracyDuration
     ? Math.max(0, Math.ceil(accuracyTimeLeft / 1000))
     : 0;
@@ -37,35 +86,17 @@ export default function CalibrationOverlay({
         {buttonLabel}
       </button>
 
-      <div className="calibration-info">
-        <p className="calibration-step">
-          Point {Math.min(step + 1, totalSteps)} / {totalSteps}
-        </p>
-        <h3 className="calibration-message">{message}</h3>
-        {isAccuracyPhase ? (
-          <>
-            <p className="calibration-note">
-              Hold your gaze on the center dot for {secondsLeft}s to measure overall accuracy.
-            </p>
-            <p className="calibration-note subtle">
-              Stay steady—this quick check helps Iris map your eyes more precisely.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="calibration-note">
-              {completed
-                ? "Great! Moving to the next point..."
-                : `Click the dot ${clicksRemaining} more time${
-                    clicksRemaining === 1 ? "" : "s"
-                  } while keeping your eyes on it.`}
-            </p>
-            <p className="calibration-note subtle">
-              Each click teaches Iris where you’re looking. {clickTarget} clicks per point keeps accuracy solid.
-            </p>
-          </>
-        )}
-      </div>
+      {showHud && (
+        <CalibrationHUD
+          step={step}
+          totalSteps={totalSteps}
+          message={message}
+          clicksRemaining={clicksRemaining}
+          clickTarget={clickTarget}
+          isAccuracyPhase={isAccuracyPhase}
+          accuracySecondsLeft={secondsLeft}
+        />
+      )}
     </div>
   );
 }

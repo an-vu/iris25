@@ -23,7 +23,7 @@
 - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Began lazy-loading chapters (load only when needed)
 
-## November 12
+## November 12-13
 
 - Split calibration into a separate window (accessible from Home and Reader pages)
 - Rewrote calibration tutorial for better clarity

@@ -1,17 +1,18 @@
 // src/utils/calibrationConfig.js
 
-export const CALIBRATION_POINTS = [
-  { id: "top-left", x: 0.1, y: 0.1, label: "Top left (look and click five times)" },
-  { id: "top-center", x: 0.5, y: 0.1, label: "Top center (look and click five times)" },
-  { id: "top-right", x: 0.9, y: 0.1, label: "Top right (look and click five times)" },
-  { id: "mid-left", x: 0.1, y: 0.5, label: "Middle left (look and click five times)" },
-  { id: "center", x: 0.5, y: 0.5, label: "Center (look and click five times)" },
-  { id: "mid-right", x: 0.9, y: 0.5, label: "Middle right (look and click five times)" },
-  { id: "bottom-left", x: 0.1, y: 0.9, label: "Bottom left (look and click five times)" },
-  { id: "bottom-center", x: 0.5, y: 0.9, label: "Bottom center (look and click five times)" },
-  { id: "bottom-right", x: 0.9, y: 0.9, label: "Bottom right (look and click five times)" },
-];
+const EDGE_OFFSET = 0.05; // keeps dots very close to the border without clipping
 
+export const CALIBRATION_POINTS = [
+  { id: "top-left", x: EDGE_OFFSET, y: EDGE_OFFSET, label: "Top left (look and click five times)" },
+  { id: "top-center", x: 0.5, y: EDGE_OFFSET, label: "Top center (look and click five times)" },
+  { id: "top-right", x: 1 - EDGE_OFFSET, y: EDGE_OFFSET, label: "Top right (look and click five times)" },
+  { id: "mid-left", x: EDGE_OFFSET, y: 0.5, label: "Middle left (look and click five times)" },
+  { id: "center", x: 0.5, y: 0.5, label: "Center (look and click five times)" },
+  { id: "mid-right", x: 1 - EDGE_OFFSET, y: 0.5, label: "Middle right (look and click five times)" },
+  { id: "bottom-left", x: EDGE_OFFSET, y: 1 - EDGE_OFFSET, label: "Bottom left (look and click five times)" },
+  { id: "bottom-center", x: 0.5, y: 1 - EDGE_OFFSET, label: "Bottom center (look and click five times)" },
+  { id: "bottom-right", x: 1 - EDGE_OFFSET, y: 1 - EDGE_OFFSET, label: "Bottom right (look and click five times)" },
+];
 
 export const REQUIRED_CLICKS_PER_POINT = 5;
 export const ACCURACY_DURATION_MS = 5000;
