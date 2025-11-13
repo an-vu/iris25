@@ -22,14 +22,6 @@
   gap: 1rem;
 }
 
-.calibration-video {
-  position: relative;
-  width: 180px;
-  height: 120px;
-  overflow: hidden;
-  border-radius: 0.75rem;
-}
-
 .calibration-text {
   flex: 1;
   text-align: left;
@@ -57,4 +49,17 @@
   margin: 0;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.75);
+}
+
+.camera-float {
+  position: fixed;
+  width: 220px;
+  height: 140px;
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  z-index: 2147483650;
+  pointer-events: none;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ComingSoon from "../components/ComingSoon.jsx";
-import IrisToggle from "../components/IrisToggle.jsx";
+import ComingSoon from "../cards/ComingSoon.jsx";
+import IrisToggle from "../buttons/IrisToggle.jsx";
 
 export default function NavbarHome() {
   const [showComingSoon, setShowComingSoon] = useState(false);

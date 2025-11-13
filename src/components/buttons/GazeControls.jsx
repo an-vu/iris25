@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-import "../styles/ButtonGaze.css";
 
 const noop = () => {};
 const HOLD_INTERVAL_MS = 150; // ms between repeat scroll actions while holding

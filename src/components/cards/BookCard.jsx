@@ -1,8 +1,7 @@
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "../styles/BookCard.css";
-import ComingSoon from "../components/ComingSoon.jsx";
+import ComingSoon from "./ComingSoon.jsx";
 
 export default function BookCard({ book, positionClass, index }) {
   const navigate = useNavigate();

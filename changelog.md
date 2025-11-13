@@ -8,6 +8,7 @@
   - Added background toggle (colorful/neutral)
   - Fixed PDF border sizing
 - Add Redux and Context
+- Add Tests scripts
 
 ## November 16
 

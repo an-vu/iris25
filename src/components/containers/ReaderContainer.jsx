@@ -1,9 +1,8 @@
-// src/components/ReaderContainer.jsx
+// src/components/containers/ReaderContainer.jsx
 import { useRef, useCallback, useEffect, useState } from "react";
 import ReaderView from "./ReaderView.jsx";
-import GazeControls from "./GazeControls.jsx";
-import "../styles/ReaderContainer.css";
-import { useCalibration } from "../contexts/CalibrationContext.jsx";
+import GazeControls from "../buttons/GazeControls.jsx";
+import { useCalibration } from "../../contexts/CalibrationContext.jsx";
 
 // Tunable knobs for easing/scrolling behavior.
 const SCROLL_STEP = 200;

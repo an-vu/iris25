@@ -1,5 +1,4 @@
-import "../styles/ButtonNavbar.css";
-import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference";
+import { useEyeTrackingPreference } from "../../hooks/useEyeTrackingPreference";
 
 export default function IrisToggle() {
   const [irisOn, setIrisOn] = useEyeTrackingPreference();

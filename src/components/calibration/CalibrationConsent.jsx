@@ -1,5 +1,4 @@
 import { createPortal } from "react-dom";
-import "../styles/CalibrationConsent.css";
 
 export default function CalibrationConsent({ onAllow, onCancel }) {
   if (typeof document === "undefined") return null;

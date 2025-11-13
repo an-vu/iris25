@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import IrisToggle from "./IrisToggle.jsx";
-import ComingSoon from "./ComingSoon.jsx";
+import IrisToggle from "../buttons/IrisToggle.jsx";
+import ComingSoon from "../cards/ComingSoon.jsx";
 
 export default function NavbarReader({
   onNext,

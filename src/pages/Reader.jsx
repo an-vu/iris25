@@ -4,15 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { zoomPlugin } from "@react-pdf-viewer/zoom";
 import { books } from "../data/books.js";
 
-import "../styles/Reader.css";
-import "../styles/MasterContainer.css";
-import "../styles/Navbar.css";
-import "../styles/ButtonNavbar.css";
-import "../styles/ReaderTitle.css";
-import "../styles/ReaderContainer.css";
-
-import NavbarReader from "../components/NavbarReader.jsx";
-import ReaderContainer from "../components/ReaderContainer.jsx";
+import { NavbarReader, ReaderContainer } from "../components";
 
 // Zoom configuration shared by the toolbar controls and animation helpers.
 const ZOOM_LEVELS = [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 5];

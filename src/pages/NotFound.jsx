@@ -1,14 +1,5 @@
 import { useEffect } from "react";
-
-import "../styles/Reader.css";
-import "../styles/MasterContainer.css";
-import "../styles/Navbar.css";
-import "../styles/ButtonNavbar.css";
-import "../styles/ReaderTitle.css";
-import "../styles/ReaderContainer.css";
-
-import ReaderContainer from "../components/ReaderContainer.jsx";
-import NavbarReader from "../components/NavbarReader.jsx";
+import { ReaderContainer, NavbarReader } from "../components";
 
 export default function NotFound() {
   useEffect(() => {

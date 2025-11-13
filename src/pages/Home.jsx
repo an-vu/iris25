@@ -1,16 +1,6 @@
 import { useState, useEffect } from "react";
 import { books } from "../data/books.js";
-
-import "../styles/Home.css";
-import "../styles/BookCard.css";
-import "../styles/Navbar.css";
-import "../styles/Button.css";
-import "../styles/ButtonNavbar.css";
-import "../styles/ButtonRead.css";
-import "../styles/ButtonScroll.css";
-
-import BookCard from "../components/BookCard.jsx";
-import Navbar from "../components/NavbarHome.jsx";
+import { BookCard, NavbarHome } from "../components";
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -75,7 +65,7 @@ export default function Home() {
         </div>
 
         {/* Bottom Navbar */}
-        <Navbar />
+        <NavbarHome />
       </div>
     </div>
   );

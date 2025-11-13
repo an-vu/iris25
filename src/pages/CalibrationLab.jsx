@@ -1,18 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CalibrationOverlay from "../components/CalibrationOverlay.jsx";
-import NavbarReader from "../components/NavbarReader.jsx";
+import { CalibrationOverlay, NavbarReader } from "../components";
 import {
   CALIBRATION_POSITIONS,
   POSITION_STYLES,
 } from "../utils/webgazerCalibrate.js";
-import "../styles/Reader.css";
-import "../styles/MasterContainer.css";
-import "../styles/Navbar.css";
-import "../styles/ButtonNavbar.css";
-import "../styles/ReaderTitle.css";
-import "../styles/ReaderContainer.css";
-import "../styles/CalibrationLab.css";
-
 const STEP_DURATION_SECONDS = 10;
 const MOCK_TOTAL_CHAPTERS = 5;
 const MIN_ZOOM = 0.5;
@@ -28,7 +19,6 @@ export default function CalibrationLab() {
   const [isSessionActive, setSessionActive] = useState(false);
   const [mockChapter, setMockChapter] = useState(1);
   const [mockZoom, setMockZoom] = useState(1);
-  const videoRef = useRef(null);
 
   const currentPosition = useMemo(
     () =>
@@ -257,14 +247,13 @@ export default function CalibrationLab() {
         />
       </div>
 
-      <CalibrationOverlay
-        step={overlayStep}
-        totalSteps={totalSteps}
-        countdown={countdown}
-        message={message}
-        positionStyle={currentStyle}
-        videoRef={videoRef}
-      />
+        <CalibrationOverlay
+          step={overlayStep}
+          totalSteps={totalSteps}
+          countdown={countdown}
+          message={message}
+          positionStyle={currentStyle}
+        />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { CalibrationProvider } from "./contexts/CalibrationContext.jsx";
 import "./index.css";
+import "./styles";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter basename="/iris25/">

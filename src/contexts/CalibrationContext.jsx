@@ -8,10 +8,14 @@ import {
   restoreWebgazerVideo,
   showWebgazerVideo,
 } from "../utils/webgazerCalibrate.js";
-import CalibrationOverlay from "../components/CalibrationOverlay.jsx";
-import CalibrationConsent from "../components/CalibrationConsent.jsx";
+import { CalibrationOverlay, CalibrationConsent } from "../components";
 
 const CAL_STEP_DURATION = 10000;
+const CAMERA_FLOAT_STYLE = {
+  top: "12px",
+  left: "50%",
+  transform: "translateX(-50%)",
+};
 
 const CalibrationContext = createContext(null);
 
@@ -78,7 +82,7 @@ export function CalibrationProvider({ children }) {
         rafId = requestAnimationFrame(mountVideo);
         return;
       }
-      showWebgazerVideo(currentPoint.id, mountTarget);
+      showWebgazerVideo("camera-float", mountTarget);
     };
     mountVideo();
     setCalibrationCountdown(CAL_STEP_DURATION / 1000);
@@ -142,14 +146,16 @@ export function CalibrationProvider({ children }) {
         }} />
       )}
       {overlayVisible && currentCalibrationPoint && (
-        <CalibrationOverlay
-          step={Math.min(calibrationStep, CALIBRATION_POSITIONS.length - 1)}
-          totalSteps={CALIBRATION_POSITIONS.length}
-          countdown={calibrationCountdown}
-          message={currentCalibrationPoint.label}
-          positionStyle={POSITION_STYLES[currentCalibrationPoint.id]}
-          videoRef={videoMountRef}
-        />
+        <>
+          <div className="camera-float" ref={videoMountRef} style={CAMERA_FLOAT_STYLE} />
+          <CalibrationOverlay
+            step={Math.min(calibrationStep, CALIBRATION_POSITIONS.length - 1)}
+            totalSteps={CALIBRATION_POSITIONS.length}
+            countdown={calibrationCountdown}
+            message={currentCalibrationPoint.label}
+            positionStyle={POSITION_STYLES[currentCalibrationPoint.id]}
+          />
+        </>
       )}
     </CalibrationContext.Provider>
   );

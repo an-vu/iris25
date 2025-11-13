@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "../styles/ComingSoon.css";
 
 export default function ComingSoon({ show, onClose, message }) {
   // Close with ESC key
