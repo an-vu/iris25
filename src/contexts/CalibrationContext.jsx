@@ -2,12 +2,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import useWebGazerEngine, { EyeTrackingEngineStatus } from "../hooks/useWebGazer.js";
 import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference.js";
+import { hideWebgazerVideo, restoreWebgazerVideo, showWebgazerVideo } from "../utils/webgazerVideo.js";
 import {
-  CALIBRATION_POSITIONS,
-  hideWebgazerVideo,
-  restoreWebgazerVideo,
-  showWebgazerVideo,
-} from "../utils/webgazerCalibrate.js";
+  CALIBRATION_POINTS,
+  REQUIRED_CLICKS_PER_POINT,
+} from "../utils/calibrationConfig.js";
 import { CalibrationOverlay, CalibrationConsent } from "../components";
 
 const CLICKS_PER_POINT = 5;

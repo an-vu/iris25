@@ -1,8 +1,5 @@
-// src/utils/webgazerCalibrate.js
-// Handles showing, hiding, and positioning the WebGazer debug video during calibration.
-
 const VIDEO_ID = "webgazerVideoFeed";
-const VIDEO_WRAPPER_ID = "webgazerVideoCanvas"; // created by WebGazer internally
+const VIDEO_WRAPPER_ID = "webgazerVideoCanvas";
 let originalWrapperParent = null;
 
 const DEFAULT_STYLE = {
@@ -10,27 +7,6 @@ const DEFAULT_STYLE = {
   left: "16px",
 };
 
-export const POSITION_STYLES = {
-  "top-left": { top: "16px", left: "16px" },
-  "top-right": { top: "16px", right: "16px" },
-  "bottom-right": { bottom: "16px", right: "16px" },
-  "bottom-left": { bottom: "16px", left: "16px" },
-  center: { top: "50%", left: "50%", transform: "translate(-50%, -50%)" },
-};
-
-export const CALIBRATION_POSITIONS = [
-  { id: "top-left", x: 0.15, y: 0.15, label: "Look at the top-left point and click it five times." },
-  { id: "top-center", x: 0.5, y: 0.15, label: "Move to the top-center point, keep your gaze there, and click five times." },
-  { id: "top-right", x: 0.85, y: 0.15, label: "Focus on the top-right point and click five times." },
-  { id: "middle-left", x: 0.15, y: 0.5, label: "Look at the middle-left point and click five times." },
-  { id: "center", x: 0.5, y: 0.5, label: "Stay centered and click five times." },
-  { id: "middle-right", x: 0.85, y: 0.5, label: "Look at the middle-right point and click five times." },
-  { id: "bottom-left", x: 0.15, y: 0.85, label: "Look at the bottom-left point and click five times." },
-  { id: "bottom-center", x: 0.5, y: 0.85, label: "Look at the bottom-center point and click five times." },
-  { id: "bottom-right", x: 0.85, y: 0.85, label: "Look at the bottom-right point and click five times." },
-];
-
-// ---------------- helpers ----------------
 function applyStyle(node, style = DEFAULT_STYLE) {
   if (!node) return;
   node.style.position = "fixed";
@@ -70,8 +46,7 @@ function applyOverlayStyles(wrapper, video) {
   video.style.objectFit = "cover";
 }
 
-// ---------------- main functions ----------------
-export function showWebgazerVideo(positionId, mountNode) {
+export function showWebgazerVideo(positionId, mountNode, positionStyles = {}) {
   if (!window.webgazer) return;
   window.webgazer.showVideo(true);
   window.webgazer.showFaceOverlay(true);
@@ -84,17 +59,15 @@ export function showWebgazerVideo(positionId, mountNode) {
 
   ensureOriginalParent(wrapper);
 
-  // mount inside overlay if available
   if (mountNode) {
-    mountNode.style.position = "relative"; // allow absolute children
+    mountNode.style.position = "relative";
     mountNode.appendChild(wrapper);
     applyOverlayStyles(wrapper, video);
   } else {
-    // fallback to fixed positioning
     if (originalWrapperParent && wrapper.parentElement !== originalWrapperParent) {
       originalWrapperParent.appendChild(wrapper);
     }
-    const style = POSITION_STYLES[positionId] || DEFAULT_STYLE;
+    const style = positionStyles[positionId] || DEFAULT_STYLE;
     applyStyle(video, style);
     applyStyle(wrapper, style);
     wrapper.style.width = "";

@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CalibrationOverlay, NavbarReader } from "../components";
-import {
-  CALIBRATION_POSITIONS,
-  POSITION_STYLES,
-} from "../utils/webgazerCalibrate.js";
+import { CALIBRATION_POINTS } from "../utils/calibrationConfig.js";
 const STEP_DURATION_SECONDS = 10;
 const MOCK_TOTAL_CHAPTERS = 5;
 const MIN_ZOOM = 0.5;
@@ -11,10 +8,10 @@ const MAX_ZOOM = 2;
 const ZOOM_STEP = 0.25;
 
 export default function CalibrationLab() {
-  const totalSteps = CALIBRATION_POSITIONS.length;
+  const totalSteps = CALIBRATION_POINTS.length;
   const [step, setStep] = useState(0);
   const [countdown, setCountdown] = useState(STEP_DURATION_SECONDS);
-  const [message, setMessage] = useState(CALIBRATION_POSITIONS[0].label);
+  const [message, setMessage] = useState(CALIBRATION_POINTS[0].label);
   const [isOverlayVisible, setOverlayVisible] = useState(true);
   const [isSessionActive, setSessionActive] = useState(false);
   const [mockChapter, setMockChapter] = useState(1);
@@ -23,19 +20,21 @@ export default function CalibrationLab() {
   const currentPosition = useMemo(
     () =>
       step >= 0 && step < totalSteps
-        ? CALIBRATION_POSITIONS[step]
-        : CALIBRATION_POSITIONS[0],
+        ? CALIBRATION_POINTS[step]
+        : CALIBRATION_POINTS[0],
     [step, totalSteps]
   );
 
-  const currentStyle =
-    POSITION_STYLES[currentPosition.id] || POSITION_STYLES.center;
+  const currentStyle = {
+    top: `calc(${currentPosition.y * 100}% - 24px)`,
+    left: `calc(${currentPosition.x * 100}% - 24px)`,
+  };
 
   const overlayStep = isOverlayVisible ? step : -1;
 
   useEffect(() => {
     if (step < 0 || step >= totalSteps) return;
-    setMessage(CALIBRATION_POSITIONS[step].label);
+    setMessage(CALIBRATION_POINTS[step].label);
     setCountdown(STEP_DURATION_SECONDS);
   }, [step, totalSteps]);
 
