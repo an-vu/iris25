@@ -154,6 +154,7 @@ export function CalibrationProvider({ children }) {
             countdown={calibrationCountdown}
             message={currentCalibrationPoint.label}
             positionStyle={POSITION_STYLES[currentCalibrationPoint.id]}
+            positionId={currentCalibrationPoint.id}
           />
         </>
       )}

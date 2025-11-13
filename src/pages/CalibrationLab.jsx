@@ -253,6 +253,7 @@ export default function CalibrationLab() {
           countdown={countdown}
           message={message}
           positionStyle={currentStyle}
+          positionId={currentPosition.id}
         />
     </div>
   );

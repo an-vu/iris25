@@ -7,12 +7,37 @@
   color: var(--color-white);
 }
 
-.calibration-card {
+.calibration-card-wrapper {
   position: absolute;
+  overflow: visible;
+  width: min(420px, 95vw);
+}
+
+.calibration-card-wrapper.center-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.calibration-card-wrapper.center-layout .calibration-click {
+  position: static;
+  transform: none;
+}
+
+.calibration-card-wrapper.center-layout .calibration-click:hover {
+  transform: scale(1.05);
+}
+
+.calibration-card-wrapper.center-layout .calibration-click:active {
+  transform: scale(0.95);
+}
+
+.calibration-card {
   background: rgba(20, 20, 20, 0.9);
   border-radius: var(--radius-card);
   padding: 1rem 1.5rem;
-  width: min(420px, 95vw);
+  width: 100%;
   box-shadow: var(--shadow-card-strong);
 }
 
@@ -62,4 +87,77 @@
   z-index: 2147483650;
   pointer-events: none;
   box-shadow: var(--shadow-card);
+}
+
+.calibration-click {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background-color: var(--color-iris-dark);
+  color: var(--color-white);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0.75;
+  box-shadow: var(--shadow-button);
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.calibration-click:hover {
+  background-color: var(--color-iris-dark-strong);
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.calibration-click:active {
+  transform: scale(0.95);
+}
+
+.calibration-click.is-complete {
+  background: var(--gradient-primary);
+  opacity: 1;
+}
+
+.calibration-click--tl {
+  top: -12px;
+  left: -12px;
+}
+
+.calibration-click--tr {
+  top: -12px;
+  right: -12px;
+}
+
+.calibration-click--br {
+  bottom: -12px;
+  right: -12px;
+}
+
+.calibration-click--bl {
+  bottom: -12px;
+  left: -12px;
+}
+
+.calibration-click--center {
+  top: -12px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.calibration-click--center:hover {
+  transform: translate(-50%, 0) scale(1.05);
+}
+
+.calibration-click--center:active {
+  transform: translate(-50%, 0) scale(0.95);
 }

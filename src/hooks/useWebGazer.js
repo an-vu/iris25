@@ -47,8 +47,10 @@ export default function useWebGazer(enabled = true) {
         hasStartedRef.current = true;
 
         window.webgazer
-          .setRegression("ridge")
-          .setTracker("clmtrackr")
+          .setRegression("weightedRidge")
+          .setTracker("TFFacemesh")
+          .applyKalmanFilter(true)
+          .saveDataAcrossSessions(false)
           .setGazeListener((data) => {
             if (data && isMounted) {
               // Smooth raw gaze data so the red dot and scroll triggers jitter less.

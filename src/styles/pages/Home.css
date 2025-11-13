@@ -31,14 +31,6 @@
   margin: 0;
 }
 
-/* Background themes */
-:root {
-  --home-bg1: #1b1b2f;
-  --home-bg2: #1f4068;
-  --home-bg3: #162447;
-  --home-bg4: #1b1b2f;
-}
-
 .bg-book-1 {
   --home-bg1: #a34f92;
   --home-bg2: #356c98;
