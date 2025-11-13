@@ -208,6 +208,7 @@ export function CalibrationProvider({ children }) {
     debugOverlays,
     setDebugOverlays,
     beginCalibration,
+    finishCalibration,
     pauseTracking: pause,
     resumeTracking: resume,
     resetTracking: () => {

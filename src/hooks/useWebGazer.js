@@ -58,9 +58,10 @@ export default function useWebGazerEngine() {
     if (typeof window === "undefined" || !window.webgazer || hasListenerRef.current) return;
     window.webgazer.setGazeListener((data) => {
       if (!data) return;
+      const bounded = window.webgazer?.util?.bound?.(data) || data;
       setGaze((prev) => ({
-        x: prev.x == null ? data.x : prev.x * 0.8 + data.x * 0.2,
-        y: prev.y == null ? data.y : prev.y * 0.8 + data.y * 0.2,
+        x: prev.x == null ? bounded.x : prev.x * 0.8 + bounded.x * 0.2,
+        y: prev.y == null ? bounded.y : prev.y * 0.8 + bounded.y * 0.2,
       }));
     });
     hasListenerRef.current = true;

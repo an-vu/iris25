@@ -9,15 +9,21 @@ const SCROLL_STEP = 200;
 const GAZE_DEBOUNCE_MS = 500;
 const GAZE_PROXIMITY = 80;
 
+const SCROLL_ZONE_RATIO = 0.22;
+const AUTO_SCROLL_STEP = 4;
+const AUTO_SCROLL_INTERVAL = 120;
+
 export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const scrollContainerRef = useRef(null);
   const {
     eyeTrackingEnabled,
     hasAcceptedCamera,
+    status,
     gaze,
     error,
     isCalibrating,
   } = useCalibration();
+  const gazeRef = useRef(null);
   const buttonRefs = {
     up: useRef(null),
     down: useRef(null),
@@ -82,7 +88,8 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
       !gaze ||
       gaze.x == null ||
       gaze.y == null ||
-      isCalibrating
+      isCalibrating ||
+      status !== "ready"
     )
       return;
     const { up, down } = buttonRects;
@@ -130,6 +137,29 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
       gazeTimeoutRef.current.down = null;
     }
   }, [eyeTrackingEnabled, hasAcceptedCamera, gaze, buttonRects, isGazeScrolling, scrollViewer, isCalibrating]);
+
+  useEffect(() => {
+    gazeRef.current = gaze;
+  }, [gaze]);
+
+  useEffect(() => {
+    if (status !== "ready") return undefined;
+    const zoneHeight = window.innerHeight * SCROLL_ZONE_RATIO;
+    const topZone = zoneHeight;
+    const bottomZone = window.innerHeight - zoneHeight;
+
+    const intervalId = setInterval(() => {
+      const current = gazeRef.current;
+      if (!current || current.y == null) return;
+      if (current.y < topZone) {
+        scrollViewer(-AUTO_SCROLL_STEP);
+      } else if (current.y > bottomZone) {
+        scrollViewer(AUTO_SCROLL_STEP);
+      }
+    }, AUTO_SCROLL_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [scrollViewer, status]);
 
   // Cleanup: make sure timers are cleared if the component unmounts.
   useEffect(() => {
