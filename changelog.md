@@ -1,28 +1,31 @@
 # Changelog
 
+## November 14
+
+- Moved all SVG files into `src/icons/` for cleaner structure
+- Reader page polish:
+  - Added shy mode
+  - Added background toggle (colorful/neutral)
+  - Fixed PDF border sizing
+
 ## November 13
 
 - Added reading progress saving (remembers last page)
 - Added notes/highlights sidebar
 - Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
+- Planned to add service worker for offline access
 
 ## November 12
 
 - Implemented “Add a New Book” with file picker
 - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Began lazy-loading chapters (load only when needed)
-- Planned to add service worker for offline access
 
 ## November 11
 
 - Split calibration into a separate window (accessible from Home and Reader pages)
 - Rewrote calibration tutorial for better clarity
 - Improved tracking accuracy (mouse-click alignment helps calibration)
-- Reader page polish:
-  - Added shy mode
-  - Added background toggle (colorful/neutral)
-  - Fixed PDF border sizing
-- Moved all SVG files into `src/icons/` for cleaner structure
 
 ## November 10
 
