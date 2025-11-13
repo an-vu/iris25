@@ -81,3 +81,33 @@
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.6);
 }
+
+.calibration-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 6, 10, 0.8);
+  z-index: 2147483655;
+  padding: 1rem;
+}
+
+.calibration-modal__card {
+  width: min(420px, 90vw);
+  background: rgba(18, 21, 33, 0.95);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.calibration-modal__score {
+  font-size: 2.4rem;
+  margin: 0.5rem 0;
+}
+
+.calibration-modal__note {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}

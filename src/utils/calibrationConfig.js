@@ -12,6 +12,7 @@ export const CALIBRATION_POINTS = [
   { id: "bottom-right", x: 0.9, y: 0.9, label: "Bottom right (look and click five times)" },
 ];
 
+
 export const REQUIRED_CLICKS_PER_POINT = 5;
 export const ACCURACY_DURATION_MS = 5000;
 export const ACCURACY_THRESHOLD_PX = 200;
@@ -26,4 +27,12 @@ export const ACCURACY_TIERS = [
 export function getAccuracyTier(score) {
   const tier = ACCURACY_TIERS.find((t) => score >= t.min);
   return tier ? tier.label : "Poor";
+}
+
+export function buildCalibrationSequence() {
+  const center = CALIBRATION_POINTS.find((p) => p.id === "center");
+  const others = CALIBRATION_POINTS.filter((p) => p.id !== "center");
+  const shuffled = [...others].sort(() => Math.random() - 0.5);
+  if (center) shuffled.push(center);
+  return shuffled;
 }
