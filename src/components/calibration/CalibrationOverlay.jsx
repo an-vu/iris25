@@ -1,80 +1,43 @@
 // src/components/calibration/CalibrationOverlay.jsx
 
-import { useEffect, useMemo, useState } from "react";
-
-const CLICK_TARGET = 5;
-
 export default function CalibrationOverlay({
   step,
   totalSteps,
-  countdown,
+  clicksRemaining,
+  clickTarget,
   message,
-  positionStyle,
-  positionId,
+  targetStyle,
+  onTargetClick,
 }) {
   if (step < 0) return null;
-  const [clicksRemaining, setClicksRemaining] = useState(CLICK_TARGET);
-  const [completed, setCompleted] = useState(false);
-
-  useEffect(() => {
-    setClicksRemaining(CLICK_TARGET);
-    setCompleted(false);
-  }, [step]);
-
-  const handleClick = () => {
-    if (completed) return;
-    setClicksRemaining((prev) => {
-      const next = Math.max(prev - 1, 0);
-      if (next === 0) setCompleted(true);
-      return next;
-    });
-  };
-
+  const completed = clicksRemaining <= 0;
   const buttonLabel = completed ? "✓" : clicksRemaining;
-
-  const buttonPositionClass = useMemo(() => {
-    switch (positionId) {
-      case "top-left":
-        return "calibration-click--tl";
-      case "top-right":
-        return "calibration-click--tr";
-      case "bottom-right":
-        return "calibration-click--br";
-      case "bottom-left":
-        return "calibration-click--bl";
-      case "center":
-      default:
-        return "calibration-click--center";
-    }
-  }, [positionId]);
 
   return (
     <div className="calibration-overlay">
-      <div
-        className={`calibration-card-wrapper ${positionId === "center" ? "center-layout" : ""}`}
-        style={positionStyle}
+      <button
+        type="button"
+        className={`calibration-click ${completed ? "is-complete" : ""}`}
+        style={targetStyle}
+        onClick={onTargetClick}
+        disabled={completed}
       >
-        <button
-          type="button"
-          className={`calibration-click ${buttonPositionClass} ${completed ? "is-complete" : ""}`}
-          onClick={handleClick}
-        >
-          {buttonLabel}
-        </button>
-        <div className="calibration-card">
-        <div className="calibration-content">
-          <div className="calibration-text">
-            <p className="calibration-step">
-              CALIBRATION STEP {step + 1} / {totalSteps}
-            </p>
-            <h3 className="calibration-message">{message}</h3>
-            <p className="calibration-countdown">{countdown}s</p>
-            <p className="calibration-note">
-              Keep your eyes on the highlighted area.
-            </p>
-          </div>
-        </div>
-        </div>
+        {buttonLabel}
+      </button>
+
+      <div className="calibration-info">
+        <p className="calibration-step">
+          Point {Math.min(step + 1, totalSteps)} / {totalSteps}
+        </p>
+        <h3 className="calibration-message">{message}</h3>
+        <p className="calibration-note">
+          {completed
+            ? "Great! Moving to the next point..."
+            : `Click the dot ${clicksRemaining} more time${clicksRemaining === 1 ? "" : "s"} while keeping your eyes on it.`}
+        </p>
+        <p className="calibration-note subtle">
+          Each click teaches Iris where you’re looking. {clickTarget} clicks per point gives the most reliable mapping.
+        </p>
       </div>
     </div>
   );

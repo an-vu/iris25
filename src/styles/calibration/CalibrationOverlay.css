@@ -7,88 +7,6 @@
   color: var(--color-white);
 }
 
-.calibration-card-wrapper {
-  position: absolute;
-  overflow: visible;
-  width: min(420px, 95vw);
-}
-
-.calibration-card-wrapper.center-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.calibration-card-wrapper.center-layout .calibration-click {
-  position: static;
-  transform: none;
-}
-
-.calibration-card-wrapper.center-layout .calibration-click:hover {
-  transform: scale(1.05);
-}
-
-.calibration-card-wrapper.center-layout .calibration-click:active {
-  transform: scale(0.95);
-}
-
-.calibration-card {
-  background: rgba(20, 20, 20, 0.9);
-  border-radius: var(--radius-card);
-  padding: 1rem 1.5rem;
-  width: 100%;
-  box-shadow: var(--shadow-card-strong);
-}
-
-.calibration-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.calibration-text {
-  flex: 1;
-  text-align: left;
-}
-
-.calibration-step {
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.8rem;
-  margin-bottom: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.calibration-message {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.calibration-countdown {
-  font-size: 2.5rem;
-  margin: 1rem 0 0.5rem;
-}
-
-.calibration-note {
-  margin: 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.camera-float {
-  position: fixed;
-  width: 220px;
-  height: 140px;
-  border-radius: 1rem;
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-  z-index: 2147483650;
-  pointer-events: none;
-  box-shadow: var(--shadow-card);
-}
-
 .calibration-click {
   position: absolute;
   width: 48px;
@@ -104,23 +22,21 @@
   justify-content: center;
   cursor: pointer;
   pointer-events: auto;
-  opacity: 0.75;
+  opacity: 0.8;
   box-shadow: var(--shadow-button);
-  transition:
-    background-color 0.25s ease,
-    box-shadow 0.3s ease,
-    transform 0.3s ease,
-    opacity 0.3s ease;
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  transition: transform 150ms ease, background 150ms ease, opacity 150ms ease;
 }
 
-.calibration-click:hover {
-  background-color: var(--color-iris-dark-strong);
+.calibration-click:hover:not(:disabled) {
   transform: scale(1.05);
-  opacity: 0.9;
+  opacity: 1;
+  background-color: var(--color-iris-dark-strong);
 }
 
-.calibration-click:active {
-  transform: scale(0.95);
+.calibration-click:disabled {
+  cursor: default;
 }
 
 .calibration-click.is-complete {
@@ -128,36 +44,40 @@
   opacity: 1;
 }
 
-.calibration-click--tl {
-  top: -12px;
-  left: -12px;
-}
-
-.calibration-click--tr {
-  top: -12px;
-  right: -12px;
-}
-
-.calibration-click--br {
-  bottom: -12px;
-  right: -12px;
-}
-
-.calibration-click--bl {
-  bottom: -12px;
-  left: -12px;
-}
-
-.calibration-click--center {
-  top: -12px;
+.calibration-info {
+  position: absolute;
+  bottom: 6vh;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translateX(-50%);
+  width: min(520px, 90vw);
+  background: rgba(20, 20, 20, 0.9);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  pointer-events: none;
 }
 
-.calibration-click--center:hover {
-  transform: translate(-50%, 0) scale(1.05);
+.calibration-info .calibration-step {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.calibration-click--center:active {
-  transform: translate(-50%, 0) scale(0.95);
+.calibration-info .calibration-message {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.calibration-info .calibration-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.calibration-info .calibration-note.subtle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
 }

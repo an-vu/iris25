@@ -19,11 +19,15 @@ export const POSITION_STYLES = {
 };
 
 export const CALIBRATION_POSITIONS = [
-  { id: "top-left", label: "Move your mouse to the top-left corner, click, and look at the top-left point." },
-  { id: "top-right", label: "Move your mouse to the top-right corner, click, and focus on the top-right point." },
-  { id: "bottom-right", label: "Move your mouse to the bottom-right corner, click, and look at the bottom-right point." },
-  { id: "bottom-left", label: "Move your mouse to the bottom-left corner, click, and look at the bottom-left point." },
-  { id: "center", label: "Finally, move your mouse to the center, click, and focus on the center point." },
+  { id: "top-left", x: 0.15, y: 0.15, label: "Look at the top-left point and click it five times." },
+  { id: "top-center", x: 0.5, y: 0.15, label: "Move to the top-center point, keep your gaze there, and click five times." },
+  { id: "top-right", x: 0.85, y: 0.15, label: "Focus on the top-right point and click five times." },
+  { id: "middle-left", x: 0.15, y: 0.5, label: "Look at the middle-left point and click five times." },
+  { id: "center", x: 0.5, y: 0.5, label: "Stay centered and click five times." },
+  { id: "middle-right", x: 0.85, y: 0.5, label: "Look at the middle-right point and click five times." },
+  { id: "bottom-left", x: 0.15, y: 0.85, label: "Look at the bottom-left point and click five times." },
+  { id: "bottom-center", x: 0.5, y: 0.85, label: "Look at the bottom-center point and click five times." },
+  { id: "bottom-right", x: 0.85, y: 0.85, label: "Look at the bottom-right point and click five times." },
 ];
 
 // ---------------- helpers ----------------

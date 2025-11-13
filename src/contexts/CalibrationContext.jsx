@@ -1,20 +1,27 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import useWebGazer from "../hooks/useWebGazer.js";
 import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference.js";
 import {
   CALIBRATION_POSITIONS,
-  POSITION_STYLES,
   hideWebgazerVideo,
   restoreWebgazerVideo,
   showWebgazerVideo,
 } from "../utils/webgazerCalibrate.js";
 import { CalibrationOverlay, CalibrationConsent } from "../components";
 
-const CAL_STEP_DURATION = 10000;
+const CLICKS_PER_POINT = 5;
 const CAMERA_FLOAT_STYLE = {
   top: "12px",
   left: "50%",
   transform: "translateX(-50%)",
+};
+
+const getOverlayStyle = (point) => {
+  if (!point) return {};
+  return {
+    top: `calc(${point.y * 100}% - 24px)`,
+    left: `calc(${point.x * 100}% - 24px)`,
+  };
 };
 
 const CalibrationContext = createContext(null);
@@ -26,7 +33,7 @@ export function CalibrationProvider({ children }) {
   const { gaze, isReady, error } = useWebGazer(eyeTrackingEnabled && hasAcceptedCamera, debugOverlays);
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationStep, setCalibrationStep] = useState(-1);
-  const [calibrationCountdown, setCalibrationCountdown] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
   const hasCalibratedRef = useRef(false);
   const videoMountRef = useRef(null);
 
@@ -41,41 +48,43 @@ export function CalibrationProvider({ children }) {
     }
   }, [error]);
 
-  // Reset everything when the user turns Iris off.
   useEffect(() => {
     if (eyeTrackingEnabled) return;
     setHasAcceptedCamera(false);
     setIsCalibrating(false);
     setCalibrationStep(-1);
-    setCalibrationCountdown(0);
+    setClickCount(0);
     hasCalibratedRef.current = false;
     hideWebgazerVideo();
     restoreWebgazerVideo();
   }, [eyeTrackingEnabled]);
 
-  // Start calibration once the tracker is ready and we have consent.
+  useEffect(() => {
+    if (!window?.webgazer || !eyeTrackingEnabled || !hasAcceptedCamera) return;
+    window.webgazer.showVideo(debugOverlays);
+    window.webgazer.showFaceOverlay(debugOverlays);
+    window.webgazer.showFaceFeedbackBox?.(debugOverlays);
+    window.webgazer.showPredictionPoints(debugOverlays);
+  }, [debugOverlays, eyeTrackingEnabled, hasAcceptedCamera]);
+
   useEffect(() => {
     if (!eyeTrackingEnabled || !hasAcceptedCamera) return;
-    if (!isReady || hasCalibratedRef.current) return;
+    if (!isReady || hasCalibratedRef.current || isCalibrating) return;
+    window.webgazer?.clearData?.();
+    setClickCount(0);
     setIsCalibrating(true);
     setCalibrationStep(0);
-  }, [eyeTrackingEnabled, hasAcceptedCamera, isReady]);
+  }, [eyeTrackingEnabled, hasAcceptedCamera, isReady, isCalibrating]);
 
-  // Drive each calibration waypoint.
+  const overlayVisible =
+    eyeTrackingEnabled &&
+    hasAcceptedCamera &&
+    isCalibrating &&
+    calibrationStep >= 0 &&
+    calibrationStep < CALIBRATION_POSITIONS.length;
+
   useEffect(() => {
-    if (!eyeTrackingEnabled || !hasAcceptedCamera || !isCalibrating || calibrationStep < 0) return;
-
-    if (calibrationStep >= CALIBRATION_POSITIONS.length) {
-      hideWebgazerVideo();
-      restoreWebgazerVideo();
-      hasCalibratedRef.current = true;
-      setIsCalibrating(false);
-      setCalibrationCountdown(0);
-      return;
-    }
-
-    const currentPoint = CALIBRATION_POSITIONS[calibrationStep];
-
+    if (!overlayVisible) return;
     let rafId = null;
     const mountVideo = () => {
       const mountTarget = videoMountRef.current;
@@ -86,24 +95,10 @@ export function CalibrationProvider({ children }) {
       showWebgazerVideo("camera-float", mountTarget);
     };
     mountVideo();
-    setCalibrationCountdown(CAL_STEP_DURATION / 1000);
-
-    let remaining = CAL_STEP_DURATION / 1000;
-    const countdownInterval = setInterval(() => {
-      remaining -= 1;
-      setCalibrationCountdown(Math.max(0, remaining));
-    }, 1000);
-
-    const stepTimeout = setTimeout(() => {
-      setCalibrationStep((prev) => prev + 1);
-    }, CAL_STEP_DURATION);
-
     return () => {
-      clearInterval(countdownInterval);
-      clearTimeout(stepTimeout);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [eyeTrackingEnabled, hasAcceptedCamera, isCalibrating, calibrationStep]);
+  }, [overlayVisible]);
 
   useEffect(() => {
     return () => {
@@ -112,10 +107,41 @@ export function CalibrationProvider({ children }) {
     };
   }, []);
 
-  const overlayVisible =
-    eyeTrackingEnabled && hasAcceptedCamera && isCalibrating && calibrationStep >= 0;
+  const finishCalibration = useCallback(() => {
+    hideWebgazerVideo();
+    restoreWebgazerVideo();
+    window.webgazer?.saveDataAcrossSessions?.(true);
+    hasCalibratedRef.current = true;
+    setIsCalibrating(false);
+    setCalibrationStep(-1);
+    setClickCount(0);
+  }, []);
+
+  const handleCalibrationClick = useCallback(() => {
+    if (
+      !isCalibrating ||
+      calibrationStep < 0 ||
+      calibrationStep >= CALIBRATION_POSITIONS.length
+    ) {
+      return;
+    }
+    setClickCount((prev) => {
+      const next = prev + 1;
+      if (next >= CLICKS_PER_POINT) {
+        const isLastPoint = calibrationStep >= CALIBRATION_POSITIONS.length - 1;
+        if (isLastPoint) {
+          finishCalibration();
+        } else {
+          setCalibrationStep((step) => step + 1);
+        }
+        return 0;
+      }
+      return next;
+    });
+  }, [isCalibrating, calibrationStep, finishCalibration]);
 
   const consentVisible = eyeTrackingEnabled && !hasAcceptedCamera;
+  const clicksRemaining = Math.max(CLICKS_PER_POINT - clickCount, 0);
 
   const contextValue = {
     gaze,
@@ -126,7 +152,8 @@ export function CalibrationProvider({ children }) {
     hasAcceptedCamera,
     isCalibrating,
     calibrationStep,
-    calibrationCountdown,
+    clickCount,
+    clicksRemaining,
     currentCalibrationPoint,
     overlayVisible,
     consentVisible,
@@ -143,21 +170,25 @@ export function CalibrationProvider({ children }) {
     <CalibrationContext.Provider value={contextValue}>
       {children}
       {consentVisible && (
-        <CalibrationConsent onAllow={() => setHasAcceptedCamera(true)} onCancel={() => {
-          setHasAcceptedCamera(false);
-          setEyeTrackingEnabled(false);
-        }} />
+        <CalibrationConsent
+          onAllow={() => setHasAcceptedCamera(true)}
+          onCancel={() => {
+            setHasAcceptedCamera(false);
+            setEyeTrackingEnabled(false);
+          }}
+        />
       )}
       {overlayVisible && currentCalibrationPoint && (
         <>
           <div className="camera-float" ref={videoMountRef} style={CAMERA_FLOAT_STYLE} />
           <CalibrationOverlay
-            step={Math.min(calibrationStep, CALIBRATION_POSITIONS.length - 1)}
+            step={calibrationStep}
             totalSteps={CALIBRATION_POSITIONS.length}
-            countdown={calibrationCountdown}
+            clicksRemaining={clicksRemaining}
+            clickTarget={CLICKS_PER_POINT}
             message={currentCalibrationPoint.label}
-            positionStyle={POSITION_STYLES[currentCalibrationPoint.id]}
-            positionId={currentCalibrationPoint.id}
+            targetStyle={getOverlayStyle(currentCalibrationPoint)}
+            onTargetClick={handleCalibrationClick}
           />
         </>
       )}
