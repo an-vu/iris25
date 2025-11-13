@@ -1,5 +1,6 @@
+// This is the fucking brain haha 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import useWebGazer from "../hooks/useWebGazer.js";
+import useWebGazerEngine, { EyeTrackingEngineStatus } from "../hooks/useWebGazer.js";
 import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference.js";
 import {
   CALIBRATION_POSITIONS,
@@ -16,13 +17,10 @@ const CAMERA_FLOAT_STYLE = {
   transform: "translateX(-50%)",
 };
 
-const getOverlayStyle = (point) => {
-  if (!point) return {};
-  return {
-    top: `calc(${point.y * 100}% - 24px)`,
-    left: `calc(${point.x * 100}% - 24px)`,
-  };
-};
+const getOverlayStyle = (point) => ({
+  top: `calc(${point.y * 100}% - 24px)`,
+  left: `calc(${point.x * 100}% - 24px)`,
+});
 
 const CalibrationContext = createContext(null);
 
@@ -30,7 +28,17 @@ export function CalibrationProvider({ children }) {
   const [eyeTrackingEnabled, setEyeTrackingEnabled] = useEyeTrackingPreference();
   const [hasAcceptedCamera, setHasAcceptedCamera] = useState(false);
   const [debugOverlays, setDebugOverlays] = useState(false);
-  const { gaze, isReady, error } = useWebGazer(eyeTrackingEnabled && hasAcceptedCamera, debugOverlays);
+  const {
+    gaze,
+    status: engineStatus,
+    error,
+    start,
+    stop,
+    pause,
+    resume,
+    clearData,
+    saveDataAcrossSessions,
+  } = useWebGazerEngine();
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationStep, setCalibrationStep] = useState(-1);
   const [clickCount, setClickCount] = useState(0);
@@ -43,21 +51,27 @@ export function CalibrationProvider({ children }) {
   }, [calibrationStep]);
 
   useEffect(() => {
-    if (error) {
-      console.error("[WebGazer] error detected:", error);
-    }
+    if (!error) return;
+    console.error("[WebGazer] error detected:", error);
   }, [error]);
 
-  useEffect(() => {
-    if (eyeTrackingEnabled) return;
-    setHasAcceptedCamera(false);
+  const resetCalibrationState = useCallback(() => {
     setIsCalibrating(false);
     setCalibrationStep(-1);
     setClickCount(0);
     hasCalibratedRef.current = false;
     hideWebgazerVideo();
     restoreWebgazerVideo();
-  }, [eyeTrackingEnabled]);
+  }, []);
+
+  useEffect(() => {
+    if (eyeTrackingEnabled && hasAcceptedCamera) {
+      start();
+    } else {
+      stop();
+      resetCalibrationState();
+    }
+  }, [eyeTrackingEnabled, hasAcceptedCamera, start, stop, resetCalibrationState]);
 
   useEffect(() => {
     if (!window?.webgazer || !eyeTrackingEnabled || !hasAcceptedCamera) return;
@@ -67,14 +81,31 @@ export function CalibrationProvider({ children }) {
     window.webgazer.showPredictionPoints(debugOverlays);
   }, [debugOverlays, eyeTrackingEnabled, hasAcceptedCamera]);
 
-  useEffect(() => {
+  const beginCalibration = useCallback(() => {
     if (!eyeTrackingEnabled || !hasAcceptedCamera) return;
-    if (!isReady || hasCalibratedRef.current || isCalibrating) return;
-    window.webgazer?.clearData?.();
+    clearData();
     setClickCount(0);
     setIsCalibrating(true);
     setCalibrationStep(0);
-  }, [eyeTrackingEnabled, hasAcceptedCamera, isReady, isCalibrating]);
+  }, [clearData, eyeTrackingEnabled, hasAcceptedCamera]);
+
+  useEffect(() => {
+    if (
+      eyeTrackingEnabled &&
+      hasAcceptedCamera &&
+      engineStatus === EyeTrackingEngineStatus.running &&
+      !hasCalibratedRef.current &&
+      !isCalibrating
+    ) {
+      beginCalibration();
+    }
+  }, [
+    beginCalibration,
+    engineStatus,
+    eyeTrackingEnabled,
+    hasAcceptedCamera,
+    isCalibrating,
+  ]);
 
   const overlayVisible =
     eyeTrackingEnabled &&
@@ -110,12 +141,12 @@ export function CalibrationProvider({ children }) {
   const finishCalibration = useCallback(() => {
     hideWebgazerVideo();
     restoreWebgazerVideo();
-    window.webgazer?.saveDataAcrossSessions?.(true);
+    saveDataAcrossSessions(true);
     hasCalibratedRef.current = true;
     setIsCalibrating(false);
     setCalibrationStep(-1);
     setClickCount(0);
-  }, []);
+  }, [saveDataAcrossSessions]);
 
   const handleCalibrationClick = useCallback(() => {
     if (
@@ -143,10 +174,22 @@ export function CalibrationProvider({ children }) {
   const consentVisible = eyeTrackingEnabled && !hasAcceptedCamera;
   const clicksRemaining = Math.max(CLICKS_PER_POINT - clickCount, 0);
 
+  const derivedStatus = useMemo(() => {
+    if (!eyeTrackingEnabled) return "disabled";
+    if (!hasAcceptedCamera) return "awaiting-camera";
+    if (isCalibrating) return "calibrating";
+    if (engineStatus === EyeTrackingEngineStatus.paused) return "paused";
+    if (engineStatus === EyeTrackingEngineStatus.running) {
+      return hasCalibratedRef.current ? "ready" : "initializing";
+    }
+    return engineStatus;
+  }, [eyeTrackingEnabled, hasAcceptedCamera, isCalibrating, engineStatus]);
+
   const contextValue = {
     gaze,
-    isReady,
     error,
+    status: derivedStatus,
+    engineStatus,
     eyeTrackingEnabled,
     setEyeTrackingEnabled,
     hasAcceptedCamera,
@@ -164,6 +207,13 @@ export function CalibrationProvider({ children }) {
     },
     debugOverlays,
     setDebugOverlays,
+    beginCalibration,
+    pauseTracking: pause,
+    resumeTracking: resume,
+    resetTracking: () => {
+      stop();
+      resetCalibrationState();
+    },
   };
 
   return (

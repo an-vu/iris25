@@ -1,110 +1,132 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-// Lazy-load WebGazer from a CDN so end users only download it when needed.
 const WEBGAZER_CDN = "https://cdn.jsdelivr.net/npm/webgazer/dist/webgazer.min.js";
 
-export default function useWebGazer(enabled = true, debugOverlays = false) {
+const Status = {
+  idle: "idle",
+  loading: "loading",
+  initializing: "initializing",
+  running: "running",
+  paused: "paused",
+  error: "error",
+};
+
+export default function useWebGazerEngine() {
   const [gaze, setGaze] = useState({ x: null, y: null });
-  const [isReady, setIsReady] = useState(false);
+  const [status, setStatus] = useState(Status.idle);
   const [error, setError] = useState(null);
-  const hasStartedRef = useRef(false);
   const scriptRef = useRef(null);
+  const hasConfiguredRef = useRef(false);
+  const hasListenerRef = useRef(false);
+  const pendingScriptPromiseRef = useRef(null);
 
-  useEffect(() => {
-    let isMounted = true;
+  const ensureScript = useCallback(() => {
+    if (typeof window === "undefined") return Promise.reject(new Error("No window"));
+    if (scriptRef.current) return Promise.resolve();
+    if (pendingScriptPromiseRef.current) return pendingScriptPromiseRef.current;
 
-    // Inject the WebGazer script at runtime so the rest of the app stays lightweight.
-    const attachScript = () =>
-      new Promise((resolve, reject) => {
-        if (scriptRef.current) {
-          resolve();
-          return;
-        }
-        const script = document.createElement("script");
-        script.src = WEBGAZER_CDN;
-        script.async = true;
-        script.onload = () => {
-          scriptRef.current = script;
-          resolve();
-        };
-        script.onerror = (event) => reject(new Error("Failed to load WebGazer script"));
-        document.body.appendChild(script);
-      });
+    setStatus(Status.loading);
+    pendingScriptPromiseRef.current = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = WEBGAZER_CDN;
+      script.async = true;
+      script.onload = () => {
+        scriptRef.current = script;
+        pendingScriptPromiseRef.current = null;
+        resolve();
+      };
+      script.onerror = () => {
+        pendingScriptPromiseRef.current = null;
+        reject(new Error("Failed to load WebGazer script"));
+      };
+      document.body.appendChild(script);
+    });
+    return pendingScriptPromiseRef.current;
+  }, []);
 
-    // Boot WebGazer once and stream gaze coordinates back into React state.
-    const startWebGazer = async () => {
-      if (typeof window === "undefined") return;
+  const configureWebGazer = useCallback(() => {
+    if (typeof window === "undefined" || !window.webgazer || hasConfiguredRef.current) return;
+    window.webgazer
+      .setRegression("weightedRidge")
+      .setTracker("TFFacemesh")
+      .applyKalmanFilter(true)
+      .saveDataAcrossSessions(false);
+    hasConfiguredRef.current = true;
+  }, []);
 
-      try {
-        if (!window.webgazer) {
-          await attachScript();
-        }
+  const attachListener = useCallback(() => {
+    if (typeof window === "undefined" || !window.webgazer || hasListenerRef.current) return;
+    window.webgazer.setGazeListener((data) => {
+      if (!data) return;
+      setGaze((prev) => ({
+        x: prev.x == null ? data.x : prev.x * 0.8 + data.x * 0.2,
+        y: prev.y == null ? data.y : prev.y * 0.8 + data.y * 0.2,
+      }));
+    });
+    hasListenerRef.current = true;
+  }, []);
 
-        if (!window.webgazer || hasStartedRef.current || !isMounted || !enabled) {
-          return;
-        }
+  const detachListener = useCallback(() => {
+    if (!window?.webgazer || !hasListenerRef.current) return;
+    window.webgazer.clearGazeListener?.();
+    hasListenerRef.current = false;
+  }, []);
 
-        hasStartedRef.current = true;
+  const start = useCallback(async () => {
+    try {
+      if (status === Status.running || status === Status.initializing) return;
+      await ensureScript();
+      configureWebGazer();
+      attachListener();
+      setStatus(Status.initializing);
+      await window.webgazer.begin();
+      setStatus(Status.running);
+    } catch (err) {
+      console.error("[WebGazer] Failed to start", err);
+      setError(err);
+      setStatus(Status.error);
+    }
+  }, [attachListener, configureWebGazer, ensureScript, status]);
 
-        window.webgazer
-          .setRegression("weightedRidge")
-          .setTracker("TFFacemesh")
-          .applyKalmanFilter(true)
-          .saveDataAcrossSessions(false)
-          .setGazeListener((data) => {
-            if (data && isMounted) {
-              // Smooth raw gaze data so the red dot and scroll triggers jitter less.
-              setGaze((prev) => ({
-                x: prev.x == null ? data.x : prev.x * 0.8 + data.x * 0.2,
-                y: prev.y == null ? data.y : prev.y * 0.8 + data.y * 0.2,
-              }));
-            }
-          });
+  const stop = useCallback(() => {
+    if (!window?.webgazer) return;
+    window.webgazer.end();
+    detachListener();
+    setStatus(Status.idle);
+    hasConfiguredRef.current = false;
+  }, [detachListener]);
 
-        window.webgazer.showVideo(debugOverlays);
-        window.webgazer.showFaceOverlay(debugOverlays);
-        window.webgazer.showFaceFeedbackBox?.(debugOverlays);
-        window.webgazer.showPredictionPoints(debugOverlays);
+  const pause = useCallback(() => {
+    window.webgazer?.pause?.();
+    setStatus((prev) => (prev === Status.running ? Status.paused : prev));
+  }, []);
 
-        console.info("[WebGazer] Initializing...");
-        await window.webgazer.begin();
-        if (!isMounted) return;
-        setIsReady(true);
-        console.info("[WebGazer] Ready");
-      } catch (err) {
-        console.error("[WebGazer] Failed to start", err);
-        if (isMounted) setError(err);
-      }
-    };
+  const resume = useCallback(() => {
+    window.webgazer?.resume?.();
+    setStatus((prev) => (prev === Status.paused ? Status.running : prev));
+  }, []);
 
-    if (enabled) startWebGazer();
+  const clearData = useCallback(() => {
+    window.webgazer?.clearData?.();
+  }, []);
 
-    return () => {
-      isMounted = false;
-      if (window?.webgazer) {
-        window.webgazer.clearGazeListener?.();
-        window.webgazer.end();
-        window.webgazer.showVideo(false);
-        window.webgazer.showFaceOverlay(false);
-        window.webgazer.showFaceFeedbackBox?.(false);
-        window.webgazer.showPredictionPoints(false);
-      }
-      hasStartedRef.current = false;
-      if (scriptRef.current) {
-        scriptRef.current.remove();
-        scriptRef.current = null;
-      }
-    };
-  }, [enabled]);
+  const saveDataAcrossSessions = useCallback((value) => {
+    window.webgazer?.saveDataAcrossSessions?.(value);
+  }, []);
 
-  useEffect(() => {
-    if (enabled || typeof window === "undefined" || !window.webgazer) return;
-    window.webgazer.pause?.();
-    window.webgazer.showVideo(false);
-    window.webgazer.showFaceOverlay(false);
-    window.webgazer.showFaceFeedbackBox?.(false);
-    window.webgazer.showPredictionPoints(false);
-  }, [enabled]);
-  // The component only needs the latest coordinates plus simple lifecycle flags.
-  return { gaze, isReady, error };
+  useEffect(() => stop, [stop]);
+
+  return {
+    gaze,
+    status,
+    error,
+    start,
+    stop,
+    pause,
+    resume,
+    clearData,
+    saveDataAcrossSessions,
+  };
 }
+
+export { Status as EyeTrackingEngineStatus };
