@@ -1,11 +1,6 @@
-import { useEffect } from "react";
 import { ReaderContainer, NavbarReader } from "../components";
 
 export default function NotFound() {
-  useEffect(() => {
-    console.log("404 Page Loaded");
-  }, []);
-
   return (
     <div className="reader background">
       <div className="master-container">
