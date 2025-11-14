@@ -9,9 +9,12 @@ const SCROLL_STEP = 200;
 const GAZE_DEBOUNCE_MS = 500;
 const GAZE_PROXIMITY = 80;
 
-const SCROLL_ZONE_RATIO = 0.22;
+const SCROLL_ZONE_RATIO = 0.25;
 const AUTO_SCROLL_STEP = 4;
 const AUTO_SCROLL_INTERVAL = 120;
+const SCROLL_DWELL_MS = 250;
+const SCROLL_COOLDOWN_MS = 200;
+const VERTICAL_DEADZONE = 25;
 
 export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const scrollContainerRef = useRef(null);
@@ -24,6 +27,7 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     isCalibrating,
   } = useCalibration();
   const gazeRef = useRef(null);
+  const lastStableYRef = useRef(null);
   const buttonRefs = {
     up: useRef(null),
     down: useRef(null),
@@ -34,6 +38,9 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   const [pageVisible, setPageVisible] = useState(
     typeof document === "undefined" ? true : document.visibilityState === "visible"
   );
+  const dwellTimerRef = useRef(null);
+  const dwellDirectionRef = useRef(null);
+  const lastScrollTimeRef = useRef(0);
 
   useEffect(() => {
     const handleVisibility = () => setPageVisible(document.visibilityState === "visible");
@@ -159,7 +166,16 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
   ]);
 
   useEffect(() => {
-    gazeRef.current = gaze;
+    if (!gaze || gaze.y == null) return;
+    const lastStable = lastStableYRef.current;
+    const withinDeadzone =
+      lastStable != null && Math.abs(gaze.y - lastStable) < VERTICAL_DEADZONE;
+    if (withinDeadzone) {
+      gazeRef.current = { ...gaze, y: lastStable };
+    } else {
+      gazeRef.current = gaze;
+      lastStableYRef.current = gaze.y;
+    }
   }, [gaze]);
 
   useEffect(() => {
@@ -178,14 +194,40 @@ export default function ReaderContainer({ filePath, zoomPluginInstance }) {
     const intervalId = setInterval(() => {
       const current = gazeRef.current;
       if (!current || current.y == null) return;
+      const now = performance.now();
       if (current.y < topZone) {
-        scrollViewer(-AUTO_SCROLL_STEP);
+        if (dwellDirectionRef.current !== "up") {
+          clearTimeout(dwellTimerRef.current);
+          dwellDirectionRef.current = "up";
+          dwellTimerRef.current = setTimeout(() => {
+            if (performance.now() - lastScrollTimeRef.current < SCROLL_COOLDOWN_MS) return;
+            scrollViewer(-AUTO_SCROLL_STEP);
+            lastScrollTimeRef.current = performance.now();
+          }, SCROLL_DWELL_MS);
+        }
       } else if (current.y > bottomZone) {
-        scrollViewer(AUTO_SCROLL_STEP);
+        if (dwellDirectionRef.current !== "down") {
+          clearTimeout(dwellTimerRef.current);
+          dwellDirectionRef.current = "down";
+          dwellTimerRef.current = setTimeout(() => {
+            if (performance.now() - lastScrollTimeRef.current < SCROLL_COOLDOWN_MS) return;
+            scrollViewer(AUTO_SCROLL_STEP);
+            lastScrollTimeRef.current = performance.now();
+          }, SCROLL_DWELL_MS);
+        }
+      } else if (dwellDirectionRef.current) {
+        dwellDirectionRef.current = null;
+        clearTimeout(dwellTimerRef.current);
+        dwellTimerRef.current = null;
       }
     }, AUTO_SCROLL_INTERVAL);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(dwellTimerRef.current);
+      dwellTimerRef.current = null;
+      dwellDirectionRef.current = null;
+    };
   }, [eyeTrackingEnabled, hasAcceptedCamera, pageVisible, scrollViewer, status]);
 
   // Cleanup: make sure timers are cleared if the component unmounts.

@@ -1,6 +1,6 @@
 # Changelog
 
-## November 18
+## November 20
 
 - Moved all SVG files into `src/icons/` for cleaner structure
 - Reader page polish:
@@ -10,22 +10,27 @@
 - Add Redux and Context
 - Add Tests scripts
 
-## November 16
+## November 18
 
 - Added reading progress saving (remembers last page)
 - Added notes/highlights sidebar
-- Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
+- Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Planned to add service worker for offline access
+
+## November 16
+
+- Implemented “Add a New Book” with file picker
+- Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
+- Began lazy-loading chapters (load only when needed)
 
 ## November 14
 
-- Implemented “Add a New Book” with file picker
-- Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
-- Began lazy-loading chapters (load only when needed)
+- Try to improve accuracy of Iris
 
 ## November 12-13
 
-- Rebuilt the eye-tracking stack: `useWebGazerEngine` now loads/configures WebGazer (TFFacemesh + weightedRidge + Kalman) and `CalibrationContext` owns lifecycle, statuses, pause/resume, and reader gating.
+- Rebuilt the eye-tracking stack:
+  - `useWebGazerEngine` now loads/configures WebGazer (TFFacemesh + weightedRidge + Kalman) and `CalibrationContext` owns lifecycle, statuses, pause/resume, and reader gating.
 - Implemented a strict 9-point, click-driven calibration flow (five clicks per point, center last) with camera consent, instruction modal, per-dot overlay, accuracy prompt, 5-second measurement, scoring tiers, and a reusable accuracy results modal.
 - Added shared config/helpers (`calibrationConfig.js`, accuracy tiers, sequence shuffler), separated HUD/UI components, enabled camera-float mounting, and fixed pointer events so the overlay dialogs remain interactive.
 - Adjusted calibration dot positioning (edge offsets + CSS centering) so buttons hug the screen borders without clipping, and made the HUD optional to reduce distraction during calibration.
