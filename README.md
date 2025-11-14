@@ -1,7 +1,7 @@
 # Iris Reader '25
 
 
-- Minimalist digital bookshelf with eye-tracking control. Iris 25 lets users read and navigate books using only their eyes.
+- Modern digital bookshelf with eye-tracking control. Iris 25 lets users read and navigate books using only their eyes.
 - Original prototype: https://presentation-textbook_prototype.toddle.site
 - Deployment: https://an-vu.github.io/iris25/
 
@@ -22,7 +22,7 @@
 - **Styling:** CSS Modules (custom, no framework)
 - **Routing:** React Router DOM
 - **Eye Tracking:** WebGazer.js
-- **Rendering:** PDF.js, epub.js
+- **Rendering:** PDF.js
 
 ---
 
