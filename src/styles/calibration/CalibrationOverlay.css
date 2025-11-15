@@ -41,6 +41,22 @@
   margin-top: 1.25rem;
 }
 
+.calibration-progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.calibration-progress__bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  width: 0%;
+  transition: width 200ms ease;
+}
+
 .calibration-click {
   position: absolute;
   width: 48px;

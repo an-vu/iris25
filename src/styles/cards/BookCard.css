@@ -61,7 +61,7 @@
 }
 
 .book-card:hover .book-image {
-  filter: blur(0.15rem);
+  filter: blur(0.08rem);
 }
 
 /* Card position states */

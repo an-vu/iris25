@@ -55,6 +55,7 @@ export function CalibrationProvider({ children }) {
   const [showAccuracyModal, setShowAccuracyModal] = useState(false);
   const [showAccuracyPrompt, setShowAccuracyPrompt] = useState(false);
   const [calibrationPhase, setCalibrationPhase] = useState("hidden");
+  const [warmUpProgress, setWarmUpProgress] = useState(0);
 
   const accuracyTimerRef = useRef(null);
   const accuracySamplesRef = useRef([]);
@@ -180,7 +181,6 @@ export function CalibrationProvider({ children }) {
       eyeTrackingEnabled &&
       hasAcceptedCamera &&
       engineStatus === EyeTrackingEngineStatus.running &&
-      hasInitialSample &&
       !hasCalibratedRef.current &&
       !autoPromptedRef.current &&
       calibrationPhase === "hidden"
@@ -192,11 +192,24 @@ export function CalibrationProvider({ children }) {
     eyeTrackingEnabled,
     hasAcceptedCamera,
     engineStatus,
-    hasInitialSample,
-    hasInitialSample,
     autoPromptedRef,
     calibrationPhase,
   ]);
+
+  useEffect(() => {
+    if (hasInitialSample) {
+      setWarmUpProgress(100);
+      return;
+    }
+    setWarmUpProgress(0);
+    const intervalId = window.setInterval(() => {
+      setWarmUpProgress((prev) => {
+        if (prev >= 90) return 90;
+        return prev + 5;
+      });
+    }, 180);
+    return () => window.clearInterval(intervalId);
+  }, [hasInitialSample]);
 
   const overlayVisible = calibrationPhase !== "hidden";
 
@@ -405,6 +418,7 @@ export function CalibrationProvider({ children }) {
             onCancel={cancelCalibration}
             onConfirmAccuracy={confirmAccuracyPrompt}
             canStart={hasInitialSample}
+            warmUpProgress={warmUpProgress}
             isAccuracyPhase={isAccuracyPhase}
             accuracyTimeLeft={accuracyTimeLeft}
             accuracyDuration={ACCURACY_DURATION_MS}

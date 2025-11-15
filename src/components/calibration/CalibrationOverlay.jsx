@@ -19,6 +19,7 @@ export default function CalibrationOverlay({
   showAccuracyPrompt = false,
   showHud = false,
   canStart = true,
+  warmUpProgress = 0,
 }) {
   if (phase === "instructions") {
     return (
@@ -31,9 +32,17 @@ export default function CalibrationOverlay({
           </p>
           <p className="calibration-note subtle">When you finish all nine points we’ll measure overall accuracy in one last step.</p>
           {!canStart && (
-            <p className="calibration-note subtle">
-              Warming up the camera feed… hold on a second before starting.
-            </p>
+            <>
+              <p className="calibration-note subtle">
+                Warming up the camera feed… hold on a second before starting.
+              </p>
+              <div className="calibration-progress">
+                <div
+                  className="calibration-progress__bar"
+                  style={{ width: `${Math.min(warmUpProgress, 100)}%` }}
+                />
+              </div>
+            </>
           )}
           <div className="calibration-actions">
             <button type="button" className="debug-btn secondary" onClick={onCancel}>
