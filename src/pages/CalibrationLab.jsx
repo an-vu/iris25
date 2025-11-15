@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CalibrationDots, NavbarReader } from "../components";
+import { CalibrationStep3, NavbarReader } from "../components";
 import { CALIBRATION_POINTS, REQUIRED_CLICKS_PER_POINT } from "../iris/utils/calibrationConfig.js";
 const STEP_DURATION_SECONDS = 10;
 const MOCK_TOTAL_CHAPTERS = 5;
@@ -246,7 +246,7 @@ export default function CalibrationLab() {
         />
       </div>
 
-        <CalibrationDots
+        <CalibrationStep3
           targetStyle={currentStyle}
           showHud
           step={overlayStep}

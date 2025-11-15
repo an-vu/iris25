@@ -12,7 +12,7 @@ export { default as IrisToggle } from "./buttons/IrisToggle.jsx";
 
 export { default as CalibrationStep2 } from "./calibration/CalibrationStep2.jsx";
 export { default as CalibrationStep1 } from "./calibration/CalibrationStep1.jsx";
-export { default as CalibrationDots } from "./calibration/CalibrationDots.jsx";
-export { default as CalibrationAccuracyPrompt } from "./calibration/CalibrationAccuracyPrompt.jsx";
+export { default as CalibrationStep3 } from "./calibration/CalibrationStep3.jsx";
+export { default as CalibrationStep4 } from "./calibration/CalibrationStep4.jsx";
 export { default as AccuracyResultModal } from "./calibration/AccuracyResultModal.jsx";
 export { default as CalibrationHUD } from "./calibration/CalibrationHUD.jsx";

@@ -1,11 +1,6 @@
 import { createPortal } from "react-dom";
 
-export default function CalibrationStep2({
-  canStart = true,
-  warmUpProgress = 0,
-  onStart,
-  onCancel,
-}) {
+export default function CalibrationStep2({ onStart, onCancel }) {
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -17,25 +12,12 @@ export default function CalibrationStep2({
           <li>Click each of the nine points five times while keeping your eyes on it.</li>
           <li>Keep following your mouse with your eyes the entire time.</li>
         </ul>
-        {!canStart && (
-          <>
-            <p className="calibration-note subtle">
-              Warming up the camera feed… hold on a second before starting.
-            </p>
-            <div className="calibration-progress">
-              <div
-                className="calibration-progress__bar"
-                style={{ width: `${Math.min(warmUpProgress, 100)}%` }}
-              />
-            </div>
-          </>
-        )}
         <div className="calibration-actions">
-          <button type="button" className="debug-btn secondary" onClick={onCancel}>
-            Cancel
-          </button>
-          <button type="button" className="debug-btn primary" onClick={onStart} disabled={!canStart}>
+          <button type="button" className="debug-btn primary" onClick={onStart}>
             Start calibrating
+          </button>
+          <button type="button" className="consent-btn secondary" onClick={onCancel}>
+            Cancel
           </button>
         </div>
       </div>

@@ -7,6 +7,10 @@
   color: var(--color-white);
 }
 
+.calibration-overlay--blocking {
+  pointer-events: auto;
+}
+
 .calibration-overlay.instructions {
   display: flex;
   align-items: center;
@@ -92,16 +96,39 @@
 .calibration-click:hover:not(:disabled) {
   transform: translate(-50%, -50%) scale(1.05);
   opacity: 1;
-  background-color: var(--color-iris-dark-strong);
 }
 
 .calibration-click:disabled {
   cursor: default;
 }
 
+.calibration-click--red {
+  background: #d7263d;
+}
+
+.calibration-click--orange {
+  background: #ff7f11;
+}
+
+.calibration-click--yellow {
+  background: #ffd60a;
+  color: #111;
+}
+
+.calibration-click--lightgreen {
+  background: #8cd867;
+  color: #0b4228;
+}
+
+.calibration-click--green,
 .calibration-click.is-complete {
-  background: var(--gradient-primary);
+  background: #2dc653;
+  color: #0b4228;
   opacity: 1;
+}
+
+.calibration-click--accuracy {
+  background: #2155cd;
 }
 
 .calibration-info {

@@ -13,8 +13,8 @@ import { hideWebgazerVideo, restoreWebgazerVideo } from "../utils/webgazerVideo.
 import {
   CalibrationStep2,
   CalibrationStep1,
-  CalibrationDots,
-  CalibrationAccuracyPrompt,
+  CalibrationStep3,
+  CalibrationStep4,
   AccuracyResultModal,
 } from "../../components";
 
@@ -55,7 +55,6 @@ export function IrisCalibrationManager({ children }) {
   const [clickCount, setClickCount] = useState(0);
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationPhase, setCalibrationPhase] = useState("hidden");
-  const [warmUpProgress, setWarmUpProgress] = useState(0);
 
   const hasCalibratedRef = useRef(false);
   const autoPromptedRef = useRef(false);
@@ -157,7 +156,7 @@ export function IrisCalibrationManager({ children }) {
   }, [clearAccuracyState, resetSmoothing]);
 
   const beginCalibration = useCallback(() => {
-    if (!eyeTrackingEnabled || !hasAcceptedCamera || !hasInitialSample) return;
+    if (!eyeTrackingEnabled || !hasAcceptedCamera) return;
     clearData();
     clearAccuracyState();
     resetSmoothing();
@@ -185,9 +184,11 @@ export function IrisCalibrationManager({ children }) {
     setCalibrationIndex(0);
     setClickCount(0);
     setCalibrationPhase("hidden");
+    setEyeTrackingEnabled(false);
+    setHasAcceptedCamera(false);
+    autoPromptedRef.current = false;
     hideWebgazerVideo();
     restoreWebgazerVideo();
-    autoPromptedRef.current = false;
   }, [clearAccuracyState, resetSmoothing]);
 
   useEffect(() => {
@@ -209,21 +210,6 @@ export function IrisCalibrationManager({ children }) {
     autoPromptedRef,
     calibrationPhase,
   ]);
-
-  useEffect(() => {
-    if (hasInitialSample) {
-      setWarmUpProgress(100);
-      return;
-    }
-    setWarmUpProgress(0);
-    const intervalId = window.setInterval(() => {
-      setWarmUpProgress((prev) => {
-        if (prev >= 90) return 90;
-        return prev + 5;
-      });
-    }, 180);
-    return () => window.clearInterval(intervalId);
-  }, [hasInitialSample]);
 
   const overlayVisible = calibrationPhase !== "hidden";
   // const videoMountRef = useWebgazerVideoMount(overlayVisible); // Custom mounting disabled temporarily.
@@ -333,18 +319,13 @@ export function IrisCalibrationManager({ children }) {
   let overlayContent = null;
   if (calibrationPhase === "instructions") {
     overlayContent = (
-      <CalibrationStep2
-        canStart={hasInitialSample}
-        warmUpProgress={warmUpProgress}
-        onStart={beginCalibration}
-        onCancel={cancelCalibration}
-      />
+      <CalibrationStep2 onStart={beginCalibration} onCancel={cancelCalibration} />
     );
   } else if (calibrationPhase === "preAccuracy" && showAccuracyPrompt) {
-    overlayContent = <CalibrationAccuracyPrompt onConfirm={confirmAccuracyPrompt} />;
+    overlayContent = <CalibrationStep4 onConfirm={confirmAccuracyPrompt} />;
   } else if (calibrationPhase === "dots" || calibrationPhase === "accuracy") {
     overlayContent = (
-      <CalibrationDots
+      <CalibrationStep3
         targetStyle={targetStyle}
         onTargetClick={handleCalibrationClick}
         onCancel={cancelCalibration}
