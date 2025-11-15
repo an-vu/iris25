@@ -4,7 +4,7 @@ import { BookCard, NavbarHome } from "../components";
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const totalBooks = 3;
+  const totalBooks = books.length;
 
   const handleNext = () =>
     setSelectedIndex((prev) => Math.min(prev + 1, totalBooks - 1));

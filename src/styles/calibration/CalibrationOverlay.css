@@ -80,6 +80,15 @@
   transform: translate(-50%, -50%);
 }
 
+.calibration-cancel {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  pointer-events: auto;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+}
+
 .calibration-click:hover:not(:disabled) {
   transform: translate(-50%, -50%) scale(1.05);
   opacity: 1;

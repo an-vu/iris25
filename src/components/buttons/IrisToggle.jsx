@@ -1,7 +1,7 @@
-import { useEyeTrackingPreference } from "../../hooks/useEyeTrackingPreference";
+import { useIrisToggle } from "../../hooks/useIrisToggle";
 
 export default function IrisToggle() {
-  const [irisOn, setIrisOn] = useEyeTrackingPreference();
+  const [irisOn, setIrisOn] = useIrisToggle();
 
   const toggleIris = () => setIrisOn(!irisOn);
 

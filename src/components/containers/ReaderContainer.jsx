@@ -2,7 +2,7 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import ReaderView from "./ReaderView.jsx";
 import GazeControls from "../buttons/GazeControls.jsx";
-import { useCalibration } from "../../contexts/CalibrationContext.jsx";
+import { useCalibration } from "../../iris/contexts/IrisCalibrationManager.jsx";
 
 // Tunable knobs for easing/scrolling behavior.
 const SCROLL_STEP = 200;

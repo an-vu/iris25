@@ -1,22 +1,28 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import useWebGazerEngine, { EyeTrackingEngineStatus } from "../hooks/useWebGazer.js";
-import { useEyeTrackingPreference } from "../hooks/useEyeTrackingPreference.js";
+import { useIrisToggle } from "../../hooks/useIrisToggle.js";
+import { useCalibrationAccuracy } from "../hooks/useCalibrationAccuracy.js";
+// import { useWebgazerVideoMount } from "../hooks/useWebgazerVideoMount.js"; // Disabled: relying on WebGazer's default camera UI for now.
 import {
   CALIBRATION_POINTS,
   REQUIRED_CLICKS_PER_POINT,
   ACCURACY_DURATION_MS,
-  ACCURACY_THRESHOLD_PX,
-  getAccuracyTier,
   buildCalibrationSequence,
 } from "../utils/calibrationConfig.js";
-import { showWebgazerVideo, hideWebgazerVideo, restoreWebgazerVideo } from "../utils/webgazerVideo.js";
-import { CalibrationOverlay, CalibrationConsent, AccuracyResultModal } from "../components";
+import { hideWebgazerVideo, restoreWebgazerVideo } from "../utils/webgazerVideo.js";
+import {
+  CalibrationStep2,
+  CalibrationStep1,
+  CalibrationDots,
+  CalibrationAccuracyPrompt,
+  AccuracyResultModal,
+} from "../../components";
 
-const CalibrationContext = createContext(null);
+const IrisCalibrationContext = createContext(null);
 const CLICK_DWELL_MS = 450;
 
-export function CalibrationProvider({ children }) {
-  const [eyeTrackingEnabled, setEyeTrackingEnabled] = useEyeTrackingPreference();
+export function IrisCalibrationManager({ children }) {
+  const [eyeTrackingEnabled, setEyeTrackingEnabled] = useIrisToggle();
   const [hasAcceptedCamera, setHasAcceptedCamera] = useState(false);
   const [debugOverlays, setDebugOverlays] = useState(false);
   const {
@@ -48,21 +54,37 @@ export function CalibrationProvider({ children }) {
   const [calibrationIndex, setCalibrationIndex] = useState(0);
   const [clickCount, setClickCount] = useState(0);
   const [isCalibrating, setIsCalibrating] = useState(false);
-  const [isAccuracyPhase, setIsAccuracyPhase] = useState(false);
-  const [accuracyTimeLeft, setAccuracyTimeLeft] = useState(0);
-  const [accuracyScore, setAccuracyScore] = useState(null);
-  const [accuracyQuality, setAccuracyQuality] = useState(null);
-  const [showAccuracyModal, setShowAccuracyModal] = useState(false);
-  const [showAccuracyPrompt, setShowAccuracyPrompt] = useState(false);
   const [calibrationPhase, setCalibrationPhase] = useState("hidden");
   const [warmUpProgress, setWarmUpProgress] = useState(0);
 
-  const accuracyTimerRef = useRef(null);
-  const accuracySamplesRef = useRef([]);
   const hasCalibratedRef = useRef(false);
   const autoPromptedRef = useRef(false);
-  const videoMountRef = useRef(null);
   const lastClickTimeRef = useRef(0);
+
+  const {
+    isAccuracyPhase,
+    accuracyTimeLeft,
+    accuracyScore,
+    accuracyQuality,
+    showAccuracyModal,
+    showAccuracyPrompt,
+    setShowAccuracyPrompt,
+    clearAccuracyState,
+    startAccuracyTest,
+    confirmAccuracyPrompt,
+    dismissAccuracyModal,
+  } = useCalibrationAccuracy({
+    rawGazeRef,
+    onTestStart: () => {
+      setCalibrationPhase("accuracy");
+      setIsCalibrating(false);
+    },
+    onTestComplete: () => {
+      hasCalibratedRef.current = true;
+      saveDataAcrossSessions(true);
+      setCalibrationPhase("hidden");
+    },
+  });
 
   const currentCalibrationPoint = useMemo(() => calibrationSequence[calibrationIndex] ?? null, [
     calibrationSequence,
@@ -73,20 +95,6 @@ export function CalibrationProvider({ children }) {
     if (!error) return;
     console.error("[WebGazer] error detected:", error);
   }, [error]);
-
-  const clearAccuracyState = useCallback(() => {
-    if (accuracyTimerRef.current) {
-      clearInterval(accuracyTimerRef.current);
-      accuracyTimerRef.current = null;
-    }
-    accuracySamplesRef.current = [];
-    setAccuracyTimeLeft(0);
-    setAccuracyScore(null);
-    setAccuracyQuality(null);
-    setShowAccuracyModal(false);
-    setShowAccuracyPrompt(false);
-    setIsAccuracyPhase(false);
-  }, []);
 
   const resetCalibrationState = useCallback(() => {
     setIsCalibrating(false);
@@ -123,6 +131,9 @@ export function CalibrationProvider({ children }) {
     }
   }, [eyeTrackingEnabled, hasAcceptedCamera, start, stop, resetCalibrationState]);
 
+  // NOTE: Keeping WebGazer's built-in video/overlay settings for now so we can compare behavior
+  // with the stock implementation. Re-enable this effect when we want the custom debug toggles back.
+  /*
   useEffect(() => {
     if (!window?.webgazer || !eyeTrackingEnabled || !hasAcceptedCamera) return;
     const showDebugVideo = debugOverlays;
@@ -132,12 +143,12 @@ export function CalibrationProvider({ children }) {
     window.webgazer.showFaceFeedbackBox?.(debugOverlays);
     window.webgazer.showPredictionPoints(showPredictionTrail);
   }, [debugOverlays, isAccuracyPhase, eyeTrackingEnabled, hasAcceptedCamera]);
+  */
 
   const requestCalibration = useCallback(() => {
     clearAccuracyState();
     resetSmoothing();
     setIsCalibrating(false);
-    setIsAccuracyPhase(false);
     setCalibrationIndex(0);
     setClickCount(0);
     setCalibrationPhase("instructions");
@@ -148,31 +159,34 @@ export function CalibrationProvider({ children }) {
   const beginCalibration = useCallback(() => {
     if (!eyeTrackingEnabled || !hasAcceptedCamera || !hasInitialSample) return;
     clearData();
+    clearAccuracyState();
     resetSmoothing();
     setCalibrationSequence(buildCalibrationSequence());
     setCalibrationIndex(0);
     setClickCount(0);
     setIsCalibrating(true);
-    setIsAccuracyPhase(false);
-    setShowAccuracyModal(false);
     setCalibrationPhase("dots");
-    setAccuracyScore(null);
-    setAccuracyQuality(null);
     setShowAccuracyPrompt(false);
     resume();
-  }, [clearData, eyeTrackingEnabled, hasAcceptedCamera, hasInitialSample, resetSmoothing, resume]);
+  }, [
+    clearAccuracyState,
+    clearData,
+    eyeTrackingEnabled,
+    hasAcceptedCamera,
+    hasInitialSample,
+    resetSmoothing,
+    resume,
+  ]);
 
   const cancelCalibration = useCallback(() => {
     clearAccuracyState();
     resetSmoothing();
     setIsCalibrating(false);
-    setIsAccuracyPhase(false);
     setCalibrationIndex(0);
     setClickCount(0);
     setCalibrationPhase("hidden");
     hideWebgazerVideo();
     restoreWebgazerVideo();
-    setShowAccuracyPrompt(false);
     autoPromptedRef.current = false;
   }, [clearAccuracyState, resetSmoothing]);
 
@@ -212,76 +226,10 @@ export function CalibrationProvider({ children }) {
   }, [hasInitialSample]);
 
   const overlayVisible = calibrationPhase !== "hidden";
-
-  useEffect(() => {
-    if (!overlayVisible) return;
-    let rafId = null;
-    const mountVideo = () => {
-      const mountTarget = videoMountRef.current;
-      if (!mountTarget) {
-        rafId = requestAnimationFrame(mountVideo);
-        return;
-      }
-      showWebgazerVideo("camera-float", mountTarget);
-    };
-    mountVideo();
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [overlayVisible]);
+  // const videoMountRef = useWebgazerVideoMount(overlayVisible); // Custom mounting disabled temporarily.
+  const videoMountRef = useRef(null); // Placeholder ref so existing JSX keeps working while defaults are used.
 
   useEffect(() => () => clearAccuracyState(), [clearAccuracyState]);
-
-  const startAccuracyTest = useCallback(() => {
-    setCalibrationPhase("accuracy");
-    setIsCalibrating(false);
-    setIsAccuracyPhase(true);
-    setShowAccuracyModal(false);
-    accuracySamplesRef.current = [];
-    setAccuracyTimeLeft(ACCURACY_DURATION_MS);
-    if (accuracyTimerRef.current) {
-      clearInterval(accuracyTimerRef.current);
-    }
-    const startedAt = performance.now();
-    accuracyTimerRef.current = window.setInterval(() => {
-      const now = performance.now();
-      const elapsed = now - startedAt;
-      setAccuracyTimeLeft(Math.max(0, ACCURACY_DURATION_MS - elapsed));
-      const sample = rawGazeRef.current;
-      if (sample && sample.x != null && sample.y != null) {
-        accuracySamplesRef.current.push({ x: sample.x, y: sample.y });
-      }
-      if (elapsed >= ACCURACY_DURATION_MS) {
-        window.clearInterval(accuracyTimerRef.current);
-        accuracyTimerRef.current = null;
-        const samples = accuracySamplesRef.current.slice();
-        const centerX = window.innerWidth * 0.5;
-        const centerY = window.innerHeight * 0.5;
-        const avgDistance =
-          samples.length === 0
-            ? ACCURACY_THRESHOLD_PX
-            : samples.reduce(
-                (sum, point) => sum + Math.hypot(point.x - centerX, point.y - centerY),
-                0
-              ) / samples.length;
-        const ratio = Math.max(0, 1 - avgDistance / ACCURACY_THRESHOLD_PX);
-        const score = Math.round(ratio * 100);
-        const quality = getAccuracyTier(score);
-        setAccuracyScore(score);
-        setAccuracyQuality(quality);
-        setIsAccuracyPhase(false);
-        hasCalibratedRef.current = true;
-        saveDataAcrossSessions(true);
-        setShowAccuracyModal(true);
-        setCalibrationPhase("hidden");
-      }
-    }, 60);
-  }, [saveDataAcrossSessions]);
-
-  const confirmAccuracyPrompt = useCallback(() => {
-    setShowAccuracyPrompt(false);
-    startAccuracyTest();
-  }, [startAccuracyTest]);
 
   const handleCalibrationClick = useCallback(() => {
     if (!isCalibrating || !currentCalibrationPoint) return;
@@ -310,14 +258,6 @@ export function CalibrationProvider({ children }) {
     currentCalibrationPoint,
     isCalibrating,
   ]);
-
-  const finishCalibration = useCallback(() => {
-    setShowAccuracyModal(false);
-  }, []);
-
-  const dismissAccuracyModal = useCallback(() => {
-    setShowAccuracyModal(false);
-  }, []);
 
   const consentVisible = eyeTrackingEnabled && !hasAcceptedCamera;
 
@@ -386,15 +326,46 @@ export function CalibrationProvider({ children }) {
     confirmAccuracyPrompt,
     handleCalibrationClick,
     startAccuracyTest,
-    finishCalibration,
+    finishCalibration: dismissAccuracyModal,
     dismissAccuracyModal,
   };
 
+  let overlayContent = null;
+  if (calibrationPhase === "instructions") {
+    overlayContent = (
+      <CalibrationStep2
+        canStart={hasInitialSample}
+        warmUpProgress={warmUpProgress}
+        onStart={beginCalibration}
+        onCancel={cancelCalibration}
+      />
+    );
+  } else if (calibrationPhase === "preAccuracy" && showAccuracyPrompt) {
+    overlayContent = <CalibrationAccuracyPrompt onConfirm={confirmAccuracyPrompt} />;
+  } else if (calibrationPhase === "dots" || calibrationPhase === "accuracy") {
+    overlayContent = (
+      <CalibrationDots
+        targetStyle={targetStyle}
+        onTargetClick={handleCalibrationClick}
+        onCancel={cancelCalibration}
+        showHud
+        step={calibrationIndex}
+        totalSteps={calibrationSequence.length}
+        message={currentCalibrationPoint?.label}
+        clicksRemaining={Math.max(REQUIRED_CLICKS_PER_POINT - clickCount, 0)}
+        clickTarget={REQUIRED_CLICKS_PER_POINT}
+        isAccuracyPhase={isAccuracyPhase}
+        accuracyTimeLeft={accuracyTimeLeft}
+        accuracyDuration={ACCURACY_DURATION_MS}
+      />
+    );
+  }
+
   return (
-    <CalibrationContext.Provider value={contextValue}>
+    <IrisCalibrationContext.Provider value={contextValue}>
       {children}
       {consentVisible && (
-        <CalibrationConsent
+        <CalibrationStep1
           onAllow={() => setHasAcceptedCamera(true)}
           onCancel={() => {
             setHasAcceptedCamera(false);
@@ -402,28 +373,11 @@ export function CalibrationProvider({ children }) {
           }}
         />
       )}
-      {overlayVisible && (
+      {overlayVisible && overlayContent && (
         <>
+          {/* The floating camera placeholder stays mounted even though the custom WebGazer video injection is paused. */}
           <div className="camera-float" ref={videoMountRef} />
-          <CalibrationOverlay
-            phase={calibrationPhase}
-            step={calibrationIndex}
-            totalSteps={calibrationSequence.length}
-            clicksRemaining={Math.max(REQUIRED_CLICKS_PER_POINT - clickCount, 0)}
-            clickTarget={REQUIRED_CLICKS_PER_POINT}
-            message={currentCalibrationPoint?.label}
-            targetStyle={targetStyle}
-            onTargetClick={handleCalibrationClick}
-            onStart={beginCalibration}
-            onCancel={cancelCalibration}
-            onConfirmAccuracy={confirmAccuracyPrompt}
-            canStart={hasInitialSample}
-            warmUpProgress={warmUpProgress}
-            isAccuracyPhase={isAccuracyPhase}
-            accuracyTimeLeft={accuracyTimeLeft}
-            accuracyDuration={ACCURACY_DURATION_MS}
-            showAccuracyPrompt={showAccuracyPrompt}
-          />
+          {overlayContent}
         </>
       )}
       {showAccuracyModal && (
@@ -434,14 +388,14 @@ export function CalibrationProvider({ children }) {
           onContinue={dismissAccuracyModal}
         />
       )}
-    </CalibrationContext.Provider>
+    </IrisCalibrationContext.Provider>
   );
 }
 
 export function useCalibration() {
-  const ctx = useContext(CalibrationContext);
+  const ctx = useContext(IrisCalibrationContext);
   if (!ctx) {
-    throw new Error("useCalibration must be used within a CalibrationProvider");
+    throw new Error("useCalibration must be used within an IrisCalibrationManager");
   }
   return ctx;
 }

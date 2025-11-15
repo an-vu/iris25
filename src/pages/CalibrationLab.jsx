@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CalibrationOverlay, NavbarReader } from "../components";
-import { CALIBRATION_POINTS } from "../utils/calibrationConfig.js";
+import { CalibrationDots, NavbarReader } from "../components";
+import { CALIBRATION_POINTS, REQUIRED_CLICKS_PER_POINT } from "../iris/utils/calibrationConfig.js";
 const STEP_DURATION_SECONDS = 10;
 const MOCK_TOTAL_CHAPTERS = 5;
 const MIN_ZOOM = 0.5;
@@ -246,13 +246,16 @@ export default function CalibrationLab() {
         />
       </div>
 
-        <CalibrationOverlay
+        <CalibrationDots
+          targetStyle={currentStyle}
+          showHud
           step={overlayStep}
           totalSteps={totalSteps}
-          countdown={countdown}
           message={message}
-          positionStyle={currentStyle}
-          positionId={currentPosition.id}
+          clicksRemaining={0}
+          clickTarget={REQUIRED_CLICKS_PER_POINT}
+          onTargetClick={() => {}}
+          onCancel={toggleOverlay}
         />
     </div>
   );

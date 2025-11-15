@@ -21,8 +21,8 @@ export default function useWebGazerEngine() {
   const hasConfiguredRef = useRef(false);
   const hasListenerRef = useRef(false);
   const pendingScriptPromiseRef = useRef(null);
-  const smoothingRef = useRef({ x: null, y: null });
-  const needsReseedRef = useRef(true);
+  // const smoothingRef = useRef({ x: null, y: null }); // Disabled: relying on WebGazer's default smoothing
+  // const needsReseedRef = useRef(true);
   const hasInitialSampleRef = useRef(false);
 
   const ensureScript = useCallback(() => {
@@ -80,23 +80,8 @@ export default function useWebGazerEngine() {
         setHasInitialSample(true);
       }
 
-      const prev = smoothingRef.current;
-      const jumpThreshold = 180;
-      const needsReseed = needsReseedRef.current || prev.x == null || prev.y == null;
-      const dx = prev.x == null ? 0 : Math.abs(bounded.x - prev.x);
-      const dy = prev.y == null ? 0 : Math.abs(bounded.y - prev.y);
-
-      if (needsReseed || dx > jumpThreshold || dy > jumpThreshold) {
-        smoothingRef.current = { x: bounded.x, y: bounded.y };
-        needsReseedRef.current = false;
-        setGaze({ x: bounded.x, y: bounded.y });
-        return;
-      }
-
-      const smoothX = prev.x * 0.7 + bounded.x * 0.3;
-      const smoothY = prev.y * 0.7 + bounded.y * 0.3;
-      smoothingRef.current = { x: smoothX, y: smoothY };
-      setGaze({ x: smoothX, y: smoothY });
+      // NOTE: Custom smoothing + jump detection removed to evaluate WebGazer's built-in Kalman filter.
+      setGaze({ x: bounded.x, y: bounded.y });
     });
     hasListenerRef.current = true;
   }, []);
@@ -131,8 +116,8 @@ export default function useWebGazerEngine() {
     hasConfiguredRef.current = false;
     hasInitialSampleRef.current = false;
     setHasInitialSample(false);
-    smoothingRef.current = { x: null, y: null };
-    needsReseedRef.current = true;
+    // smoothingRef.current = { x: null, y: null };
+    // needsReseedRef.current = true;
     setGaze({ x: null, y: null });
     setRawGaze({ x: null, y: null });
   }, [detachListener]);
@@ -149,14 +134,14 @@ export default function useWebGazerEngine() {
 
   const clearData = useCallback(() => {
     window.webgazer?.clearData?.();
-    smoothingRef.current = { x: null, y: null };
-    needsReseedRef.current = true;
+    // smoothingRef.current = { x: null, y: null };
+    // needsReseedRef.current = true;
     setGaze({ x: null, y: null });
   }, []);
 
   const resetSmoothing = useCallback(() => {
-    smoothingRef.current = { x: null, y: null };
-    needsReseedRef.current = true;
+    // smoothingRef.current = { x: null, y: null };
+    // needsReseedRef.current = true;
     setGaze({ x: null, y: null });
   }, []);
 
