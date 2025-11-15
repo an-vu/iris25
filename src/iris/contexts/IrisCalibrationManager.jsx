@@ -15,7 +15,7 @@ import {
   CalibrationStep1,
   CalibrationStep3,
   CalibrationStep4,
-  AccuracyResultModal,
+  CalibrationStep5,
 } from "../../components";
 
 const IrisCalibrationContext = createContext(null);
@@ -329,7 +329,7 @@ export function IrisCalibrationManager({ children }) {
         targetStyle={targetStyle}
         onTargetClick={handleCalibrationClick}
         onCancel={cancelCalibration}
-        showHud
+        showHud={!isAccuracyPhase}
         step={calibrationIndex}
         totalSteps={calibrationSequence.length}
         message={currentCalibrationPoint?.label}
@@ -362,7 +362,7 @@ export function IrisCalibrationManager({ children }) {
         </>
       )}
       {showAccuracyModal && (
-        <AccuracyResultModal
+        <CalibrationStep5
           score={accuracyScore}
           quality={accuracyQuality}
           onRecalibrate={requestCalibration}

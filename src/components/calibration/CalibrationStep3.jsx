@@ -1,5 +1,4 @@
 import { createPortal } from "react-dom";
-import CalibrationHUD from "./CalibrationHUD.jsx";
 
 export default function CalibrationStep3({
   targetStyle,
@@ -51,16 +50,16 @@ export default function CalibrationStep3({
         {buttonLabel}
       </button>
 
-      {showHud && (
-        <CalibrationHUD
-          step={step}
-          totalSteps={totalSteps}
-          message={message}
-          clicksRemaining={clicksRemaining}
-          clickTarget={clickTarget}
-          isAccuracyPhase={isAccuracyPhase}
-          accuracySecondsLeft={secondsLeft}
-        />
+      {showHud && !isAccuracyPhase && (
+        <div className="calibration-hud-mini">
+          <span className="calibration-consent__eyebrow">
+            Point {Math.min(step + 1, totalSteps)} / {totalSteps}
+          </span>
+          <span className="calibration-consent__eyebrow">•</span>
+          <span className="calibration-consent__eyebrow">
+            {Math.max(clicksRemaining, 0)} clicks left
+          </span>
+        </div>
       )}
     </div>,
     document.body
