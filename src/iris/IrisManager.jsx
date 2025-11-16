@@ -15,13 +15,13 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 // Hook that reads/updates the Iris ON/OFF toggle (stored in localStorage or state)
-import { useIrisToggle } from "../../hooks/useIrisToggle.js";
+import { useIrisToggle } from "../hooks/useIrisToggle.js";
 
 // First calibration UI popup component
-import CalibrationStep1 from "../../components/calibration/CalibrationStep1.jsx";
-import CalibrationStep2 from "../../components/calibration/CalibrationStep2.jsx";
-import CalibrationStep3 from "../../components/calibration/CalibrationStep3.jsx";
-import CalibrationStep4Result from "../../components/calibration/CalibrationStep4Result.jsx";
+import CalibrationStep1 from "../components/calibration/CalibrationStep1.jsx";
+import CalibrationStep2 from "../components/calibration/CalibrationStep2.jsx";
+import CalibrationStep3 from "../components/calibration/CalibrationStep3.jsx";
+import CalibrationStep4Result from "../components/calibration/CalibrationStep4Result.jsx";
 
 
 // Creates a React Context for anything related to Iris state
