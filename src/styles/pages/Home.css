@@ -52,6 +52,13 @@
   --home-bg4: #cbeef3;
 }
 
+.bg-book-4 {
+  --home-bg1: #ff8000;
+  --home-bg2: #dda3b2;
+  --home-bg3: #7d7abc;
+  --home-bg4: #cbeef3;
+}
+
 .background {
   width: 100vw;
   height: 100vh;
