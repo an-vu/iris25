@@ -5,7 +5,7 @@ export const books = [
     id: 0,
     title: "Designing with the Mind in Mind",
     subtitle: "Simple Guide to Understanding User Interface Design Guidelines",
-    author: "by Jeff Johnson",
+    author: "Jeff Johnson",
     image:
       "https://m.media-amazon.com/images/I/71i1WQlxYIL._AC_UF1000,1000_QL80_.jpg",
     files: [
@@ -23,16 +23,30 @@ export const books = [
     id: 1,
     title: "The Design of Everyday Things",
     subtitle: "Revised and Expanded Edition",
-    author: "by Don Norman",
+    author: "Don Norman",
     image:
       "https://m.media-amazon.com/images/I/71sF8kuMW3L._AC_UF1000,1000_QL80_.jpg",
-    files: ["/iris25/books/the-design-of-everyday-things.pdf"],
+    files: [
+      "/iris25/books/the-design-of-everyday-things/00-introduction.pdf",
+      "/iris25/books/the-design-of-everyday-things/01-preface.pdf",
+      "/iris25/books/the-design-of-everyday-things/02-chapter-1.pdf",
+      "/iris25/books/the-design-of-everyday-things/03-chapter-2.pdf",
+      "/iris25/books/the-design-of-everyday-things/04-chapter-3.pdf",
+      "/iris25/books/the-design-of-everyday-things/05-chapter-4.pdf",
+      "/iris25/books/the-design-of-everyday-things/06-chapter-5.pdf",
+      "/iris25/books/the-design-of-everyday-things/07-chapter-6.pdf",
+      "/iris25/books/the-design-of-everyday-things/08-chapter-7.pdf",
+      "/iris25/books/the-design-of-everyday-things/09-acknowledgments.pdf",
+      "/iris25/books/the-design-of-everyday-things/10-general-readings.pdf",
+      "/iris25/books/the-design-of-everyday-things/11-references.pdf",
+      "/iris25/books/the-design-of-everyday-things/12-index.pdf",
+    ],
   },
   {
     id: 2,
     title: "Sabai",
     subtitle: "100 Simple Thai Recipes for Any Day of the Week",
-    author: "by Pailin Chongchitnant",
+    author: "Pailin Chongchitnant",
     image:
       "https://m.media-amazon.com/images/I/81EBqquvVfL._SL1500_.jpg",
     files: [

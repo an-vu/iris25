@@ -104,7 +104,7 @@ export default function Reader() {
         {/* Title Section */}
         <div className="title-container">
           <h4 className="title">{currentBook.title}</h4>
-          <h4 className="author">{currentBook.author}</h4>
+          <h4 className="author">by {currentBook.author}</h4>
         </div>
 
         {/* Reader Area */}

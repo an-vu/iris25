@@ -26,7 +26,7 @@ export default function BookCard({ book, positionClass, index }) {
         <div className="textbox">
           <h4>{book.title}</h4>
           <h4>{book.subtitle}</h4>
-          <p>{book.author}</p>
+          <p>by {book.author}</p>
         </div>
 
         <div className="button-wrapper">
