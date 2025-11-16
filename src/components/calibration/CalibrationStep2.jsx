@@ -21,7 +21,7 @@ export default function CalibrationStep3({
     : 0;
 
   const clicksTaken = clickTarget - Math.max(clicksRemaining, 0);
-  const colorSteps = ["red", "orange", "yellow", "lightgreen", "green"];
+  const colorSteps = ["blue", "cyan", "teal", "mint", "green"];
 
   let buttonLabel = "✓";
   if (isAccuracyPhase) {

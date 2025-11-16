@@ -1,3 +1,5 @@
+import CheckBadgeIcon from "./CheckBadgeIcon.jsx";
+
 export default function CountdownButton({
   complete,
   disabled,
@@ -17,13 +19,13 @@ export default function CountdownButton({
     onStart?.();
   };
 
-  const label = complete ? "✓" : value;
+  const label = complete ? <CheckBadgeIcon aria-hidden="true" /> : value;
 
   return (
     <button
       type="button"
       className={className}
-      disabled={disabled || complete || active}
+      disabled={disabled}
       onClick={handleClick}
       aria-label={
         complete

@@ -15,7 +15,11 @@
   --color-accent: #fe2c55;
   --color-accent-border: #ff3b30;
   --color-danger: #ff6384;
-  --gradient-primary: linear-gradient(135deg, #5f8bff, #7a5cff);
+  --color-blue: #0091FF;
+  --color-cyan: #3CD3FE;
+  --color-teal: #00D2E0;
+  --color-mint: #00DAC3;
+  --color-green: #30D158;
 
   --shadow-card: 0 20px 45px rgba(0, 0, 0, 0.35);
   --shadow-card-strong: 0 20px 60px rgba(0, 0, 0, 0.45);

@@ -1,6 +1,6 @@
 import NinePointButton from "../buttons/NinePointButton.jsx";
 
-export default function CalibrationStep1B({
+export default function CalibrationStep1b({
   complete,
   disabled,
   clicksRemaining,
@@ -19,11 +19,10 @@ export default function CalibrationStep1B({
         />
       </div>
       <div className="calibration-step__content">
-        <p className="calibration-step__title">Practice calibration clicks</p>
-        <ul className="calibration-consent__list">
-          <li>Press each calibration button five times while keeping your eyes on the target.</li>
-          <li>Always follow the mouse with your eyes during calibration.</li>
-        </ul>
+        <p className="calibration-step__title">Press each calibration point 5 times</p>
+        <p className="calibration-step__desc">
+          Always follow the cursor with your eyes in this step.
+        </p>
       </div>
     </div>
   );

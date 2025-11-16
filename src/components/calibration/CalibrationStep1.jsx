@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import CalibrationStep1A from "./CalibrationStep1A.jsx";
-import CalibrationStep1B from "./CalibrationStep1B.jsx";
-import CalibrationStep1C from "./CalibrationStep1C.jsx";
+import CalibrationStep1a from "./CalibrationStep1a.jsx";
+import CalibrationStep1b from "./CalibrationStep1b.jsx";
+import CalibrationStep1c from "./CalibrationStep1c.jsx";
 
 const REQUIRED_CLICKS = 5;
 const FOCUS_DURATION = 5;
@@ -30,12 +30,22 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
     setClicksRemaining((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleFocusStart = () => {
+  const step1Complete = cameraGranted;
+  const step2Complete = clicksRemaining === 0;
+  const step3Complete = focusComplete;
+  const allComplete = step1Complete && step2Complete && step3Complete;
+
+  const handleFocusStart = useCallback(() => {
     if (!cameraGranted || clicksRemaining > 0) return;
     setFocusSecondsLeft(FOCUS_DURATION);
     setFocusActive(true);
     setFocusComplete(false);
-  };
+  }, [cameraGranted, clicksRemaining]);
+
+  useEffect(() => {
+    if (!step2Complete || step3Complete || focusActive) return;
+    handleFocusStart();
+  }, [step2Complete, step3Complete, focusActive, handleFocusStart]);
 
   useEffect(() => {
     if (!focusActive) return undefined;
@@ -50,11 +60,6 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
     return () => window.clearTimeout(timer);
   }, [focusActive, focusSecondsLeft]);
 
-  const step1Complete = cameraGranted;
-  const step2Complete = clicksRemaining === 0;
-  const step3Complete = focusComplete;
-  const allComplete = step1Complete && step2Complete && step3Complete;
-
   const handleStart = () => {
     if (!allComplete) return;
     onStart?.();
@@ -68,17 +73,17 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
       aria-labelledby="calibration-consent-title"
     >
       <div className="calibration-consent__card">
-        <p className="calibration-consent__eyebrow">Iris eye tracking · Calibration</p>
+        <p className="calibration-consent__eyebrow">Iris eye tracking · Calibration Walkthrough</p>
         <h2 className="calibration-consent__title" id="calibration-consent-title">
           Calibrate Iris
         </h2>
 
-        <CalibrationStep1A
+        <CalibrationStep1a
           complete={step1Complete}
           onAllow={handleAllowCamera}
         />
 
-        <CalibrationStep1B
+        <CalibrationStep1b
           complete={step2Complete}
           disabled={!step1Complete}
           clicksRemaining={clicksRemaining}
@@ -86,7 +91,7 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
           onPractice={handlePracticeClick}
         />
 
-        <CalibrationStep1C
+        <CalibrationStep1c
           complete={step3Complete}
           disabled={!step2Complete}
           focusSecondsLeft={focusSecondsLeft}

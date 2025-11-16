@@ -28,34 +28,34 @@
   opacity: 0.6;
 }
 
-.calibration-click--red {
-  background: #d7263d;
-  color: #070d0d;
+.calibration-click--blue {
+  background: var(--color-blue);
+  color: var(--color-white);
 }
 
-.calibration-click--orange {
-  background: #ff7f11;
-  color: #070d0d;
+.calibration-click--cyan {
+  background: var(--color-cyan);
+  color: var(--color-white);
 }
 
-.calibration-click--yellow {
-  background: #ffd60a;
-  color: #070d0d;
+.calibration-click--teal {
+  background: var(--color-teal);
+  color: var(--color-white);
 }
 
-.calibration-click--lightgreen {
-  background: #8cd867;
-  color: #070d0d;
+.calibration-click--mint {
+  background: var(--color-mint);
+  color: var(--color-white);
 }
 
 .calibration-click--green,
 .calibration-click.is-complete {
-  background: #2dc653;
+  background: var(--color-green);
   color: var(--color-white);
 }
 
 .calibration-click--accuracy {
-  background: #007AFF;
+  background: var(--color-blue);
   color: var(--color-white);
 }
 
@@ -67,6 +67,5 @@
 }
 
 .calibration-camera-button__label {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-white);
 }

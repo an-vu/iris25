@@ -1,8 +1,10 @@
+import CheckBadgeIcon from "./CheckBadgeIcon.jsx";
+
 const COLOR_SEQUENCE = [
-  "calibration-click--red",
-  "calibration-click--orange",
-  "calibration-click--yellow",
-  "calibration-click--lightgreen",
+  "calibration-click--blue",
+  "calibration-click--cyan",
+  "calibration-click--teal",
+  "calibration-click--mint",
   "calibration-click--green",
 ];
 
@@ -25,19 +27,19 @@ export default function NinePointButton({
 
   return (
       <div className="calibration-step__indicator-button">
-        <button
-          type="button"
-          className={colorClass}
-          disabled={disabled || complete}
-          onClick={handleClick}
+      <button
+        type="button"
+        className={colorClass}
+        disabled={disabled}
+        onClick={handleClick}
           aria-label={
             complete
               ? "Practice complete"
               : `Practice target, ${clicksRemaining} clicks remaining`
           }
-        >
-          {complete ? "✓" : clicksRemaining}
-        </button>
+      >
+        {complete ? <CheckBadgeIcon aria-hidden="true" /> : clicksRemaining}
+      </button>
     </div>
   );
 }

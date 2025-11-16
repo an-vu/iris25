@@ -2,7 +2,7 @@ import CountdownButton from "../buttons/CountdownButton.jsx";
 
 const FOCUS_TOTAL = 5;
 
-export default function CalibrationStep1C({
+export default function CalibrationStep1c({
   complete,
   disabled,
   focusSecondsLeft,
@@ -33,9 +33,9 @@ export default function CalibrationStep1C({
         />
       </div>
       <div className="calibration-step__content">
-        <p className="calibration-step__title">Hold steady for 5 seconds</p>
+        <p className="calibration-step__title">Stare at the button for 5 seconds</p>
         <p className="calibration-step__desc">
-          After finishing the nine points, stare at the center dot for five seconds.
+          Don’t move your mouse during this step.
         </p>
       </div>
     </div>
