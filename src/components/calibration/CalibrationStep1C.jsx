@@ -17,19 +17,18 @@ export default function CalibrationStep1c({
   return (
     <div className={`calibration-step ${disabled ? "is-disabled" : ""}`}>
       <div className="calibration-step__indicator">
-        <CountdownButton
-          // unified API
-          seconds={CALIBRATION_SECONDS}
-          auto={false}                     // Step1c uses controlled mode
-          disabled={disabled}
-          complete={complete}
-          value={focusSecondsLeft}
-          active={focusActive}
-          onStart={handleStart}
-          onComplete={() => {
-            /* parent already handles marking complete */
-          }}
-        />
+        <div style={{ pointerEvents: "none" }}>
+          <CountdownButton
+            seconds={CALIBRATION_SECONDS}
+            auto={false}
+            disabled={true}
+            className="is-disabled"   // match your real disabled class
+            complete={complete}
+            value={focusSecondsLeft}
+            active={false}            // also freeze animation
+            onStart={() => { }}
+          />
+        </div>
       </div>
 
       <div className="calibration-step__content">

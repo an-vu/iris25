@@ -125,7 +125,9 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
           >
             Start calibration
           </button>
-          <button type="button" className="calibration-btn secondary" onClick={onCancel}>
+          <button type="button" className="calibration-btn secondary"
+            onClick={onCancel}
+          >
             Cancel
           </button>
         </div>

@@ -21,6 +21,7 @@ import { useIrisToggle } from "../../hooks/useIrisToggle.js";
 import CalibrationStep1 from "../../components/calibration/CalibrationStep1.jsx";
 import CalibrationStep2 from "../../components/calibration/CalibrationStep2.jsx";
 import CalibrationStep3 from "../../components/calibration/CalibrationStep3.jsx";
+import CalibrationStep4Result from "../../components/calibration/CalibrationStep4Result.jsx";
 
 
 // Creates a React Context for anything related to Iris state
@@ -36,6 +37,7 @@ export function IrisManager({ children }) {
   const [showCalibrationStep1, setShowCalibrationStep1] = useState(false);
   const [showCalibrationStep2, setShowCalibrationStep2] = useState(false);
   const [showCalibrationStep3, setShowCalibrationStep3] = useState(false);
+  const [showCalibrationResult, setShowCalibrationResult] = useState(false);
 
   // Runs every time irisEnabled or hasCalibrated changes
   useEffect(() => {
@@ -48,6 +50,7 @@ export function IrisManager({ children }) {
       setHasCalibrated(false);
       setShowCalibrationStep2(false);
       setShowCalibrationStep3(false);
+      setShowCalibrationResult(false);
     }
   }, [irisEnabled, hasCalibrated]); // Dependencies: run when these change
 
@@ -68,7 +71,20 @@ export function IrisManager({ children }) {
 
   const handleFocusComplete = () => {
     setShowCalibrationStep3(false);
+    setShowCalibrationResult(true);
+  };
+
+  const handleFinishCalibration = () => {
+    setShowCalibrationResult(false);
     setHasCalibrated(true);
+  };
+
+  const handleRecalibrate = () => {
+    setShowCalibrationResult(false);
+    setShowCalibrationStep3(false);
+    setShowCalibrationStep2(false);
+    setShowCalibrationStep1(true);
+    setHasCalibrated(false);
   };
 
   // Runs when user cancels calibration or denies camera
@@ -93,6 +109,7 @@ export function IrisManager({ children }) {
         setShowCalibrationStep1(false);
         setShowCalibrationStep2(false);
         setShowCalibrationStep3(false);
+        setShowCalibrationResult(false);
       },
     }),
     [irisEnabled, setIrisEnabled, hasCalibrated] // recompute when these change
@@ -116,6 +133,14 @@ export function IrisManager({ children }) {
       )}
       {showCalibrationStep3 && (
         <CalibrationStep3 onComplete={handleFocusComplete} />
+      )}
+      {showCalibrationResult && (
+        <CalibrationStep4Result
+          score={null}
+          quality={null}
+          onRecalibrate={handleRecalibrate}
+          onContinue={handleFinishCalibration}
+        />
       )}
     </IrisContext.Provider>
   );
