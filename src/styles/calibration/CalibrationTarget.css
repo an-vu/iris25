@@ -1,0 +1,72 @@
+.calibration-click {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background-color: var(--color-iris-dark);
+  color: var(--color-white);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.9;
+  box-shadow: var(--shadow-button);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  transition: transform 150ms ease, background 150ms ease, opacity 150ms ease;
+}
+
+.calibration-click:hover:not(:disabled) {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.calibration-click:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.calibration-click--red {
+  background: #d7263d;
+  color: #070d0d;
+}
+
+.calibration-click--orange {
+  background: #ff7f11;
+  color: #070d0d;
+}
+
+.calibration-click--yellow {
+  background: #ffd60a;
+  color: #070d0d;
+}
+
+.calibration-click--lightgreen {
+  background: #8cd867;
+  color: #070d0d;
+}
+
+.calibration-click--green,
+.calibration-click.is-complete {
+  background: #2dc653;
+  color: var(--color-white);
+}
+
+.calibration-click--accuracy {
+  background: #007AFF;
+  color: var(--color-white);
+}
+
+.calibration-camera-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.calibration-camera-button__label {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}

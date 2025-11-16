@@ -1,0 +1,130 @@
+.calibration-consent {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  backdrop-filter: blur(var(--blur-md));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  z-index: 999;
+}
+
+.calibration-consent__card {
+  width: min(100%, 900px);
+  border-radius: 1.75rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: rgba(18, 21, 31, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-modal);
+  color: var(--color-panel-alt);
+  font-family: var(--font-sans);
+}
+
+.calibration-consent__eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.calibration-consent__title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.25rem, 3vw, 2.4rem);
+}
+
+.calibration-consent__list {
+  margin: 1rem 0;
+  padding-left: 1.25rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+}
+
+.calibration-consent__note {
+  margin: 0 0 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.calibration-consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.consent-btn {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.85rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.consent-btn:active {
+  transform: translateY(1px);
+}
+
+.consent-btn.primary {
+  background: var(--gradient-primary);
+  color: var(--color-white);
+  box-shadow: 0 12px 24px rgba(92, 121, 255, 0.45);
+}
+
+.consent-btn.secondary {
+  background: transparent;
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.calibration-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calibration-step:first-of-type {
+  border-top: none;
+}
+
+.calibration-step.is-disabled {
+  opacity: 0.5;
+  filter: grayscale(0.4);
+}
+
+.calibration-step__indicator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+}
+
+.calibration-step__content {
+  flex: 1;
+}
+
+.calibration-step__indicator-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.calibration-step__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.calibration-step__desc {
+  margin: 0 0 0.5rem;
+  color: var(--color-white);
+}
+
+.calibration-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

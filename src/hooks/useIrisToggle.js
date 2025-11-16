@@ -1,18 +1,24 @@
 // Whenever you flip the Iris toggle in the UI, this hook makes sure the app remembers it.
-// Think of it as the single source of truth for “Iris is on/off.”
+// This is just a hook to store on/off flag in localStorage
+// syncs it across components/tabs, and gives you [enabled, setEnabled].
+// when this set to ON the first time, go to IrisManager.jsx for the logic/behavior when this button change to ON.
+// So the hook handles persistence/sync of the flag,
 
 import { useCallback, useEffect, useState } from "react";
 
-const STORAGE_KEY = "iris-eye-tracking-enabled";
-const TOGGLE_EVENT = "iris-eye-tracking-toggle";
+const STORAGE_KEY = "iris-toggle-state"; // here’s the key storing toggle state
+const TOGGLE_EVENT = "iris-toggle-update"; // here’s the event fired when it changes
 
-// Always boot the app with Iris disabled, regardless of any prior session state.
-const getInitialValue = () => false;
+// Always boot the app with Iris Toggle OFF
+// Iris Toggle stays consistent across pages and reloads
+const getInitialValue = () => {
+  if (typeof window === "undefined") return false;
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (stored === null) return false;
+  return stored === "true";
+};
 
-/**
- * Keeps the Iris on/off preference in sync across components, tabs, and reloads.
- * Returns a tuple like useState: [enabled, setEnabled].
- */
+// Keeps the Iris on/off preference in sync across components, tabs, and reloads.
 export function useIrisToggle() {
   const [enabled, setEnabled] = useState(getInitialValue);
 
