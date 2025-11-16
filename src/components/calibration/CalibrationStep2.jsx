@@ -8,14 +8,14 @@ const REQUIRED_CLICKS = 5;     // Clicks per calibration point
 // 0 = left/top, 1 = right/bottom.
 // Order defines the sequence the user must click.
 const RELATIVE_POSITIONS = [
-  { x: 0,   y: 0 },   // top-left
+  { x: 0, y: 0 },   // top-left
   { x: 0.5, y: 0 },   // top-center
-  { x: 1,   y: 0 },   // top-right
-  { x: 1,   y: 0.5 }, // mid-right
-  { x: 1,   y: 1 },   // bottom-right
+  { x: 1, y: 0 },   // top-right
+  { x: 1, y: 0.5 }, // mid-right
+  { x: 1, y: 1 },   // bottom-right
   { x: 0.5, y: 1 },   // bottom-center
-  { x: 0,   y: 1 },   // bottom-left
-  { x: 0,   y: 0.5 }, // mid-left
+  { x: 0, y: 1 },   // bottom-left
+  { x: 0, y: 0.5 }, // mid-left
   { x: 0.5, y: 0.5 }, // center (final target)
 ];
 
@@ -109,11 +109,8 @@ export default function CalibrationStep2({ onComplete, showHud = true }) {
       {/* Mini HUD showing progress */}
       {showHud && (
         <div className="calibration-hud-mini">
-          <span className="calibration-card__eyebrow">
-            Point {Math.min(pointIndex + 1, positions.length)} / {positions.length}
-          </span>
-          <span className="calibration-card__eyebrow">•</span>
-          <span className="calibration-card__eyebrow">
+          <span className="calibration-card__eyebrow" style={{ margin: 0 }}>
+            Point {Math.min(pointIndex + 1, positions.length)} / {positions.length} •{" "}
             {done ? "Complete" : `${clicksLeft} clicks left`}
           </span>
         </div>

@@ -26,19 +26,14 @@ export default function NinePointButton({
   };
 
   return (
-      <div className="calibration-step__indicator-button">
+    <div className="calibration-step__indicator-button">
       <button
         type="button"
         className={colorClass}
         disabled={disabled}
         onClick={handleClick}
-          aria-label={
-            complete
-              ? "Practice complete"
-              : `Practice target, ${clicksRemaining} clicks remaining`
-          }
       >
-        {complete ? <CheckBadgeIcon aria-hidden="true" /> : clicksRemaining}
+        {complete ? <CheckBadgeIcon /> : clicksRemaining}
       </button>
     </div>
   );

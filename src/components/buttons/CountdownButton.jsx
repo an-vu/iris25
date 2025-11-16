@@ -79,15 +79,11 @@ export default function CountdownButton({
       type="button"
       className={className}
       onClick={handleStart}
-      aria-label={
-        isComplete
-          ? "Focus complete"
-          : isActive
-          ? `Hold steady, ${displayValue} seconds`
-          : `Start ${seconds}-second focus`
-      }
     >
       {label}
     </button>
   );
 }
+
+
+

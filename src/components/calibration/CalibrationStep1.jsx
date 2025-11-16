@@ -85,8 +85,6 @@ export default function CalibrationStep1({ onAllow, onStart, onCancel }) {
     <div
       className="calibration-card"
       role="dialog"
-      aria-modal="true"
-      aria-labelledby="calibration-card-title"
     >
       <div className="calibration-card__card">
         <p className="calibration-card__eyebrow">Iris eye tracking · Calibration Walkthrough</p>
