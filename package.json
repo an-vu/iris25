@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build && cp dist/index.html dist/404.html",
-    "deploy": "gh-pages -d dist -m \"deploy build $(date +'%y%m%d-%H%M')\""
+    "deploy": "gh-pages -d dist -m \"build-$(date +'%y%m%d-%H%M')\""
   },
   "dependencies": {
     "@react-pdf-viewer/core": "^3.12.0",
