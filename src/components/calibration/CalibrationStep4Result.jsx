@@ -6,8 +6,8 @@ export default function CalibrationStep5({ score, quality, onRecalibrate, onCont
   return createPortal(
     <div className="calibration-overlay instructions">
       <div className="calibration-card">
-        <p className="calibration-consent__eyebrow">Iris eye tracking · Calibration Result</p>
-        <h2 className="calibration-consent__title">
+        <p className="calibration-card__eyebrow">Iris eye tracking · Calibration Result</p>
+        <h2 className="calibration-card__title">
           {score != null ? `${score}%` : "--"} {quality ? `• ${quality}` : ""}
         </h2>
         <div className="calibration-actions">

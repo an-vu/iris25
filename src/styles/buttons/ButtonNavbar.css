@@ -31,6 +31,21 @@
     box-shadow: var(--shadow-button);
 }
 
+.nav-button:disabled {
+    opacity: 0.4;
+    background-color: var(--color-iris-panel);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.nav-button:disabled:hover,
+.nav-button:disabled:focus {
+    transform: none;
+    opacity: 0.4;
+    background-color: var(--color-iris-panel);
+}
+
 .navbar-button-container.group:hover .nav-button:hover {
     transform: scale(1.08);
 }

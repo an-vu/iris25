@@ -2,7 +2,7 @@
 //
 // - When the user turns Iris ON:
 //      - check if they’ve calibrated before
-//      - if not, show the calibration consent popup
+//      - if not, show the calibration calibration popup
 //
 // - When the user turns Iris OFF:
 //      - hide any Iris UI
@@ -19,6 +19,8 @@ import { useIrisToggle } from "../../hooks/useIrisToggle.js";
 
 // First calibration UI popup component
 import CalibrationStep1 from "../../components/calibration/CalibrationStep1.jsx";
+import CalibrationStep2 from "../../components/calibration/CalibrationStep2.jsx";
+import CalibrationStep3 from "../../components/calibration/CalibrationStep3.jsx";
 
 
 // Creates a React Context for anything related to Iris state
@@ -32,16 +34,20 @@ export function IrisManager({ children }) {
   const [hasCalibrated, setHasCalibrated] = useState(false);
   // showCalibrationStep1 = whether to show CalibrationStep1
   const [showCalibrationStep1, setShowCalibrationStep1] = useState(false);
+  const [showCalibrationStep2, setShowCalibrationStep2] = useState(false);
+  const [showCalibrationStep3, setShowCalibrationStep3] = useState(false);
 
   // Runs every time irisEnabled or hasCalibrated changes
   useEffect(() => {
     if (irisEnabled) {
-      // If Iris is ON but calibration has NOT been done, show the consent popup
+      // If Iris is ON but calibration has NOT been done, show the calibration popup
       if (!hasCalibrated) setShowCalibrationStep1(true);
     } else {
       // If Iris turns OFF, hide popup and reset calibration state
       setShowCalibrationStep1(false);
       setHasCalibrated(false);
+      setShowCalibrationStep2(false);
+      setShowCalibrationStep3(false);
     }
   }, [irisEnabled, hasCalibrated]); // Dependencies: run when these change
 
@@ -52,6 +58,16 @@ export function IrisManager({ children }) {
 
   const handleBeginCalibration = () => {
     setShowCalibrationStep1(false);
+    setShowCalibrationStep2(true);
+  };
+
+  const handleCompleteDots = () => {
+    setShowCalibrationStep2(false);
+    setShowCalibrationStep3(true);
+  };
+
+  const handleFocusComplete = () => {
+    setShowCalibrationStep3(false);
     setHasCalibrated(true);
   };
 
@@ -75,6 +91,8 @@ export function IrisManager({ children }) {
         // manually reset calibration state anywhere
         setHasCalibrated(false);
         setShowCalibrationStep1(false);
+        setShowCalibrationStep2(false);
+        setShowCalibrationStep3(false);
       },
     }),
     [irisEnabled, setIrisEnabled, hasCalibrated] // recompute when these change
@@ -92,6 +110,12 @@ export function IrisManager({ children }) {
           onStart={handleBeginCalibration}
           onCancel={handleCancelCalibration} // user cancels, turn Iris OFF
         />
+      )}
+      {showCalibrationStep2 && (
+        <CalibrationStep2 onComplete={handleCompleteDots} />
+      )}
+      {showCalibrationStep3 && (
+        <CalibrationStep3 onComplete={handleFocusComplete} />
       )}
     </IrisContext.Provider>
   );

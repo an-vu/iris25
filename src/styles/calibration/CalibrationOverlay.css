@@ -1,10 +1,17 @@
 .calibration-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 2147483640;
-  pointer-events: none;
-  color: var(--color-white);
+  background:
+    radial-gradient(1000px circle at 50% 20%, rgba(255, 255, 255, 0.06), transparent 70%),
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.35));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  z-index: 999;
+  isolation: isolate;
 }
 
 .calibration-overlay--blocking {

@@ -31,7 +31,7 @@
 
 - Rebuilt the eye-tracking stack:
   - `useWebGazerEngine` now loads/configures WebGazer (TFFacemesh + weightedRidge + Kalman) and `CalibrationContext` owns lifecycle, statuses, pause/resume, and reader gating.
-- Implemented a strict 9-point, click-driven calibration flow (five clicks per point, center last) with camera consent, instruction modal, per-dot overlay, accuracy prompt, 5-second measurement, scoring tiers, and a reusable accuracy results modal.
+- Implemented a strict 9-point, click-driven calibration flow (five clicks per point, center last) with camera calibration, instruction modal, per-dot overlay, accuracy prompt, 5-second measurement, scoring tiers, and a reusable accuracy results modal.
 - Added shared config/helpers (`calibrationConfig.js`, accuracy tiers, sequence shuffler), separated HUD/UI components, enabled camera-float mounting, and fixed pointer events so the overlay dialogs remain interactive.
 - Adjusted calibration dot positioning (edge offsets + CSS centering) so buttons hug the screen borders without clipping, and made the HUD optional to reduce distraction during calibration.
 

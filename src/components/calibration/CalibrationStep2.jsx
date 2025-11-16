@@ -1,65 +1,120 @@
-// 9-point calibration step here
-
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function CalibrationStep3({
-  targetStyle,
-  onTargetClick,
-  showHud = false,
-  step = 0,
-  totalSteps = 0,
-  message,
-  clicksRemaining = 0,
-  clickTarget = 0,
-  isAccuracyPhase = false,
-  accuracyTimeLeft = 0,
-  accuracyDuration = 0,
-}) {
-  const completed = clicksRemaining <= 0;
-  const secondsLeft = accuracyDuration
-    ? Math.max(0, Math.ceil(accuracyTimeLeft / 1000))
-    : 0;
+const EDGE_OFFSET_PX = 50;     // Keep targets away from screen edges
+const REQUIRED_CLICKS = 5;     // Clicks per calibration point
 
-  const clicksTaken = clickTarget - Math.max(clicksRemaining, 0);
+// Normalized calibration points around the screen.
+// 0 = left/top, 1 = right/bottom.
+// Order defines the sequence the user must click.
+const RELATIVE_POSITIONS = [
+  { x: 0,   y: 0 },   // top-left
+  { x: 0.5, y: 0 },   // top-center
+  { x: 1,   y: 0 },   // top-right
+  { x: 1,   y: 0.5 }, // mid-right
+  { x: 1,   y: 1 },   // bottom-right
+  { x: 0.5, y: 1 },   // bottom-center
+  { x: 0,   y: 1 },   // bottom-left
+  { x: 0,   y: 0.5 }, // mid-left
+  { x: 0.5, y: 0.5 }, // center (final target)
+];
+
+// Convert normalized positions into absolute px values.
+// Clamped using EDGE_OFFSET_PX so targets never spawn at extreme edges.
+function computeAbsolutePositions() {
+  if (typeof window === "undefined") return [];
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  return RELATIVE_POSITIONS.map(({ x, y }) => ({
+    left: Math.min(Math.max(x * w, EDGE_OFFSET_PX), w - EDGE_OFFSET_PX),
+    top: Math.min(Math.max(y * h, EDGE_OFFSET_PX), h - EDGE_OFFSET_PX),
+  }));
+}
+
+export default function CalibrationStep2({ onComplete, showHud = true }) {
+  // Absolute px coordinates for every calibration target
+  const [positions, setPositions] = useState(() => computeAbsolutePositions());
+
+  // Which target the user is currently on (0 to n-1)
+  const [pointIndex, setPointIndex] = useState(0);
+
+  // How many clicks are left for the current target
+  const [clicksLeft, setClicksLeft] = useState(REQUIRED_CLICKS);
+
+  // True once the final target is completed
+  const [done, setDone] = useState(false);
+
+  // Recompute positions on window resize for responsive layouts
+  useEffect(() => {
+    const handleResize = () => setPositions(computeAbsolutePositions());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Dynamic color feedback as user progresses at each point
   const colorSteps = ["blue", "cyan", "teal", "mint", "green"];
-
-  let buttonLabel = "✓";
-  if (isAccuracyPhase) {
-    buttonLabel = secondsLeft || "✓";
-  } else if (!completed) {
-    const remaining = Math.max(clicksRemaining, 0);
-    buttonLabel = remaining === 0 ? "✓" : remaining;
-  }
-
+  const clicksTaken = REQUIRED_CLICKS - Math.max(clicksLeft, 0);
   const progressIndex = Math.min(colorSteps.length - 1, Math.max(0, clicksTaken));
-  const colorClass = isAccuracyPhase
-    ? "calibration-click--accuracy"
-    : `calibration-click--${colorSteps[progressIndex]}`;
+  const colorClass = `calibration-click--${colorSteps[progressIndex]}`;
 
-  if (typeof document === "undefined") return null;
+  // Main click handler that drives step progression
+  const handleClick = () => {
+    if (done) return;
+
+    // Still clicking the current target
+    if (clicksLeft > 1) {
+      setClicksLeft(prev => prev - 1);
+      return;
+    }
+
+    // Finished this point, move to the next one
+    if (pointIndex < positions.length - 1) {
+      setPointIndex(prev => prev + 1);
+      setClicksLeft(REQUIRED_CLICKS);
+      return;
+    }
+
+    // Finished the final target
+    setDone(true);
+    onComplete?.();
+  };
+
+  // SSR / fallback guard
+  if (typeof document === "undefined" || positions.length === 0) return null;
+
+  // Current target coordinates
+  const target = positions[pointIndex] ?? positions[0];
 
   return createPortal(
     <div className="calibration-overlay calibration-overlay--blocking">
+      {/* Moving calibration target */}
       <button
         type="button"
-        className={["calibration-click", colorClass, completed ? "is-complete" : ""]
+        className={[
+          "calibration-click",
+          colorClass,
+          done ? "is-complete" : "",
+        ]
           .filter(Boolean)
           .join(" ")}
-        style={targetStyle}
-        onClick={isAccuracyPhase ? undefined : onTargetClick}
-        disabled={isAccuracyPhase || completed}
+        style={{ left: `${target.left}px`, top: `${target.top}px` }}
+        onClick={handleClick}
+        disabled={done}
       >
-        {buttonLabel}
+        {done ? "✓" : clicksLeft}
       </button>
 
-      {showHud && !isAccuracyPhase && (
+      {/* Mini HUD showing progress */}
+      {showHud && (
         <div className="calibration-hud-mini">
-          <span className="calibration-consent__eyebrow">
-            Point {Math.min(step + 1, totalSteps)} / {totalSteps}
+          <span className="calibration-card__eyebrow">
+            Point {Math.min(pointIndex + 1, positions.length)} / {positions.length}
           </span>
-          <span className="calibration-consent__eyebrow">•</span>
-          <span className="calibration-consent__eyebrow">
-            {Math.max(clicksRemaining, 0)} clicks left
+          <span className="calibration-card__eyebrow">•</span>
+          <span className="calibration-card__eyebrow">
+            {done ? "Complete" : `${clicksLeft} clicks left`}
           </span>
         </div>
       )}

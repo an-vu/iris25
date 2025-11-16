@@ -1,4 +1,4 @@
-.calibration-consent {
+.calibration-card {
   position: fixed;
   inset: 0;
   background:
@@ -14,7 +14,7 @@
   isolation: isolate;
 }
 
-.calibration-consent::before {
+.calibration-card::before {
   content: "";
   position: absolute;
   inset: -15%;
@@ -39,7 +39,7 @@
   }
 }
 
-.calibration-consent__card {
+.calibration-card__card {
   width: min(100%, 50%);
   border-radius: clamp(0.8rem, 2vw, 30px);
   padding: clamp(1.5rem, 4vw, 3rem);
@@ -62,7 +62,7 @@
 }
 
 
-.calibration-consent__eyebrow {
+.calibration-card__eyebrow {
   margin: 0 0 0.35rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -70,53 +70,88 @@
   color: var(--color-text-500);
 }
 
-.calibration-consent__title {
+.calibration-card__title {
   margin: 0 0 1rem;
   font-size: clamp(1.25rem, 3vw, 2.4rem);
 }
 
-.calibration-consent__list {
+.calibration-card__list {
   margin: 1rem 0;
   padding-left: 1.25rem;
   color: var(--color-text-500);
   line-height: 1.6;
 }
 
-.calibration-consent__note {
+.calibration-card__note {
   margin: 0 0 1.5rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.calibration-consent__actions {
+.calibration-card__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.consent-btn {
-  border: none;
+.calibration-btn {
+  padding: 10px 20px;
   border-radius: var(--radius-pill);
-  padding: 0.85rem 1.75rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  background-color: var(--color-iris-dark);
+  color: var(--color-white);
+  opacity: 0.9;
+  border: none;
+  align-self: center;
+  height: auto;
+
+  margin-top: 0.4rem;
+
+  transition:
+    background-color 0.25s,
+    color 300ms ease-in-out,
+    background 0.4s,
+    transform 0.4s ease;
+  filter: 0.4s ease;
 }
 
-.consent-btn:active {
+.calibration-btn:hover {
+  transform: scale(1.08);
+  opacity: 1;
+  background-color: var(--color-iris-dark-strong);
+  color: var(--color-white);
+}
+
+.calibration-btn:active {
   transform: translateY(1px);
 }
 
-.consent-btn.primary {
-  background: var(--gradient-primary);
-  color: var(--color-white);
-  box-shadow: 0 12px 24px rgba(92, 121, 255, 0.45);
+.calibration-btn:disabled {
+  opacity: 0.4;
+  background-color: var(--color-iris-panel);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.consent-btn.secondary {
-  background: transparent;
+.calibration-btn:disabled:hover,
+.calibration-btn:disabled:focus {
+  transform: none;
+  opacity: 0.4;
+  background-color: var(--color-iris-panel);
+}
+
+.calibration-btn.primary {
+  background: var(--color-blue);
   color: var(--color-white);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.calibration-btn.primary:disabled {
+  background-color: var(--color-iris-panel);
+  color: var(--color-white);
+}
+
+.calibration-btn.secondary {
+  background-color: var(--color-iris-dark);
+  color: var(--color-white);
 }
 
 .calibration-step {
@@ -124,7 +159,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1.25rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(51, 51, 51, 0.1); /* thin lines between each step */
 }
 
 .calibration-step:first-of-type {

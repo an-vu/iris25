@@ -41,7 +41,7 @@
 
 /* Page Animation */
 
-.title-container, .reader-container, .calibration-consent__card  {
+.title-container, .reader-container, .calibration-card__card  {
   transform: translateY(-100px);
   opacity: 0;
   animation: drop-in 0.6s ease forwards;
