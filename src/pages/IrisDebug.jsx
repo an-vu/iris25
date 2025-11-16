@@ -1,21 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useCalibration } from "../iris/contexts/IrisCalibrationManager.jsx";
 import IrisToggle from "../components/buttons/IrisToggle.jsx";
-import "../styles/pages/EyeTrackingDebug.css";
 
-export default function EyeTrackingDebug() {
+export default function IrisDebug() {
   const navigate = useNavigate();
-  const {
-    eyeTrackingEnabled,
-    hasAcceptedCamera,
-    acceptCameraAccess,
-    declineCameraAccess,
-    debugOverlays,
-    setDebugOverlays,
-  } = useCalibration();
 
   return (
-    <div className="reader background eye-debug">
+    <div className="reader background">
       <div className="master-container">
         <div className="title-container">
           <h4 className="title">Iris Debug</h4>
