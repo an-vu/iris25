@@ -11,8 +11,10 @@ import webgazer from "webgazer";
   - managing event listeners
 */
 
+const noop = () => {};
 let initialized = false;
-let gazeListener = null; // store active gaze listener so we can remove it later
+let gazeDispatcher = null; // internal WebGazer handler
+const gazeSubscribers = new Set(); // every consumer that wants gaze events
 
 
 /* --------------------------------------------------------------------------
@@ -42,6 +44,10 @@ export async function initWebgazer() {
     webgazer.saveDataAcrossSessions(false);
 
     initialized = true;
+
+    if (gazeSubscribers.size > 0) {
+        startGazeStream();
+    }
 }
 
 
@@ -102,42 +108,68 @@ export function clearTrainingData() {
  * GAZE LISTENERS (React-friendly)
  * -------------------------------------------------------------------------- */
 
-export function setGazeListener(callback) {
-    /*
-    Registers a single active gaze listener.
-    - Wraps WebGazer’s raw callback, but only forwards {x, y}
-        (NOT the full payload or `clock` timestamp).
-    - If you ever need more fields, extend the object here.
-    - Calling setGazeListener() replaces the previous listener.
-    */
+function startGazeStream() {
+    if (!initialized || gazeDispatcher || gazeSubscribers.size === 0) return;
 
-
-    if (!initialized) return;
-
-    // If a listener already exists, remove it first
-    if (gazeListener) {
-        webgazer.clearGazeListener();
-        gazeListener = null;
-    }
-
-    // Wrap the callback so we only pass what we need
-    gazeListener = (data, clock) => {
+    gazeDispatcher = (data, clock) => {
         if (!data) return;
+        const payload = { x: data.x, y: data.y };
 
-        callback({
-            x: data.x,
-            y: data.y
-            // add more fields if you ever need them
+        gazeSubscribers.forEach(listener => {
+            try {
+                listener(payload);
+            } catch (err) {
+                // Don’t let a consumer crash the dispatcher.
+                console.error("WebGazer listener error:", err);
+            }
         });
     };
 
-    webgazer.setGazeListener(gazeListener);
+    webgazer.setGazeListener(gazeDispatcher);
 }
 
-export function clearGazeListener() {
-    if (!initialized || !gazeListener) return;
-    webgazer.clearGazeListener();
-    gazeListener = null;
+function stopGazeStream() {
+    if (gazeDispatcher && initialized) {
+        webgazer.clearGazeListener();
+    }
+    gazeDispatcher = null;
+}
+
+export function addGazeListener(callback) {
+    if (typeof callback !== "function") return noop;
+
+    gazeSubscribers.add(callback);
+    startGazeStream();
+
+    return () => removeGazeListener(callback);
+}
+
+export function removeGazeListener(callback) {
+    if (typeof callback !== "function") return;
+
+    gazeSubscribers.delete(callback);
+    if (gazeSubscribers.size === 0) {
+        stopGazeStream();
+    }
+}
+
+export function setGazeListener(callback) {
+    /*
+    Registers a gaze listener, clearing any previous ones.
+    Kept for backward compatibility with existing hook code.
+    */
+    clearGazeListener();
+    return addGazeListener(callback);
+}
+
+export function clearGazeListener(callback) {
+    if (typeof callback === "function") {
+        removeGazeListener(callback);
+        return;
+    }
+
+    gazeSubscribers.clear();
+    stopGazeStream();
 }
 
 
@@ -182,7 +214,8 @@ export function shutdown() {
         // avoid crash if webgazer throws internal errors
     }
 
-    gazeListener = null;
+    stopGazeStream();
+    gazeSubscribers.clear();
     initialized = false;
 }
 

@@ -9,6 +9,7 @@
   - Fixed PDF border sizing
 - Add Redux and Context
 - Add Tests scripts
+- Clean up all .css files
 
 ## November 18
 

@@ -1,13 +1,11 @@
-// Whenever you flip the Iris toggle in the UI, this hook makes sure the app remembers it.
-// This is just a hook to store on/off flag in localStorage
-// syncs it across components/tabs, and gives you [enabled, setEnabled].
-// when this set to ON the first time, go to IrisManager.jsx for the logic/behavior when this button change to ON.
-// So the hook handles persistence/sync of the flag,
+// This hook stores a single ON/OFF state in localStorage, keeps it synced across the whole app,
+// and tells IrisManager when the user turns the feature on for the first time.
+// On first render it may briefly show ‘false’ until hydration finishes, but that's normal.
 
 import { useCallback, useEffect, useState } from "react";
 
-const STORAGE_KEY = "iris-toggle-state"; // here’s the key storing toggle state
-const TOGGLE_EVENT = "iris-toggle-update"; // here’s the event fired when it changes
+const STORAGE_KEY = "iris-toggle-state"; // Key storing toggle state
+const TOGGLE_EVENT = "iris-toggle-update"; // Event fired when it changes
 
 // Always boot the app with Iris Toggle OFF
 // Iris Toggle stays consistent across pages and reloads

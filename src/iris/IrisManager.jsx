@@ -8,14 +8,26 @@
 //      - hide any Iris UI
 //      - reset calibration state
 //
+// - This file decides:
+//      - when Iris turns ON
+//      - when Iris turns OFF
+//      - when calibration steps appear
+//      - when calibration resets
+//      - what the rest of the app sees
+//      - how to show popups
+//      - how to expose Iris state through context
+//
 // This file also provides Iris state (enabled, calibrated, reset functions) to the rest of the app
 // through React Context, so any component can know if Iris is active.
+// ----------------------------------------------------------------------------------------------------
+
 
 // React tools to create context and manage state
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 // Hook that reads/updates the Iris ON/OFF toggle (stored in localStorage or state)
 import { useIrisToggle } from "../hooks/useIrisToggle.js";
+import { useWebGazer } from "./hooks/useWebGazer.js";
 
 // First calibration UI popup component
 import CalibrationStep1 from "../components/calibration/CalibrationStep1.jsx";
@@ -38,6 +50,14 @@ export function IrisManager({ children }) {
   const [showCalibrationStep2, setShowCalibrationStep2] = useState(false);
   const [showCalibrationStep3, setShowCalibrationStep3] = useState(false);
   const [showCalibrationResult, setShowCalibrationResult] = useState(false);
+  const {
+    initialize: initWebGazer,
+    startCalibration: startWebGazerCalibration,
+    finishCalibration: finishWebGazerCalibration,
+    startTracking,
+    stopTracking,
+    shutdown,
+  } = useWebGazer({ autoInit: false });
 
   // Runs every time irisEnabled or hasCalibrated changes
   useEffect(() => {
@@ -55,13 +75,24 @@ export function IrisManager({ children }) {
   }, [irisEnabled, hasCalibrated]); // Dependencies: run when these change
 
   // Runs when user clicks "Allow camera"
-  const handleAllowCamera = () => {
-    // Placeholder for future WebGazer start logic.
+  const handleAllowCamera = async () => {
+    try {
+      await initWebGazer();
+    } catch (error) {
+      console.error("Failed to initialize WebGazer:", error);
+      handleCancelCalibration();
+    }
   };
 
-  const handleBeginCalibration = () => {
+  const handleBeginCalibration = async () => {
     setShowCalibrationStep1(false);
     setShowCalibrationStep2(true);
+    try {
+      await startWebGazerCalibration();
+    } catch (error) {
+      console.error("Failed to start WebGazer calibration:", error);
+      handleCancelCalibration();
+    }
   };
 
   const handleCompleteDots = () => {
@@ -77,6 +108,7 @@ export function IrisManager({ children }) {
   const handleFinishCalibration = () => {
     setShowCalibrationResult(false);
     setHasCalibrated(true);
+    finishWebGazerCalibration();
   };
 
   const handleRecalibrate = () => {
@@ -96,6 +128,29 @@ export function IrisManager({ children }) {
     // Turn off Iris
     setIrisEnabled(false);
   };
+
+  useEffect(() => {
+    if (!irisEnabled) {
+      stopTracking();
+      shutdown();
+    }
+  }, [irisEnabled, stopTracking, shutdown]);
+
+  useEffect(() => {
+    if (!irisEnabled || !hasCalibrated) return undefined;
+
+    let cancelled = false;
+    startTracking().catch(error => {
+      if (!cancelled) {
+        console.error("Failed to start WebGazer tracking:", error);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      stopTracking();
+    };
+  }, [irisEnabled, hasCalibrated, startTracking, stopTracking]);
 
   // Value shared to all components using IrisContext
   const value = useMemo(
