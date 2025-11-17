@@ -4,6 +4,7 @@
 - Modern digital bookshelf with eye-tracking control. Iris Reader '25 lets users read and navigate books using only their eyes.
 - [Original prototype](https://presentation-textbook_prototype.toddle.site)
 - [Deployment](https://an-vu.github.io/iris25/)
+- [Wiki](https://github.com/an-vu/iris25/wiki)
 
 ---
 
