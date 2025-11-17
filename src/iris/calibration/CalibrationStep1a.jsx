@@ -1,4 +1,4 @@
-import CameraButton from "../buttons/CameraButton.jsx";
+import CameraButton from "../../components/buttons/CameraButton.jsx";
 
 export default function CalibrationStep1a({ complete, onAllow }) {
   return (

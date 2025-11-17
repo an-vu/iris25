@@ -11,6 +11,7 @@ import {
   getCurrentPrediction,
   distanceToTarget,
 } from "../webgazerManager.js";
+import { measureInstantAccuracy } from "../calibration/accuracy.js";
 
 const noop = () => { };
 
@@ -210,6 +211,11 @@ export function useWebGazer(options = {}) {
     return distanceToTarget(x, y);
   }, []);
 
+  const measureAccuracy = useCallback(async () => {
+    await ensureReady();
+    return measureInstantAccuracy(getPrediction);
+  }, [ensureReady, getPrediction]);
+
   /**
    * Auto-init and auto-shutdown behavior.
    *
@@ -256,5 +262,6 @@ export function useWebGazer(options = {}) {
 
     getPrediction,
     distanceFrom,
+    measureAccuracy,
   };
 }

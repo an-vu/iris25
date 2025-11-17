@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import CountdownButton from "../buttons/CountdownButton.jsx";
+import CountdownButton from "../../components/buttons/CountdownButton.jsx";
 
 export const CALIBRATION_SECONDS = 5;
 

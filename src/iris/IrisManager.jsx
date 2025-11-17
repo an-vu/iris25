@@ -26,14 +26,14 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 // Hook that reads/updates the Iris ON/OFF toggle (stored in localStorage or state)
-import { useIrisToggle } from "../hooks/useIrisToggle.js";
-import { useWebGazer } from "./hooks/useWebGazer.js";
+import { useIrisToggle } from "./hooks/useIrisToggle.js";
+import { useWebGazer } from "./hooks/useWebGazer.js"; // This connect Iris to WebGazer
 
 // First calibration UI popup component
-import CalibrationStep1 from "../components/calibration/CalibrationStep1.jsx";
-import CalibrationStep2 from "../components/calibration/CalibrationStep2.jsx";
-import CalibrationStep3 from "../components/calibration/CalibrationStep3.jsx";
-import CalibrationStep4Result from "../components/calibration/CalibrationStep4Result.jsx";
+import CalibrationStep1 from "./calibration/CalibrationStep1.jsx";
+import CalibrationStep2 from "./calibration/CalibrationStep2.jsx";
+import CalibrationStep3 from "./calibration/CalibrationStep3.jsx";
+import CalibrationStep4Result from "./calibration/CalibrationStep4Result.jsx";
 
 
 // Creates a React Context for anything related to Iris state
@@ -50,6 +50,9 @@ export function IrisManager({ children }) {
   const [showCalibrationStep2, setShowCalibrationStep2] = useState(false);
   const [showCalibrationStep3, setShowCalibrationStep3] = useState(false);
   const [showCalibrationResult, setShowCalibrationResult] = useState(false);
+  const [accuracyPending, setAccuracyPending] = useState(false);
+  const [accuracyScore, setAccuracyScore] = useState(null);
+  const [accuracyQuality, setAccuracyQuality] = useState(null);
   const {
     initialize: initWebGazer,
     startCalibration: startWebGazerCalibration,
@@ -57,6 +60,7 @@ export function IrisManager({ children }) {
     startTracking,
     stopTracking,
     shutdown,
+    measureAccuracy,
   } = useWebGazer({ autoInit: false });
 
   // Runs every time irisEnabled or hasCalibrated changes
@@ -100,9 +104,23 @@ export function IrisManager({ children }) {
     setShowCalibrationStep3(true);
   };
 
-  const handleFocusComplete = () => {
+  const handleFocusComplete = async () => {
     setShowCalibrationStep3(false);
     setShowCalibrationResult(true);
+    setAccuracyPending(true);
+    setAccuracyScore(null);
+    setAccuracyQuality(null);
+    try {
+      const { score, quality } = await measureAccuracy();
+      setAccuracyScore(score);
+      setAccuracyQuality(quality);
+    } catch (error) {
+      console.error("Failed to measure WebGazer accuracy:", error);
+      setAccuracyScore(null);
+      setAccuracyQuality(null);
+    } finally {
+      setAccuracyPending(false);
+    }
   };
 
   const handleFinishCalibration = () => {
@@ -117,6 +135,9 @@ export function IrisManager({ children }) {
     setShowCalibrationStep2(false);
     setShowCalibrationStep1(true);
     setHasCalibrated(false);
+    setAccuracyScore(null);
+    setAccuracyQuality(null);
+    setAccuracyPending(false);
   };
 
   // Runs when user cancels calibration or denies camera
@@ -127,6 +148,9 @@ export function IrisManager({ children }) {
     setHasCalibrated(false);
     // Turn off Iris
     setIrisEnabled(false);
+    setAccuracyScore(null);
+    setAccuracyQuality(null);
+    setAccuracyPending(false);
   };
 
   useEffect(() => {
@@ -140,11 +164,18 @@ export function IrisManager({ children }) {
     if (!irisEnabled || !hasCalibrated) return undefined;
 
     let cancelled = false;
-    startTracking().catch(error => {
-      if (!cancelled) {
-        console.error("Failed to start WebGazer tracking:", error);
+
+    (async () => {
+      try {
+        // await new Promise(resolve => setTimeout(resolve, 400));
+        if (cancelled) return;
+        await startTracking();
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to start WebGazer tracking:", error);
+        }
       }
-    });
+    })();
 
     return () => {
       cancelled = true;
@@ -165,6 +196,9 @@ export function IrisManager({ children }) {
         setShowCalibrationStep2(false);
         setShowCalibrationStep3(false);
         setShowCalibrationResult(false);
+        setAccuracyScore(null);
+        setAccuracyQuality(null);
+        setAccuracyPending(false);
       },
     }),
     [irisEnabled, setIrisEnabled, hasCalibrated] // recompute when these change
@@ -191,8 +225,9 @@ export function IrisManager({ children }) {
       )}
       {showCalibrationResult && (
         <CalibrationStep4Result
-          score={null}
-          quality={null}
+          score={accuracyScore}
+          quality={accuracyQuality}
+          pending={accuracyPending}
           onRecalibrate={handleRecalibrate}
           onContinue={handleFinishCalibration}
         />

@@ -17,7 +17,8 @@
     "pdfjs-dist": "^3.11.174",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.5"
+    "react-router-dom": "^7.9.5",
+    "webgazer": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

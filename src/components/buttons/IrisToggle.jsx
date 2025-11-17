@@ -1,4 +1,4 @@
-import { useIrisToggle } from "../../hooks/useIrisToggle";
+import { useIrisToggle } from "../../iris/hooks/useIrisToggle.js";
 
 export default function IrisToggle() {
   const [irisOn, setIrisOn] = useIrisToggle();

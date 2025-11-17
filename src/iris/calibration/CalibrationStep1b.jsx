@@ -1,4 +1,4 @@
-import NinePointButton from "../buttons/NinePointButton.jsx";
+import NinePointButton from "../../components/buttons/NinePointButton.jsx";
 
 export default function CalibrationStep1b({
   complete,

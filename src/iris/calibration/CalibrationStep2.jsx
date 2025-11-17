@@ -45,6 +45,7 @@ export default function CalibrationStep2({ onComplete, showHud = true }) {
 
   // True once the final target is completed
   const [done, setDone] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   // Recompute positions on window resize for responsive layouts
   useEffect(() => {
@@ -60,12 +61,16 @@ export default function CalibrationStep2({ onComplete, showHud = true }) {
   const colorClass = `calibration-click--${colorSteps[progressIndex]}`;
 
   // Main click handler that drives step progression
-  const handleClick = () => {
-    if (done) return;
+  const handleClick = async () => {
+    if (done || isWaiting) return;
+
+    setIsWaiting(true);
+    // await new Promise(resolve => setTimeout(resolve, 350));
 
     // Still clicking the current target
     if (clicksLeft > 1) {
       setClicksLeft(prev => prev - 1);
+      setIsWaiting(false);
       return;
     }
 
@@ -73,12 +78,14 @@ export default function CalibrationStep2({ onComplete, showHud = true }) {
     if (pointIndex < positions.length - 1) {
       setPointIndex(prev => prev + 1);
       setClicksLeft(REQUIRED_CLICKS);
+      setIsWaiting(false);
       return;
     }
 
     // Finished the final target
     setDone(true);
     onComplete?.();
+    setIsWaiting(false);
   };
 
   // SSR / fallback guard
@@ -101,7 +108,7 @@ export default function CalibrationStep2({ onComplete, showHud = true }) {
           .join(" ")}
         style={{ left: `${target.left}px`, top: `${target.top}px` }}
         onClick={handleClick}
-        disabled={done}
+        disabled={done || isWaiting}
       >
         {done ? "✓" : clicksLeft}
       </button>
