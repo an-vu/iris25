@@ -6,12 +6,14 @@ import {
   resume as resumeManager,
   recordScreenPosition,
   clearTrainingData,
+  setPredictionStorage,
+  getStoredPredictionPoints,
+  resetWebgazerData,
   setGazeListener,
   clearGazeListener,
   getCurrentPrediction,
   distanceToTarget,
 } from "../webgazerManager.js";
-import { measureInstantAccuracy } from "../calibration/accuracy.js";
 
 const noop = () => { };
 
@@ -216,6 +218,26 @@ export function useWebGazer(options = {}) {
     return measureInstantAccuracy(getPrediction);
   }, [ensureReady, getPrediction]);
 
+  const measurePrecision = useCallback(
+    async (durationMs = 5000) => {
+      await ensureReady();
+      try {
+        setPredictionStorage(true);
+        await delay(durationMs);
+      } finally {
+        setPredictionStorage(false);
+      }
+      const samples = getStoredPredictionPoints();
+      return computePrecision(samples);
+    },
+    [ensureReady]
+  );
+
+  const restartCalibration = useCallback(() => {
+    resetWebgazerData();
+    setIsCalibrating(false);
+  }, []);
+
   /**
    * Auto-init and auto-shutdown behavior.
    *
@@ -263,5 +285,117 @@ export function useWebGazer(options = {}) {
     getPrediction,
     distanceFrom,
     measureAccuracy,
+    measurePrecision,
+    restartCalibration,
   };
+}
+
+// --- Accuracy helpers ------------------------------------------------------
+
+const CENTER_TARGET = { x: 0.5, y: 0.5 };
+
+const ACCURACY_THRESHOLDS = [
+  { maxDistance: 60, quality: "Excellent", minScore: 90 },
+  { maxDistance: 120, quality: "Good", minScore: 75 },
+  { maxDistance: 200, quality: "Fair", minScore: 60 },
+];
+
+function measureInstantAccuracy(getPrediction, viewport) {
+  if (typeof getPrediction !== "function") {
+    return { score: 0, quality: "Unknown", avgDistance: null };
+  }
+
+  let prediction = getPrediction();
+  if (!isValidPrediction(prediction)) {
+    prediction = getPrediction();
+  }
+  if (!isValidPrediction(prediction)) {
+    return {
+      score: 101,
+      quality: "Can't get a valid prediction",
+      avgDistance: null,
+    };
+  }
+
+  const center = getCenterTarget(viewport);
+  const dx = prediction.x - center.x;
+  const dy = prediction.y - center.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  return computeScore(distance);
+}
+
+function getCenterTarget(viewport) {
+  const width = viewport?.width ?? window.innerWidth;
+  const height = viewport?.height ?? window.innerHeight;
+  return {
+    x: CENTER_TARGET.x * width,
+    y: CENTER_TARGET.y * height,
+  };
+}
+
+function isValidPrediction(pred) {
+  return pred && Number.isFinite(pred.x) && Number.isFinite(pred.y);
+}
+
+function computeScore(distance) {
+  const normalizedScore = Math.max(0, 100 - (distance / 200) * 100);
+  const tier = ACCURACY_THRESHOLDS.find((th) => distance <= th.maxDistance) ?? null;
+  return {
+    score: Math.round(normalizedScore),
+    quality: tier?.quality ?? "Poor",
+    avgDistance: distance,
+  };
+}
+
+function computePrecision([xSamples = [], ySamples = []]) {
+  if (!xSamples.length || !ySamples.length) {
+    return { score: 0, quality: "Unknown", avgDistance: null };
+  }
+
+  const targetX = window.innerWidth / 2;
+  const targetY = window.innerHeight / 2;
+  const maxLength = Math.min(50, xSamples.length, ySamples.length);
+  const x50 = xSamples.slice(-maxLength);
+  const y50 = ySamples.slice(-maxLength);
+
+  const precisionPercentages = new Array(maxLength);
+  const distances = new Array(maxLength);
+
+  for (let i = 0; i < maxLength; i += 1) {
+    const dx = targetX - x50[i];
+    const dy = targetY - y50[i];
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    distances[i] = distance;
+    precisionPercentages[i] = calculatePrecisionPercent(distance, window.innerHeight);
+  }
+
+  const avgDistance =
+    distances.reduce((sum, value) => sum + value, 0) / maxLength;
+  const precisionScore =
+    precisionPercentages.reduce((sum, value) => sum + value, 0) / maxLength;
+
+  return {
+    score: Math.round(precisionScore),
+    quality: classifyPrecision(precisionScore),
+    avgDistance,
+  };
+}
+
+function calculatePrecisionPercent(distance, windowHeight) {
+  const halfWindow = windowHeight / 2;
+  if (distance <= halfWindow && distance >= 0) {
+    return 100 - (distance / halfWindow) * 100;
+  }
+  return distance > halfWindow ? 0 : 100;
+}
+
+function classifyPrecision(score) {
+  if (score >= 90) return "Excellent";
+  if (score >= 75) return "Good";
+  if (score >= 60) return "Fair";
+  return "Poor";
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

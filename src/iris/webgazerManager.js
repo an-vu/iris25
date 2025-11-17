@@ -103,6 +103,28 @@ export function clearTrainingData() {
     webgazer.clearData(); // wipes all calibration samples
 }
 
+export function setPredictionStorage(enabled) {
+    if (!initialized) return;
+    webgazer.params.storingPoints = Boolean(enabled);
+}
+
+export function getStoredPredictionPoints() {
+    if (!initialized || typeof webgazer.getStoredPoints !== "function") {
+        return [[], []];
+    }
+    return webgazer.getStoredPoints();
+}
+
+export function resetWebgazerData() {
+    if (!initialized) return;
+    try {
+        webgazer.clearData();
+    } catch (error) {
+        console.warn("WebGazer clearData failed:", error);
+    }
+    setPredictionStorage(false);
+}
+
 
 /* --------------------------------------------------------------------------
  * GAZE LISTENERS (React-friendly)

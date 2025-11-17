@@ -23,7 +23,7 @@
 
 
 // React tools to create context and manage state
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // Hook that reads/updates the Iris ON/OFF toggle (stored in localStorage or state)
 import { useIrisToggle } from "./hooks/useIrisToggle.js";
@@ -60,8 +60,10 @@ export function IrisManager({ children }) {
     startTracking,
     stopTracking,
     shutdown,
-    measureAccuracy,
+    measurePrecision,
+    restartCalibration,
   } = useWebGazer({ autoInit: false });
+  const accuracyPromiseRef = useRef(null);
 
   // Runs every time irisEnabled or hasCalibrated changes
   useEffect(() => {
@@ -102,6 +104,7 @@ export function IrisManager({ children }) {
   const handleCompleteDots = () => {
     setShowCalibrationStep2(false);
     setShowCalibrationStep3(true);
+    accuracyPromiseRef.current = measurePrecision();
   };
 
   const handleFocusComplete = async () => {
@@ -111,7 +114,10 @@ export function IrisManager({ children }) {
     setAccuracyScore(null);
     setAccuracyQuality(null);
     try {
-      const { score, quality } = await measureAccuracy();
+      const pendingMeasurement =
+        accuracyPromiseRef.current ?? measurePrecision();
+      accuracyPromiseRef.current = null;
+      const { score, quality } = await pendingMeasurement;
       setAccuracyScore(score);
       setAccuracyQuality(quality);
     } catch (error) {
@@ -130,6 +136,8 @@ export function IrisManager({ children }) {
   };
 
   const handleRecalibrate = () => {
+    accuracyPromiseRef.current = null;
+    restartCalibration();
     setShowCalibrationResult(false);
     setShowCalibrationStep3(false);
     setShowCalibrationStep2(false);
@@ -142,6 +150,8 @@ export function IrisManager({ children }) {
 
   // Runs when user cancels calibration or denies camera
   const handleCancelCalibration = () => {
+    accuracyPromiseRef.current = null;
+    restartCalibration();
     // Hide popup
     setShowCalibrationStep1(false);
     // Mark calibration as NOT done
@@ -199,6 +209,7 @@ export function IrisManager({ children }) {
         setAccuracyScore(null);
         setAccuracyQuality(null);
         setAccuracyPending(false);
+        accuracyPromiseRef.current = null;
       },
     }),
     [irisEnabled, setIrisEnabled, hasCalibrated] // recompute when these change
