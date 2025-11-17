@@ -7,7 +7,7 @@ export default function NotFound() {
         {/* Title Section */}
         <div className="title-container">
           <h4 className="title">404 💔 You Got Lost?</h4>
-          <h4 className="author">Get Shreked.</h4>
+          <h4 className="author">Shrek, Take the Wheel</h4>
         </div>
 
         {/* Reader Area — reuse ReaderContainer but pass test.pdf */}
