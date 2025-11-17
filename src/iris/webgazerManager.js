@@ -63,6 +63,11 @@ export function setPredictionStorage(enabled) {
     webgazer.params.storingPoints = Boolean(enabled);
 }
 
+export function setKalmanFilter(enabled) {
+    if (!initialized) return;
+    webgazer.applyKalmanFilter(Boolean(enabled));
+}
+
 export function getStoredPredictionPoints() {
     if (!initialized || typeof webgazer.getStoredPoints !== "function") {
         return [

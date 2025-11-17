@@ -5,15 +5,16 @@ import {
     useState
 } from "react";
 import {
-    initWebgazer,
-    shutdown as shutdownManager,
-    pause as pauseManager,
-    resume as resumeManager,
-    recordScreenPosition,
+  initWebgazer,
+  shutdown as shutdownManager,
+  pause as pauseManager,
+  resume as resumeManager,
+  recordScreenPosition,
   clearTrainingData,
   setPredictionStorage,
   getStoredPredictionPoints,
   resetWebgazerData,
+  setKalmanFilter,
   setGazeListener,
   clearGazeListener,
 } from "../webgazerManager.js";
@@ -140,6 +141,10 @@ export function useWebGazer(options = {}) {
         setIsCalibrating(false);
     }, []);
 
+    const toggleKalmanFilter = useCallback((enabled) => {
+        setKalmanFilter(enabled);
+    }, []);
+
     useEffect(() => {
         if (!autoInit) return undefined;
 
@@ -155,10 +160,10 @@ export function useWebGazer(options = {}) {
     }, [autoInit, autoShutdown, initialize, shutdown, stopTracking]);
 
     return {
-        status,
-        error,
-        isCalibrating,
-        latestGaze,
+      status,
+      error,
+      isCalibrating,
+      latestGaze,
 
         initialize,
         startCalibration,
@@ -170,8 +175,9 @@ export function useWebGazer(options = {}) {
         pause,
         resume,
         shutdown,
-        measurePrecision,
-        restartCalibration,
+      measurePrecision,
+      restartCalibration,
+      toggleKalmanFilter,
     };
 }
 

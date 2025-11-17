@@ -1,28 +1,3 @@
-// IrisManager handles everything that happens when Iris is turned ON or OFF.
-//
-// - When the user turns Iris ON:
-//      - check if they’ve calibrated before
-//      - if not, show the calibration calibration popup
-//
-// - When the user turns Iris OFF:
-//      - hide any Iris UI
-//      - reset calibration state
-//
-// - This file decides:
-//      - when Iris turns ON
-//      - when Iris turns OFF
-//      - when calibration steps appear
-//      - when calibration resets
-//      - what the rest of the app sees
-//      - how to show popups
-//      - how to expose Iris state through context
-//
-// This file also provides Iris state (enabled, calibrated, reset functions) to the rest of the app
-// through React Context, so any component can know if Iris is active.
-// ----------------------------------------------------------------------------------------------------
-
-
-// React tools to create context and manage state
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // Hook that reads/updates the Iris ON/OFF toggle (stored in localStorage or state)
@@ -62,6 +37,7 @@ export function IrisManager({ children }) {
     shutdown,
     measurePrecision,
     restartCalibration,
+    toggleKalmanFilter,
   } = useWebGazer({ autoInit: false });
   const accuracyPromiseRef = useRef(null);
 
@@ -105,6 +81,7 @@ export function IrisManager({ children }) {
     setShowCalibrationStep2(false);
     setShowCalibrationStep3(true);
     accuracyPromiseRef.current = null;
+    toggleKalmanFilter(false);
   };
 
   const handleCountdownBegin = () => {
@@ -137,6 +114,7 @@ export function IrisManager({ children }) {
     setShowCalibrationResult(false);
     setHasCalibrated(true);
     finishWebGazerCalibration();
+    toggleKalmanFilter(true);
   };
 
   const handleRecalibrate = () => {
@@ -150,6 +128,7 @@ export function IrisManager({ children }) {
     setAccuracyScore(null);
     setAccuracyQuality(null);
     setAccuracyPending(false);
+    toggleKalmanFilter(true);
   };
 
   // Runs when user cancels calibration or denies camera
@@ -254,11 +233,9 @@ export function IrisManager({ children }) {
   );
 }
 
-// Hook to use Iris state anywhere in the app
 export function useIrisContext() {
   const ctx = useContext(IrisContext);
 
-  // Defensive check: must be inside <IrisProvider>
   if (!ctx) {
     throw new Error("useIrisContext must be used within an IrisManager");
   }
