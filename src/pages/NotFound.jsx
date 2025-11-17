@@ -1,20 +1,61 @@
-import { ReaderContainer, NavbarReader } from "../components";
+import {
+  ReaderContainer,
+  NavbarReader,
+  ReaderTitle,
+  ZoomScaleObserver,
+} from "../components";
+import { useChapterNavigation } from "../hooks/useChapterNavigation.js";
+import { useZoomControls } from "../hooks/useZoomControls.js";
 
 export default function NotFound() {
+  const {
+    currentFile,
+    handleNext,
+    handlePrevious,
+    disableNext,
+    disablePrevious,
+  } = useChapterNavigation(["/iris25/books/test.pdf"]);
+
+  const {
+    zoomPluginInstance,
+    handleZoomIn,
+    handleZoomOut,
+    disableZoomIn,
+    disableZoomOut,
+    handleScaleChange,
+  } = useZoomControls();
+
   return (
     <div className="reader background">
       <div className="master-container">
         {/* Title Section */}
-        <div className="title-container">
-          <h4 className="title">404 💔 You Got Lost?</h4>
-          <h4 className="author">Shrek, Take the Wheel</h4>
-        </div>
+        <ReaderTitle
+          title="404 💔 You Got Lost?"
+          subtitle="Shrek, Take the Wheel"
+        />
 
         {/* Reader Area — reuse ReaderContainer but pass test.pdf */}
-        <ReaderContainer filePath="/iris25/books/test.pdf" />
+        <ReaderContainer
+          filePath={currentFile}
+          zoomPluginInstance={zoomPluginInstance}
+        />
+
+        <ZoomScaleObserver
+          pluginInstance={zoomPluginInstance}
+          onScaleChange={handleScaleChange}
+        />
 
         {/* Bottom Navbar */}
-        <NavbarReader onlyHome />
+        <NavbarReader
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          disableNext={disableNext}
+          disablePrevious={disablePrevious}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          disableZoomIn={disableZoomIn}
+          disableZoomOut={disableZoomOut}
+        />
       </div>
     </div>
   );
