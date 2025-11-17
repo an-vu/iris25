@@ -104,6 +104,10 @@ export function IrisManager({ children }) {
   const handleCompleteDots = () => {
     setShowCalibrationStep2(false);
     setShowCalibrationStep3(true);
+    accuracyPromiseRef.current = null;
+  };
+
+  const handleCountdownBegin = () => {
     accuracyPromiseRef.current = measurePrecision();
   };
 
@@ -232,7 +236,10 @@ export function IrisManager({ children }) {
         <CalibrationStep2 onComplete={handleCompleteDots} />
       )}
       {showCalibrationStep3 && (
-        <CalibrationStep3 onComplete={handleFocusComplete} />
+        <CalibrationStep3
+          onComplete={handleFocusComplete}
+          onCountdownStart={handleCountdownBegin}
+        />
       )}
       {showCalibrationResult && (
         <CalibrationStep4Result

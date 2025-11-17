@@ -4,7 +4,7 @@ import CountdownButton from "../../components/buttons/CountdownButton.jsx";
 
 export const CALIBRATION_SECONDS = 5;
 
-export default function CalibrationStep3({ onComplete }) {
+export default function CalibrationStep3({ onComplete, onCountdownStart }) {
   const [showCard, setShowCard] = useState(true);   // show instructions first
   const [active, setActive] = useState(false);      // countdown button state
   const [done, setDone] = useState(false);
@@ -37,6 +37,7 @@ export default function CalibrationStep3({ onComplete }) {
                 onClick={() => {
                   setShowCard(false);   // hide the card
                   setActive(true);      // start countdown mode
+                  onCountdownStart?.();
                 }}
               >
                 Continue
