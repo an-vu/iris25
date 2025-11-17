@@ -19,5 +19,7 @@ import "./buttons/IrisToggle.css";
 import "./cards/BookCard.css";
 import "./cards/ComingSoon.css";
 import "./cards/CalibrationCard.css";
+import "./cards/VideoPreview.css";
+
 import "./calibration/CalibrationOverlay.css";
 import "./calibration/CalibrationTarget.css";

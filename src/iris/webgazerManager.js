@@ -19,6 +19,7 @@ export async function initWebgazer() {
     webgazer.showPredictionPoints(true);
     webgazer.showFaceOverlay(true);
     webgazer.showFaceFeedbackBox(true);
+    webgazer.applyKalmanFilter(false); //
 
     webgazer.saveDataAcrossSessions(false);
 
@@ -48,11 +49,6 @@ function waitForDOM() {
     });
 }
 
-export function recordScreenPosition(x, y, type = "click") {
-    if (!initialized) return;
-    webgazer.recordScreenPosition(x, y, type);
-}
-
 export function clearTrainingData() {
     if (!initialized) return;
     webgazer.clearData();
@@ -66,6 +62,15 @@ export function setPredictionStorage(enabled) {
 export function setKalmanFilter(enabled) {
     if (!initialized) return;
     webgazer.applyKalmanFilter(Boolean(enabled));
+}
+
+export function stopVideoStream() {
+    if (!initialized) return;
+    try {
+        webgazer.stopVideo();
+    } catch (error) {
+        console.warn("WebGazer stopVideo failed:", error);
+    }
 }
 
 export function getStoredPredictionPoints() {
@@ -149,16 +154,6 @@ export function clearGazeListener(callback) {
 
     gazeSubscribers.clear();
     stopGazeStream();
-}
-
-export function pause() {
-    if (!initialized) return;
-    webgazer.pause();
-}
-
-export function resume() {
-    if (!initialized) return;
-    webgazer.resume();
 }
 
 export function shutdown() {

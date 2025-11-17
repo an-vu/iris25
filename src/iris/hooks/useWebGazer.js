@@ -7,14 +7,12 @@ import {
 import {
   initWebgazer,
   shutdown as shutdownManager,
-  pause as pauseManager,
-  resume as resumeManager,
-  recordScreenPosition,
   clearTrainingData,
   setPredictionStorage,
   getStoredPredictionPoints,
   resetWebgazerData,
   setKalmanFilter,
+  stopVideoStream,
   setGazeListener,
   clearGazeListener,
 } from "../webgazerManager.js";
@@ -70,16 +68,11 @@ export function useWebGazer(options = {}) {
     const startCalibration = useCallback(async() => {
         await ensureReady();
         clearTrainingData();
-        resumeManager();
         setIsCalibrating(true);
     }, [ensureReady]);
 
     const finishCalibration = useCallback(() => {
         setIsCalibrating(false);
-    }, []);
-
-    const recordCalibrationPoint = useCallback((x, y, type = "click") => {
-        recordScreenPosition(x, y, type);
     }, []);
 
     const stopTracking = useCallback(() => {
@@ -103,17 +96,9 @@ export function useWebGazer(options = {}) {
         }, [ensureReady]
     );
 
-    const pause = useCallback(() => {
-        pauseManager();
-    }, []);
-
-    const resume = useCallback(async() => {
-        await ensureReady();
-        resumeManager();
-    }, [ensureReady]);
-
     const shutdown = useCallback(() => {
         stopTracking();
+        stopVideoStream();
         shutdownManager();
         setStatus("idle");
         setError(null);
@@ -168,12 +153,8 @@ export function useWebGazer(options = {}) {
         initialize,
         startCalibration,
         finishCalibration,
-        recordCalibrationPoint,
-
         startTracking,
         stopTracking,
-        pause,
-        resume,
         shutdown,
       measurePrecision,
       restartCalibration,

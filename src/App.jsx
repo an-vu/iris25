@@ -13,7 +13,7 @@ export default function App() {
         height="0"
         style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0 }}
         aria-hidden="true"
-      />
+      /> {/* This is for WebGazer */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/reader/:bookId" element={<Reader />} />

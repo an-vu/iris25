@@ -179,23 +179,11 @@ export function IrisManager({ children }) {
   // Value shared to all components using IrisContext
   const value = useMemo(
     () => ({
-      irisEnabled, // is Iris ON or OFF
-      setIrisEnabled, // function to turn it ON/OFF
-      hasCalibrated, // whether calibration is finished
-      resetCalibration: () => {
-        // manually reset calibration state anywhere
-        setHasCalibrated(false);
-        setShowCalibrationStep1(false);
-        setShowCalibrationStep2(false);
-        setShowCalibrationStep3(false);
-        setShowCalibrationResult(false);
-        setAccuracyScore(null);
-        setAccuracyQuality(null);
-        setAccuracyPending(false);
-        accuracyPromiseRef.current = null;
-      },
+      irisEnabled,
+      setIrisEnabled,
+      hasCalibrated,
     }),
-    [irisEnabled, setIrisEnabled, hasCalibrated] // recompute when these change
+    [irisEnabled, setIrisEnabled, hasCalibrated]
   );
 
   return (
