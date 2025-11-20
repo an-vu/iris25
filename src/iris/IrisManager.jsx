@@ -38,6 +38,8 @@ export function IrisManager({ children }) {
     measurePrecision,
     restartCalibration,
     toggleKalmanFilter,
+    enableTraining,
+    disableTraining,
   } = useWebGazer({ autoInit: false });
   const accuracyPromiseRef = useRef(null);
 
@@ -70,6 +72,7 @@ export function IrisManager({ children }) {
     setShowCalibrationStep1(false);
     setShowCalibrationStep2(true);
     try {
+      enableTraining();
       await startWebGazerCalibration();
     } catch (error) {
       console.error("Failed to start WebGazer calibration:", error);
@@ -115,11 +118,13 @@ export function IrisManager({ children }) {
     setHasCalibrated(true);
     finishWebGazerCalibration();
     toggleKalmanFilter(true);
+    disableTraining();
   };
 
   const handleRecalibrate = () => {
     accuracyPromiseRef.current = null;
     restartCalibration();
+    enableTraining();
     setShowCalibrationResult(false);
     setShowCalibrationStep3(false);
     setShowCalibrationStep2(false);
@@ -135,6 +140,7 @@ export function IrisManager({ children }) {
   const handleCancelCalibration = () => {
     accuracyPromiseRef.current = null;
     restartCalibration();
+    disableTraining();
     // Hide popup
     setShowCalibrationStep1(false);
     // Mark calibration as NOT done

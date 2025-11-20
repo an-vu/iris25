@@ -10,11 +10,14 @@ import {
   clearTrainingData,
   setPredictionStorage,
   getStoredPredictionPoints,
+  clearStoredPredictionPoints,
   resetWebgazerData,
   setKalmanFilter,
   stopVideoStream,
   setGazeListener,
   clearGazeListener,
+  enableTraining,
+  disableTraining,
 } from "../webgazerManager.js";
 
 const noop = () => {};
@@ -107,10 +110,11 @@ export function useWebGazer(options = {}) {
         initPromiseRef.current = null;
     }, [stopTracking]);
 
-    const measurePrecision = useCallback(
+  const measurePrecision = useCallback(
         async(durationMs = 5000) => {
       await ensureReady();
             try {
+                clearStoredPredictionPoints();
                 setPredictionStorage(true);
                 await delay(durationMs);
             } finally {
@@ -155,10 +159,12 @@ export function useWebGazer(options = {}) {
         finishCalibration,
         startTracking,
         stopTracking,
-        shutdown,
+      shutdown,
       measurePrecision,
       restartCalibration,
       toggleKalmanFilter,
+      enableTraining,
+      disableTraining,
     };
 }
 

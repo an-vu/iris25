@@ -4,6 +4,7 @@ const noop = () => { };
 let initialized = false;
 let gazeDispatcher = null;
 const gazeSubscribers = new Set();
+let trainingEnabled = true;
 
 export async function initWebgazer() {
     if (initialized) return;
@@ -19,7 +20,7 @@ export async function initWebgazer() {
     webgazer.showPredictionPoints(true);
     webgazer.showFaceOverlay(true);
     webgazer.showFaceFeedbackBox(true);
-    webgazer.applyKalmanFilter(false); //
+    webgazer.applyKalmanFilter(true);
 
     webgazer.saveDataAcrossSessions(false);
 
@@ -59,9 +60,37 @@ export function setPredictionStorage(enabled) {
     webgazer.params.storingPoints = Boolean(enabled);
 }
 
+export function clearStoredPredictionPoints() {
+    if (!initialized || typeof webgazer.getStoredPoints !== "function") return;
+    const [xPoints, yPoints] = webgazer.getStoredPoints();
+    if (Array.isArray(xPoints)) xPoints.length = 0;
+    if (Array.isArray(yPoints)) yPoints.length = 0;
+}
+
 export function setKalmanFilter(enabled) {
     if (!initialized) return;
-    webgazer.applyKalmanFilter(Boolean(enabled));
+    // Always keep Kalman smoothing on for stability; ignore requests to disable.
+    webgazer.applyKalmanFilter(true);
+}
+
+export function enableTraining() {
+    if (!initialized || trainingEnabled) return;
+    try {
+        webgazer.addMouseEventListeners();
+        trainingEnabled = true;
+    } catch (error) {
+        console.warn("WebGazer addMouseEventListeners failed:", error);
+    }
+}
+
+export function disableTraining() {
+    if (!initialized || !trainingEnabled) return;
+    try {
+        webgazer.removeMouseEventListeners();
+        trainingEnabled = false;
+    } catch (error) {
+        console.warn("WebGazer removeMouseEventListeners failed:", error);
+    }
 }
 
 export function stopVideoStream() {
@@ -164,7 +193,9 @@ export function shutdown() {
         webgazer.end();
     } catch (e) { }
 
+    disableTraining();
     stopGazeStream();
     gazeSubscribers.clear();
     initialized = false;
+    trainingEnabled = true;
 }

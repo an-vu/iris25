@@ -11,7 +11,7 @@
 ## Features
 
 - **Eye-Tracking Navigation** – Scroll and control pages using gaze input.
-- **PDF & EPUB Support** – Render books with `pdf.js` and `epub.js`.
+- **PDF & EPUB Support** – Render books with `pdf.js`.
 - **Distraction-Free UI** – Minimal, typography-focused design.
 - **Offline & Private** – All processing runs locally in the browser.
 
