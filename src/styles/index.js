@@ -15,7 +15,6 @@ import "./buttons/ButtonNavbar.css";
 import "./buttons/ButtonRead.css";
 import "./buttons/ButtonScroll.css";
 import "./buttons/ButtonGaze.css";
-import "./buttons/ButtonReaderScroll.css";
 import "./buttons/IrisToggle.css";
 
 import "./cards/BookCard.css";
