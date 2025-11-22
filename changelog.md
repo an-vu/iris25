@@ -1,32 +1,68 @@
 # Changelog
 
-## November 20
+## November 27
 
 - Moved all SVG files into `src/icons/` for cleaner structure
 - Reader page polish:
-  - Added shy mode
-  - Added background toggle (colorful/neutral)
+  - Add Note section
+  - Add shy mode
+  - Add background toggle (colorful/neutral)
   - Fixed PDF border sizing
 - Add Redux and Context
 - Add Tests scripts
 - Clean up all .css files
-
-## November 18
-
 - Added reading progress saving (remembers last page)
-- Added notes/highlights sidebar
 - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Planned to add service worker for offline access
-
-## November 16
-
 - Implemented “Add a New Book” with file picker
 - Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
 - Began lazy-loading chapters (load only when needed)
 
+## November 22
+
+- Release Build 251122.0153: core-working milestone
+  WebGazer Iris now works on both the homepage and the reader page for the first time.
+- Split Home.jsx into smaller components for cleaner structure.
+- Slight accuracy improvement, peak now 86%! Laptop webcam is the limiting factor.
+
+## November 21
+
+- WebGazer fully functional in calibration steps, accuracy calculation is more reliable.
+- Tweaked formulas and number handling for better accuracy scoring.
+- General accuracy improvement, peak now 78%.
+
+## November 19
+
+- Attempted accuracy improvements using WebGazer top-level API.
+- Turned Kalman filter back on for smoothing, accuracy peaked at 76%.
+- Avoided repeating the mistakes from the 14th.
+
+## November 18
+
+- Continued splitting files for better organization.
+- Worked heavily on WebGazerManager.js, IrisManager.jsx, and useWebGazer.js.
+  These three control whether Iris works at all.
+- Experimented with Kalman filter settings, accuracy briefly dropped to 38%.
+- General UI stable and working well.
+- Release Build 251117.0315: ui-working.
+
+## November 16
+
+- Redesigned the entire calibration flow from scratch.
+- Re-integrated WebGazer into Iris, accuracy peaked at 64%.
+
+## November 15
+
+- Cleaned up calibration logic.
+- Restored several deleted files.
+- Added new book Sabai.
+- Split larger PDFs into chapter-sized chunks.
+- Temporarily removed WebGazer from Iris due to unstable custom settings.
+
 ## November 14
 
-- Try to improve accuracy of Iris
+- Tried to push accuracy improvements.
+- Broke everything instead, accuracy locked at 0% regardless of input...
 
 ## November 12-13
 
