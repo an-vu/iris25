@@ -38,6 +38,8 @@ export default function GazeControls({
   onScrollDown = noop,
   upRef,
   downRef,
+  isTopActive = false,
+  isBottomActive = false,
 }) {
   const upHold = useHold(onScrollUp);
   const downHold = useHold(onScrollDown);
@@ -61,7 +63,7 @@ export default function GazeControls({
     <div className="gaze-controls">
       {/* Scroll Up */}
       <button
-        className="gaze-button up"
+        className={`gaze-button up${isTopActive ? " gaze-active" : ""}`}
         title="Scroll Up"
         type="button"
         ref={upRef}
@@ -80,7 +82,7 @@ export default function GazeControls({
 
       {/* Scroll Down */}
       <button
-        className="gaze-button down"
+        className={`gaze-button down${isBottomActive ? " gaze-active" : ""}`}
         title="Scroll Down"
         type="button"
         ref={downRef}

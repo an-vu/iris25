@@ -1,0 +1,69 @@
+.gaze-zone-overlay {
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gaze-zone-overlay .zone {
+  border: 0.7px dashed rgba(255, 0, 0, 0.05);
+  background: rgba(255, 0, 0, 0.01);
+  box-sizing: border-box;
+}
+
+.gaze-zone-overlay .zone.active {
+  border-color: rgba(0, 200, 0, 0.05);
+  background: rgba(0, 200, 0, 0.01);
+}
+
+/* Home: left/center/right */
+.overlay-home {
+  position: absolute;
+}
+
+.overlay-home .zone {
+  height: 75%;
+  transform: translateY(-0.625rem);
+}
+
+.overlay-home .left-zone,
+.overlay-home .right-zone {
+  position: absolute;
+  top: 50%;
+  height: 40%;
+  width: 10%;
+  transform: translateY(-50%) translateY(-0.625rem);
+}
+
+.overlay-home .left-zone {
+  left: 0;
+}
+
+.overlay-home .right-zone {
+  right: 0;
+}
+
+.overlay-home .center-zone {
+  position: absolute;
+  transform: none;
+}
+
+/* Reader: top/bottom corners */
+.overlay-reader {
+  position: fixed;
+}
+
+.overlay-reader .zone {
+  position: absolute;
+  width: 12vw;
+  height: 18vw;
+}
+
+.overlay-reader .top-zone {
+  top: 0.05rem;
+  right: 0.05rem;
+}
+
+.overlay-reader .bottom-zone {
+  bottom: 0.05rem;
+  right: 0.05rem;
+}

@@ -1,5 +1,3 @@
-// src/pages/Reader.jsx
-
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -9,6 +7,8 @@ import {
   ReaderContainer,
   ReaderTitle,
   ZoomScaleObserver,
+  ReaderGazeZoneOverlay,
+  ReaderScrollButtons,
 } from "../components";
 import { useChapterNavigation } from "../hooks/useChapterNavigation.js";
 import { useZoomControls } from "../hooks/useZoomControls.js";
@@ -60,10 +60,21 @@ export default function Reader() {
           subtitle={`by ${currentBook.author}`}
         />
 
-        <ReaderContainer
-          filePath={currentFile}
-          zoomPluginInstance={zoomPluginInstance}
-        />
+      <ReaderContainer
+        filePath={currentFile}
+        zoomPluginInstance={zoomPluginInstance}
+        renderOverlay={({ isTop, isBottom }) => (
+          <ReaderGazeZoneOverlay isTop={isTop} isBottom={isBottom} />
+        )}
+        renderControls={({ onScrollUp, onScrollDown, isTop, isBottom }) => (
+          <ReaderScrollButtons
+            onScrollUp={onScrollUp}
+            onScrollDown={onScrollDown}
+            isTopActive={isTop}
+            isBottomActive={isBottom}
+          />
+        )}
+      />
 
         <ZoomScaleObserver
           pluginInstance={zoomPluginInstance}

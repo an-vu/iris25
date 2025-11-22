@@ -2,6 +2,7 @@ import "./base/_reset.css";
 import "./base/_variables.css";
 import "./base/_typography.css";
 import "./pages/Home.css";
+import "./pages/GazeZoneOverlay.css";
 import "./pages/Reader.css";
 import "./pages/ReaderTitle.css";
 
@@ -14,6 +15,7 @@ import "./buttons/ButtonNavbar.css";
 import "./buttons/ButtonRead.css";
 import "./buttons/ButtonScroll.css";
 import "./buttons/ButtonGaze.css";
+import "./buttons/ButtonReaderScroll.css";
 import "./buttons/IrisToggle.css";
 
 import "./cards/BookCard.css";

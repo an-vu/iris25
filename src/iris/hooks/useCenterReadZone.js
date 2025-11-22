@@ -25,10 +25,10 @@ export function useCenterReadZone() {
       const buttonRect = button.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      const paddedWidth = buttonRect.width * 2;
-      const paddedHeight = buttonRect.height * 2;
-      const padX = (paddedWidth - buttonRect.width) / 2;
-      const padY = (paddedHeight - buttonRect.height) / 2;
+      const paddedWidth = buttonRect.width * 2; // 2x width
+      const paddedHeight = buttonRect.height * 2; // 2x height
+      const padX = (paddedWidth - buttonRect.width) / 2; // half of extra width
+      const padY = (paddedHeight - buttonRect.height) / 2; // half of extra height
 
       const left = buttonRect.left - containerRect.left - padX;
       const top = buttonRect.top - containerRect.top - padY;

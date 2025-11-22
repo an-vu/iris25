@@ -6,7 +6,7 @@ export default function HomeGazeZoneOverlay({
   centerZoneStyle
 }) {
   return (
-    <div className="gaze-zone-overlay">
+    <div className="gaze-zone-overlay overlay-home">
       <div className={`zone left-zone${isLeft ? " active" : ""}`} />
 
       <div
