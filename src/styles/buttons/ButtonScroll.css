@@ -44,18 +44,18 @@
 }
 
 .nav-button.svg-button.scroll-button svg {
-    width: 42px;
-    height: 42px;
-    display: block;
-    pointer-events: none;
+  width: 42px;
+  height: 42px;
+  display: block;
+  pointer-events: none;
 
-    transform-origin: center center;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    transition: transform 0.3s ease;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: transform 0.3s ease;
 
-    opacity: 0.7;
-  }
+  opacity: 0.7;
+}
 
 .nav-button.svg-button.scroll-button.left svg {
   transform: translateX(-7%);
@@ -67,4 +67,59 @@
 
 .nav-button.svg-button.scroll-button:hover svg {
     opacity: 0.9;
+}
+
+.nav-button.svg-button.scroll-button.up svg {
+  transform: rotate(-90deg);
+}
+
+.nav-button.svg-button.scroll-button.down svg {
+  transform: rotate(90deg);
+}
+
+/* Reader fixed buttons */
+.reader-scroll-buttons {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.reader-scroll-buttons .scroll-button {
+  pointer-events: auto;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-button);
+  background-color: var(--color-iris-dark);
+  color: var(--color-white);
+  opacity: 0.85;
+  position: fixed;
+  transform: none;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+}
+
+.reader-scroll-buttons .scroll-button svg {
+  width: 21px;
+  height: 21px;
+}
+
+.reader-scroll-buttons .scroll-button.up {
+  top: 5%;
+  right: 1%;
+}
+
+.reader-scroll-buttons .scroll-button.down {
+  top: 95%;
+  right: 1%;
+}
+
+.reader-scroll-buttons .scroll-button.gaze-active {
+  background-color: var(--color-iris-dark-strong);
+  transform: scale(1.05);
 }
