@@ -5,7 +5,7 @@
 }
 
 .gaze-zone-overlay .zone {
-  border: 0.7px dashed rgba(255, 0, 0, 0.5);
+  border: 0.7px dashed rgba(255, 0, 0, 0.02);
   background: rgba(255, 0, 0, 0.01);
   box-sizing: border-box;
 }
