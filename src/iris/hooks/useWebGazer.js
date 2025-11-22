@@ -14,8 +14,8 @@ import {
   resetWebgazerData,
   setKalmanFilter,
   stopVideoStream,
-  setGazeListener,
-  clearGazeListener,
+  addGazeListener,
+  removeGazeListener,
   enableTraining,
   disableTraining,
 } from "../webgazerManager.js";
@@ -37,6 +37,7 @@ export function useWebGazer(options = {}) {
     const initPromiseRef = useRef(null);
     const gazeCallbackRef = useRef(onGaze);
     const listenerActiveRef = useRef(false);
+    const unsubscribeRef = useRef(null);
 
     useEffect(() => {
         gazeCallbackRef.current = onGaze || noop;
@@ -80,7 +81,12 @@ export function useWebGazer(options = {}) {
 
     const stopTracking = useCallback(() => {
         if (!listenerActiveRef.current) return;
-        clearGazeListener();
+        if (typeof unsubscribeRef.current === "function") {
+          unsubscribeRef.current();
+          unsubscribeRef.current = null;
+        } else {
+          removeGazeListener(gazeCallbackRef.current);
+        }
         listenerActiveRef.current = false;
     }, []);
 
@@ -94,7 +100,8 @@ export function useWebGazer(options = {}) {
                 gazeCallbackRef.current(data);
             };
 
-            setGazeListener(combinedListener);
+            const unsubscribe = addGazeListener(combinedListener);
+            unsubscribeRef.current = unsubscribe;
             listenerActiveRef.current = true;
         }, [ensureReady]
     );

@@ -83,6 +83,48 @@
   perspective: 1000px;
 }
 
+.gaze-zone-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gaze-zone-overlay .zone {
+  border: 0.5px dashed rgba(255, 0, 0, 0.05);
+  background: rgba(255, 0, 0, 0.02);
+  box-sizing: border-box;
+  height: 75%;
+  transform: translateY(-0.625rem);
+}
+
+.gaze-zone-overlay .left-zone,
+.gaze-zone-overlay .right-zone {
+  position: absolute;
+  top: 50%;
+  height: 100%;
+  width: 12%;
+  transform: translateY(-50%) translateY(-0.625rem);
+}
+
+.gaze-zone-overlay .zone.active {
+  border-color: rgba(0, 200, 0, 0.9);
+  background: rgba(0, 200, 0, 0.08);
+}
+
+.gaze-zone-overlay .left-zone {
+  left: 0;
+}
+
+.gaze-zone-overlay .right-zone {
+  right: 0;
+}
+
+.gaze-zone-overlay .center-zone {
+  position: absolute;
+  transform: none;
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
