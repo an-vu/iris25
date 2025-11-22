@@ -108,8 +108,8 @@
 }
 
 .gaze-zone-overlay .zone.active {
-  border-color: rgba(0, 200, 0, 0.9);
-  background: rgba(0, 200, 0, 0.08);
+  border-color: rgba(0, 200, 0, 0.05);
+  background: rgba(0, 200, 0, 0.02);
 }
 
 .gaze-zone-overlay .left-zone {
