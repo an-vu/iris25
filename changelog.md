@@ -1,42 +1,73 @@
 # Changelog
 
-## November 27
+## Roadmap
 
-- Moved all SVG files into `src/icons/` for cleaner structure
+- v1.0 Build x29 stability
+  - Add Tests scripts
+
+- v1.0 Build x30 polish 2
 - Reader page polish:
   - Add Note section
   - Add background toggle (colorful/neutral)
   - Fixed PDF border sizing
-- Add Redux and Context
-- Add Tests scripts
-- Clean up all .css files
-- Added reading progress saving (remembers last page)
-- Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
-- Planned to add service worker for offline access
-- Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
-- Began lazy-loading chapters (load only when needed)
+
+- v1.0 Build x121 optimization 1
+  - Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
+  - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
+
+- v1.0 Build x122 future improvement
+  - Plan to add service worker for offline access
+  - Began lazy-loading chapters (load only when needed)
+
+- v1.0 Build x123 database
+  - implement mysql database for users
+
+- v1.0 Build x124 clean up 2
+
+- v1.0 Build x125 optimization 2
+
+- v1.1 stable release
+
+- v2.0 update to next.js
+
+...
+
+## November 28
+
+- v1.0 Build x28 feature 3 / one month milestone
+  - Added Remove Book button
+
+## November 27
+
+- v1.0 Build x27 feature 2
+  - Added reading progress saving (remembers last page)
 
 ## November 26
 
-- Implemented “Add a New Book” with file picker
+- v1.0 Build x26 feature 1
+  - Implement “Add a New Book” with file picker
 
 ## November 25
 
-- Moved all SVG files into `src/icons/` for cleaner structure
+- v1.0 Build x25 polish 1
+  - Add Shy Mode
+  - Update Info/About/Q&A
 
 ## November 24
 
-- Add Shy Mode
+- v1.0 Build x24 file cleaned up
+  - Moved all SVG files into `src/icons/` for cleaner structure
+  - Clean up all .css files
 
 ## November 23
 
 - Fix scroll up down button in reader page
-- Release v1.0 Buildxxx basic shits done
+- Release v1.0 Build x23 basic shits done
 
 ## November 22
 
-- Release Build 251122.0153: core-working milestone
-  WebGazer Iris now works on both the homepage and the reader page for the first time.
+- **Release Build 251122.0153: core-working milestone**
+- WebGazer Iris now works on both the homepage and the reader page for the first time.
 - Split Home.jsx into smaller components for cleaner structure.
 - Slight accuracy improvement, peak now 86%! Laptop webcam is the limiting factor.
 
@@ -54,12 +85,12 @@
 
 ## November 18
 
+- **Release Build 251117.0315: ui-working.**
 - Continued splitting files for better organization.
 - Worked heavily on WebGazerManager.js, IrisManager.jsx, and useWebGazer.js.
   These three control whether Iris works at all.
 - Experimented with Kalman filter settings, accuracy briefly dropped to 38%.
 - General UI stable and working well.
-- Release Build 251117.0315: ui-working.
 
 ## November 16
 
