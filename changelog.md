@@ -5,7 +5,6 @@
 - Moved all SVG files into `src/icons/` for cleaner structure
 - Reader page polish:
   - Add Note section
-  - Add shy mode
   - Add background toggle (colorful/neutral)
   - Fixed PDF border sizing
 - Add Redux and Context
@@ -14,9 +13,25 @@
 - Added reading progress saving (remembers last page)
 - Deciding between auto-storing cover image from first PDF page or using a “Grab Cover” feature
 - Planned to add service worker for offline access
-- Implemented “Add a New Book” with file picker
 - Researched Context vs. Redux for managing global app settings (theme, tracking mode, background style, etc.)
 - Began lazy-loading chapters (load only when needed)
+
+## November 26
+
+- Implemented “Add a New Book” with file picker
+
+## November 25
+
+- Moved all SVG files into `src/icons/` for cleaner structure
+
+## November 24
+
+- Add Shy Mode
+
+## November 23
+
+- Fix scroll up down button in reader page
+- Release v1.0 Buildxxx basic shits done
 
 ## November 22
 
@@ -137,6 +152,7 @@
 
 ## October 29
 
+- **First day working on Iris Reader '25**
 - Researched new React workflow (no Flask needed)
 - Switched to **React + Vite** setup
 - Installed **Node.js, React, Vite**
